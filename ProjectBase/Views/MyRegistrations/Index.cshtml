@@ -1,0 +1,429 @@
+﻿@model IEnumerable<ProjectBase.Models.SubjectsModel>
+
+@{
+    ViewData["Title"] = "MyRegistrations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>MyRegistrations</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/css/SubjectDetail.css" />
+    <link rel="stylesheet" href="~/css/SubjectRegister.css" />
+    <link rel="stylesheet" href="~/css/MyRegistrations.css">
+    <link rel="stylesheet" href="~/css/Sider.css">
+</head>
+<body>
+    <div class="row" id="content-wrapper">
+        <div class="container" id="mainContent">
+            <div class="mainContainer">
+                <div id="notification" style="display: none;"></div>
+                <!-- Main content area -->
+                <div class="header-wrapper">
+                    <div class="flex">
+                        <div class="page-name">
+                            <h3>My Registrations</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Practice list Table wrapper -->
+                <div class="Table-wrapper">
+                    <table>
+                        <thead class="thead">
+                            <tr>
+                                <th>Id</th>
+                                <th>Subject</th>
+                                <th>Register time</th>
+                                <th>Package</th>
+                                <th>Total Cost</th>
+                                <th>Status</th>
+                                <th>Valid from</th>
+                                <th>Valid to</th>
+                            </tr>
+                        </thead>
+                        <tbody id="myRegistrationsList">
+                        </tbody>
+                    </table>
+                    <div id="pagination">
+                    </div>
+                </div>
+            </div>
+            <!-- Sidebar area -->
+            <div class="sidebar-container">
+                <div id="" class="sidebar_subject_category">
+                    <div class="sidebar-box">
+                        @Html.Partial("_SubjectSideBarPartial")
+                    </div>
+                </div>
+                <div id="" class="sidebar_subject_featured">
+                    <div class="sidebar-box">
+                        @Html.Partial("_SubjectFeaturedPartial")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận hủy đăng ký -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to unenroll from this course?</p>
+            <div class="btnConfirm">
+                <button id="confirmCancel" class="bttn btn-yes">Yes</button>
+                <button id="closeModal" class="bttn btn-no">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận thanh toán -->
+    <div id="payModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to pay for this package?</p>
+            <div class="btnConfirm">
+                <button id="confirmPay" class="bttn btn-yes">Yes</button>
+                <button id="closePayModal" class="bttn btn-no">No</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="subjectPopup" tabindex="-1" role="dialog" aria-labelledby="subjectPopupLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div id="popup_register" class="modal-content">
+                <div class="modal-body" id="subjectPopupContent">
+                    <!-- Partial view content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="~/js/SubjectsScript.js"></script>
+
+    @section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script type="text/javascript">
+            var userId; 
+            $(document).ready(function () {
+                var userId;
+                var allRegistrations = [];
+                var pageSize = 5;
+                var selectedRegistrationId; // Biến để lưu trữ registration ID được chọn
+
+                // Hàm để hiển thị thông báo
+                function showNotification(message, isSuccess) {
+                    var notification = $('#notification');
+                    notification.text(message);
+                    if (isSuccess) {
+                        notification.removeClass('error').addClass('success');
+                    } else {
+                        notification.removeClass('success').addClass('error');
+                    }
+                    notification.show();
+
+                    // Ẩn thông báo sau 2 giây
+                    setTimeout(function () {
+                        notification.fadeOut();
+                    }, 2000);
+                }
+
+                // Hàm để lấy userId từ API
+                function GetUserDetails() {
+                    $.ajax({
+                        url: '/Account/GetUserDetails',
+                        method: 'GET',
+                        success: function (response) {
+                            console.log(response);
+                            if (response.success) {
+                                userId = response.userDetails.userID;
+                                console.log("UserID:", userId); // Ghi log để kiểm tra giá trị userID
+                                // Bắt đầu tải tất cả các bản ghi sau khi lấy được userId
+                                GetAllRegistrations(userId);
+                            } else {
+                                showNotification('Failed to get user details: ' + response.message, false);
+                            }
+                        },
+                        error: function () {
+                            showNotification('Error retrieving user details.', false);
+                        }
+                    });
+                }
+
+                // Hàm để lấy tất cả các bản ghi từ API
+                function GetAllRegistrations(userId, subjectId = null, statusId = null) {
+                    $.ajax({
+                        url: '/api/MyRegistrationsApi/GetAllRegistrations/' + userId,
+                        type: 'GET',
+                        data: { subjectId: subjectId, statusId: statusId },
+                        success: function (response) {
+                            console.log("All Registrations:", response);
+                            allRegistrations = response;
+                            DisplayRegistrations(1);
+                            SetupPagination();
+                        },
+                        error: function () {
+                            showNotification('Error loading items.', false);
+                        }
+                    });
+                }
+
+                // Hàm để tính toán chuỗi đại diện cho packageType
+                function getPackageTypeString(packageType) {
+                    switch (packageType) {
+                        case 1:
+                            return "3 months";
+                        case 2:
+                            return "6 months";
+                        case 3:
+                            return "12 months";
+                        default:
+                            return "N/A";
+                    }
+                }
+
+                // Hàm để tính toán ngày kết thúc (validTo) dựa trên packageType
+                function calculateValidTo(buyAt, packageType) {
+                    var buyDate = new Date(buyAt);
+                    var monthsToAdd = 0;
+
+                    switch (packageType) {
+                        case 1:
+                            monthsToAdd = 3;
+                            break;
+                        case 2:
+                            monthsToAdd = 6;
+                            break;
+                        case 3:
+                            monthsToAdd = 12;
+                            break;
+                        default:
+                            monthsToAdd = 0;
+                            break;
+                    }
+
+                    buyDate.setMonth(buyDate.getMonth() + monthsToAdd);
+                    return buyDate.toLocaleDateString();
+                }
+
+                // Hàm để hiển thị các bản ghi dựa trên trang
+                function DisplayRegistrations(page) {
+                    var start = (page - 1) * pageSize;
+                    var end = start + pageSize;
+                    var pagedRegistrations = allRegistrations.slice(start, end);
+
+                    $('#myRegistrationsList').empty();
+                    if (pagedRegistrations.length > 0) {
+                        pagedRegistrations.forEach(function (item) {
+                            var subId = item.subId ? item.subId : 'N/A';
+                            var registerDate = new Date(item.buyAt).toLocaleDateString();
+                            var validFrom = new Date(item.buyAt).toLocaleDateString();
+                            var packageType = getPackageTypeString(item.pricePackage_Type);
+                            var validTo = item.pricePackage_Type !== undefined ? calculateValidTo(item.buyAt, item.pricePackage_Type) : 'N/A';
+                            var subjectTitle = item.subjectTitle ? item.subjectTitle : 'N/A';
+                            var totalCost = item.totalCost ? item.totalCost : 'N/A';
+                            var buttonsHtml = '';
+
+                            if (item.status === 'Registrated') {
+                                buttonsHtml = '<button class="bttn btn-new-practice" onclick="window.location.href=\'/Practice/NewPractice\'">New Practice</button>' +
+                                    '<button class="bttn btn-simulation-exam" onclick="window.location.href=\'/SimulationExam\'">Simulation Exam</button>' +
+                                    '<button class="bttn btn-details">Details</button>';
+                            } else if (item.status === 'Submitted') {
+                                buttonsHtml = '<button class="bttn btn-pay" data-registration-id="' + item.id + '">Pay package</button>' +
+                                    '<button class="bttn btn-Edit" data-subject-id="' + subId + '">Edit package</button>' +
+                                    '<button class="bttn btn-cancel" data-registration-id="' + item.id + '">Cancel Registration</button>';
+                            }
+                            $('#myRegistrationsList').append(
+                                '<tr><td>' + item.id + '</td>' +
+                                '<td>' + subjectTitle + '</td>' +
+                                '<td>' + registerDate + '</td>' +
+                                '<td>' + packageType + '</td>' +
+                                '<td>' + totalCost + '</td>' +
+                                '<td>' + item.status + '</td>' +
+                                '<td>' + validFrom + '</td>' +
+                                '<td>' + validTo + '</td>' +
+                                '</tr>' +
+                                '<tr class="button-row"><td class="btnControl" colspan="8">' +
+                                '<div class="button-container">' + buttonsHtml + '</div>' +
+                                '</td></tr>'
+                            );
+                        });
+
+                        $('.btn-cancel').off('click').on('click', function (event) {
+                            var registrationId = $(this).data('registration-id');
+                            $('#myModal').data('registrationId', registrationId).show();
+                        });
+
+                        $('#closeModal').off('click').on('click', function () {
+                            $('#myModal').hide();
+                        });
+
+                        $(window).off('click').on('click', function (event) {
+                            if ($(event.target).is('#myModal')) {
+                                $('#myModal').hide();
+                            }
+                        });
+
+                        $('#confirmCancel').off('click').on('click', function () {
+                            var registrationId = $('#myModal').data('registrationId');
+                            $.ajax({
+                                url: '/api/MyRegistrationsApi/CancelRegistration/' + registrationId,
+                                type: 'POST',
+                                success: function (response) {
+                                    if (response.success) {
+                                        showNotification('Registration cancelled successfully.', true);
+                                        $('#myModal').hide();
+                                        GetAllRegistrations(userId);
+                                    } else {
+                                        showNotification('Error: ' + response.message, false);
+                                    }
+                                },
+                                error: function () {
+                                    showNotification('Error cancelling registration.', false);
+                                }
+                            });
+                        });
+
+                        $('.btn-pay').off('click').on('click', function (event) {
+                            selectedRegistrationId = $(this).data('registration-id');
+                            $('#payModal').show();
+                        });
+
+                        $('#closePayModal').off('click').on('click', function () {
+                            $('#payModal').hide();
+                        });
+                        $(window).off('click').on('click', function (event) {
+                            if ($(event.target).is('#payModal')) {
+                                $('#payModal').hide();
+                            }
+                        });
+
+                        $('#confirmPay').off('click').on('click', function () {
+                            $.ajax({
+                                url: '/api/MyRegistrationsApi/PayPackage/' + selectedRegistrationId,
+                                type: 'POST',
+                                success: function (response) {
+                                    if (response.success) {
+                                        showNotification('Package paid successfully.', true);
+                                        $('#payModal').hide();
+                                        GetAllRegistrations(userId);
+                                    } else {
+                                        showNotification('Error: ' + response.message, false);
+                                    }
+                                },
+                                error: function () {
+                                    showNotification('Error paying for package.', false);
+                                }
+                            });
+                        });
+
+                        $('.btn-Edit').on('click', function (e) {
+                            e.preventDefault(); // Ngăn chặn hành động mặc định của form
+                            console.log("Edit button clicked!"); // Ghi log hành động này vào console
+
+                            var subjectId = $(this).data('subject-id'); // Lấy ID từ cột đầu tiên trong cùng hàng
+                        
+
+                            console.log(subjectId);
+                            console.log(userId);
+                           
+                            // Gọi AJAX để lấy thông tin chi tiết cần chỉnh sửa
+                            $.ajax({
+                                url: '/Subjects/GetSubjectData', // Điều chỉnh URL cho phù hợp với API lấy dữ liệu chi tiết
+                                type: 'POST', // Sử dụng POST hoặc GET tùy theo API của bạn
+                                data: { subjectId: subjectId, userId: userId }, // Gửi ID như là dữ liệu
+                                success: function (data) {
+                                    $('#subjectPopupContent').html(data); // Đặt nội dung trả về vào trong modal
+                                    $('#subjectPopup').modal('show'); // Hiển thị modal
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('AJAX Error:', status, error); // Log lỗi vào console
+                                    alert('Error loading registration details. See console for details.'); // Hiển thị thông báo lỗi
+                                }
+                            });
+                        });
+                    } else {
+                        $('#myRegistrationsList').append('<tr><td colspan="8">No registrations found</td></tr>');
+                    }
+                }
+
+                // Hàm để thiết lập phân trang
+                function SetupPagination() {
+                    $('#pagination').empty();
+                    var totalPages = Math.ceil(allRegistrations.length / pageSize);
+
+                    for (var i = 1; i <= totalPages; i++) {
+                        if (i === 1) {
+                            $('#pagination').append('<a href="#" class="current-page" data-page="' + i + '">' + i + '</a>');
+                        } else {
+                            $('#pagination').append('<a href="#" data-page="' + i + '">' + i + '</a>');
+                        }
+                    }
+
+                    $('#pagination').on('click', 'a', function (e) {
+                        e.preventDefault();
+                        var page = $(this).data('page');
+                        DisplayRegistrations(page);
+                        $('.current-page').removeClass('current-page');  // Remove the current page class from any link
+                        $(this).addClass('current-page');  // Add current page class to the clicked link
+                    });
+                }
+
+                // Gọi hàm GetUserDetails để khởi tạo userId và tải tất cả các bản ghi
+                GetUserDetails();
+                $(document).ready(function () {
+                    loadFilters();
+                    // Khi người dùng thay đổi lựa chọn
+                    $('#subjectFilter, #levelStatus').change(function () {
+                        var selectedSubject = $('#subjectFilter').val();
+                        var selectedStatus = $('#levelStatus').val();
+                        // Bạn có thể gọi hàm để lấy dữ liệu dựa trên các lựa chọn này
+                        console.log("Selected Subject: " + selectedSubject + ", Selected Status: " + selectedStatus);
+                        // Thực hiện hành động cập nhật UI hoặc truy vấn dữ liệu mới tại đây
+                    });
+                });
+
+                function loadFilters() {
+                    // Load subjects
+                    $.ajax({
+                        url: '/api/MyRegistrationsApi/GetAllSubjects',
+                        type: 'GET',
+                        success: function (subjects) {
+                            var subjectSelect = $('#subjectFilter');
+                            subjects.forEach(function (subject) {
+                                subjectSelect.append($('<option></option>').attr('value', subject.ID).text(subject.title));
+                            });
+                        },
+                        error: function () {
+                            console.error('Error loading subjects.');
+                        }
+                    });
+
+                    // Load statuses
+                    $.ajax({
+                        url: '/api/MyRegistrationsApi/GetAllStatuses',
+                        type: 'GET',
+                        success: function (statuses) {
+                            var statusSelect = $('#levelStatus');
+                            statuses.forEach(function (status) {
+                                statusSelect.append($('<option></option>').attr('value', status).text(status));
+                            });
+                        },
+                        error: function () {
+                            console.error('Error loading statuses.');
+                        }
+                    });
+                }
+
+
+            });
+        </script>
+    }
+
+
+
+</body>
+</html>

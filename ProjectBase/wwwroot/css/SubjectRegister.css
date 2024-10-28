@@ -1,0 +1,146 @@
+﻿.popup {
+    display: none; /* Initially hidden */
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+}
+
+.popup-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    max-width: 600px;
+    position: relative;
+}
+
+#popup_register {
+    padding: 0px !important;
+}
+
+#subjectPopupContent {
+    padding: 0px !important;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.thumbnail_register {
+    border-radius: 8px !important;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 235px;
+    overflow: hidden;
+    margin: 0;
+    position: relative;
+}
+
+.price_option {
+    border-radius: 10px;
+    padding-left: 25px;
+    padding-top: 10px;
+    background-color: #FF9494;
+    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 30px;
+}
+
+.center-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.package_wrapper_register {
+    display: flex;
+    flex-direction: column;
+    gap: 20px
+}
+
+input[type=radio] {
+    border: 0px;
+    width: 8%;
+    height: 2em;
+}
+
+#register_button_popup_1 {
+    font-family: "Poppins", sans-serif;
+    border-radius: 16px;
+    background-color: #C1F949;
+    color: #117A1C;
+    font-size: 18px;
+    font-weight: 600;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: none;
+    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19);
+    margin-right: 60px;
+    margin-left: 60px;
+}
+
+#register_button_popup_2 {
+    font-family: "Poppins", sans-serif;
+    border-radius: 16px;
+    background-color: #168fbf;
+    color: #e0e0e0;
+    font-size: 18px;
+    font-weight: 600;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: none;
+    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.19);
+    margin-right: 60px;
+    margin-left: 60px;
+}
+
+#package_text {
+    background-color: #A40A0A;
+    color: white;
+    padding-right: 5px;
+    padding-left: 5px;
+    font-weight: 400;
+}
+
+.noti {
+    color: #004138;
+    background-color: #24ef84;
+    font-weight: 500;
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+    margin-top: 15px;
+    border-radius: 8px;
+}
+
+.noti_regis {
+    color: #ffffff;
+    background-color: #ff0e0e;
+    font-weight: 500;
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+    margin-top: 15px;
+    border-radius: 8px;
+}

@@ -1,0 +1,130 @@
+﻿@model IEnumerable<ProjectBase.Models.SubjectsModel>
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="~/css/SubjectDetail.css" />
+<link rel="stylesheet" href="~/css/SubjectRegister.css" />
+
+<div class="row" id="content-wrapper">
+    <div class="container">
+
+        <div class="main_wrapper_detail">
+        @foreach (var subject in Model)
+        {
+                <div class="subject_item_detail">
+                    <div class="thumbnail_detail">
+                        <img src="~/picture/Subject/@subject.thumbnail_color" alt="Thumbnail Image" class="thumbnail_image">
+                        <div class="title_wrapper">
+                            <h2 class="subject_title">@subject.title</h2>
+                            <i id="icon" class="fa-solid fa-circle-check"></i>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="subject_categories">
+                            @foreach (var subjectCategory in subject.Subject_Category)
+                            {
+                                <span>@subjectCategory.Category.title</span>
+                            }
+                        </div>
+
+                        <div class="brief_text_detail">
+                        <p id="brief_text">@subject.brief_info</p>
+                        </div>
+
+                        <div class="text_descrip">
+                        Subject Description:
+                        </div>
+
+                        <div class="descrip_text">
+                       <p>@subject.Description</p>
+                       </div>
+
+                        @foreach (var pricePackage in subject.Price_package.Where(pp => pp.PackageType == 1))
+                        {
+                            <div class="package_container">
+                            <div class="package_wapper">
+                                <a id="price_text">
+                                    @pricePackage.PackageType Months Price Package For Only:
+                                    <div class="price_wrapper">
+                                        <a id="list_price">@pricePackage.ListPrice USD</a> <a id="sale_price">@pricePackage.SalePrice USD</a>
+                                    </div>
+                                </a>
+                                    <a id="register_button" data-subject-id="@subject.ID" class="register_button" href="#">
+                                        Register Now
+                                    </a>
+                            </div>
+                            </div>
+                        }
+                    </div>
+                
+            </div>
+        }    
+          <div id="back_button">
+            <a asp-action="Index" asp-controller="Subjects">
+                Back
+            </a>
+            </div>
+
+        </div>
+        
+
+        <!-- Sidebar area -->
+        <div class="sidebar-container">
+            <div id="" class="sidebar_subject_category">
+                <div class="sidebar-box">
+                    @Html.Partial("_SubjectSideBarPartial")
+                </div>
+            </div>
+
+            <div id="" class="sidebar_subject_featured">
+                <div class="sidebar-box">
+                    @Html.Partial("_SubjectFeaturedPartial")
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="subjectPopup" tabindex="-1" role="dialog" aria-labelledby="subjectPopupLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div id="popup_register" class="modal-content">
+            <div class="modal-body" id="subjectPopupContent">
+                <!-- Partial view content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="userId" name="userId" value="" />
+
+<script>
+    $(document).ready(function () {
+        function GetUserDetails() {
+            $.ajax({
+                url: '/Account/GetUserDetails',
+                method: 'GET',
+                success: function (response) {
+                    console.log(response);
+                    if (response.success) {
+                        var userId = response.userDetails.userID;
+                        $('input[name="userId"]').val(userId);
+                        GetPracticePagination(1, userId);
+                        loadFilter(userId);
+
+                    }
+                }
+            });
+        }
+        GetUserDetails();
+    });
+
+</script>
+
+<script src="~/js/SubjectsScript.js"></script>
+<script src="~/js/Register.js"></script>

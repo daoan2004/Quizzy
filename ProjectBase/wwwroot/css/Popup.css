@@ -1,0 +1,180 @@
+﻿.modal-content {
+    background-color: #FFB5B5;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    width: 848px;
+    max-width: 100%;
+    display: flex;
+}
+
+.formRegister-groupContent, .formRegister-group {
+    margin-bottom: 15px;
+}
+
+    .formRegister-groupContent input {
+        width: 450px;
+        height: 55px;
+        top: -433px;
+        left: 2585px;
+        gap: 0px;
+        border-radius: 16px;
+    }
+
+.modal-titleLeft {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.modal-titleRight {
+    font-family: "Ingrid Darling", sans-serif;
+    text-align: center;
+    font-size: 40px;
+    color: rgba(117, 44, 44, 1);
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.modal-titleRightOr {
+    margin-top: 10px; /* Tạo khoảng cách với nút đăng ký */
+    text-align: center; /* Căn giữa nội dung */
+    font-size: 16px; /* Kích thước chữ */
+    color: #6c757d; /* Màu chữ */
+}
+.btn-primary {
+    width: 186px;
+    height: 55px;
+    top: -177px;
+    left: 3124px;
+    gap: 0px;
+    border-radius: 16px;
+    background-color: #3D95A8;
+    border: none;
+}
+.modal-content {
+    background-color: #FFB5B5;
+    border-radius: 10px;
+}
+
+.modal-title {
+    font-family: "Ingrid Darling", sans-serif;
+    font-size: 40px;
+    color: rgba(117, 44, 44, 1);
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.form-control {
+    width: 450px;
+    height: 55px;
+    top: -392px;
+    left: 1241px;
+    gap: 0px;
+    border-radius: 16px;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    width: 450px;
+    height: 53px;
+    top: -205px;
+    left: 1241px;
+    gap: 0px;
+    border-radius: 16px;
+    background-color: #FF7777;
+    border: none;
+}
+
+.btn-secondary {
+    width: 186px;
+    height: 55px;
+    top: -94px;
+    left: 1352px;
+    gap: 0px;
+    border-radius: 16px;
+    background-color: #3D95A8;
+}
+.right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.title {
+    color: #B03636;
+}
+#genderContainer {
+    display: block;
+    margin-top: 10px;
+}
+    #genderContainer .genderOptions {
+        display: flex;
+        gap: 10px;
+        margin-top: -35px;
+    }
+    #genderContainer .title {
+        margin-bottom: 10px;
+    }
+.genderOption {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    background-color: #FFFFFF;
+    width: 209px;
+    height: 55px;
+    top: -100px;
+    left: 2826px;
+    gap: 0px;
+}
+
+    .genderOption label {
+        margin: 0;
+    }
+
+    .genderOption input[type="radio"] {
+        width: 30px;
+        height: 30px;
+        top: -88px;
+        left: 2756px;
+        padding: 2.5px;
+        gap: 0px;
+        margin-right: 10px;
+    }
+
+.btn-link {
+    color: #007bff; /* màu chữ mặc định */
+    text-decoration: none !important; /* bỏ gạch dưới mặc định */
+}
+
+    .btn-link:hover,
+    .btn-link:focus {
+        color: #007bff !important; /* màu chữ khi di chuột đến, không đổi */
+        text-decoration: none !important; /* không gạch dưới khi di chuột đến */
+    }
+.alert {
+    margin-top: 5px;
+    display: none;
+}
+
+#lable-text {
+    font-family: "Poppins", sans-serif !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    color: #922727 !important;
+    margin-bottom: 5px !important;
+}
+
+.genderOptions {
+    display: flex;
+    gap: 10px; /* khoảng cách giữa các phần tử, bạn có thể thay đổi giá trị này */
+}
+
+.genderOption {
+    display: flex;
+    align-items: center;
+}

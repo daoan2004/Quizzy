@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewData["Title"]</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="@Url.Content("/css/Popup.css")" />
+</head>
+<body>
+    <div class="container">
+        <div class="modal fade" tabindex="-1" id="profileModal" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form id="profileForm" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group d-flex justify-content-center">
+                                        <img id="profileAvatar" src="" alt="User Avatar" class="img-thumbnail" style="width: 150px; height: 150px;" />
+                                    </div>
+                                    <div class="form-group d-flex justify-content-center">
+                                        <input id="profileName" name="fullName" class="form-control" type="text" placeholder="Name" readonly />
+                                    </div>
+                                    <div class="form-group d-flex justify-content-center">
+                                        <input id="profileRole" name="role" class="form-control" type="text" placeholder="Role" readonly />
+                                    </div>
+                                    <div class="" id="avatarUpload" style="display: none;">
+                                        <input id="avatar" name="avatar" class="form-control-file" type="file" accept="image/*">
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="form-label" id="lable-text">Gender:</label>
+                                        <div class="genderOptions">
+                                            <div class="genderOption">
+                                                <input type="radio" name="gender" value="true" disabled>
+                                                <label>Male</label>
+                                            </div>
+                                            <div class="genderOption">
+                                                <input type="radio" name="gender" value="false" disabled>
+                                                <label>Female</label>
+                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" id="lable-text">Address:</label>
+                                        <input id="address" name="address" type="text" class="form-control" placeholder="Your address here" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" id="lable-text" >Email:</label>
+                                        <input id="email" name="email" type="email" class="form-control" readonly autocomplete="on">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" id="lable-text">Phone number:</label>
+                                        <input id="phoneNumber" name="phone" type="text" class="form-control" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" id="lable-text">Date of birth:</label>
+                                        <input id="dob" name="dob" type="text" class="form-control" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" id="lable-text">Description:</label>
+                                        <textarea id="description" name="description" class="form-control" readonly></textarea>
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <button type="button" id="editProfileBtn" class="btn btn-primary">Edit Profile</button>
+                                        <button type="submit" id="updateProfileBtn" class="btn btn-primary" style="display: none;">Update Profile</button>
+                                        <div class="alert alert-success mt-3" id="successMessage" role="alert" style="display: none;">
+                                            Profile updated successfully.
+                                        </div>
+                                        <div class="alert alert-danger mt-3" id="errorMessage" role="alert" style="display: none;">
+                                            An error occurred while updating the profile.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/Popup.js"></script> <!-- Đường dẫn đến file Popup.js -->
+    <script>
+        $(document).ready(function () {
+            $('#profileBtn').click(function () {
+                fetchUserDetails();
+            });
+
+            function fetchUserDetails() {
+                $.ajax({
+                    url: '/Account/GetUserDetails', // Adjust API URL for fetching user details
+                    method: 'GET',
+                    success: function (response) {
+                        console.log(response); // Log response to check the data
+                        if (response.success) {
+                            var data = response.userDetails;
+                            $('#profileAvatar').attr('src', data.avatarUrl || 'default-avatar.png'); // Set default avatar if none
+                            $('#profileName').val(data.fullName);
+                            $('#profileRole').val(data.role);
+                            $('input[name="gender"][value="' + data.gender + '"]').prop('checked', true);
+                            $('#address').val(data.address || '');
+                            $('#email').val(data.email);
+                            $('#phoneNumber').val(data.phone);
+                            $('#dob').val(data.dob || ''); // Set the date of birth value
+
+                            // Initialize datepicker with the correct value
+                            $('#dob').datepicker({
+                                dateFormat: 'yy-mm-dd',
+                                changeMonth: true,
+                                changeYear: true,
+                                yearRange: '1900:2025',
+                                onSelect: function (dateText, inst) {
+                                    $(this).val(dateText);
+                                }
+                            }).datepicker('setDate', data.dob || ''); // Set the date
+
+                            $('#description').val(data.description || '');
+                            $('#profileModal').modal('show');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert('An error occurred while fetching user details.');
+                    }
+                });
+            }
+
+            $('#editProfileBtn').click(function () {
+                // Enable editing of fields
+                $('#profileName').prop('readonly', false);
+                $('#profileRole').prop('readonly', true); // Adjust if role should be editable
+                $('#email').prop('readonly', true);      // Adjust if email should be editable
+                $('#address').prop('readonly', false);
+                $('#phoneNumber').prop('readonly', false);
+                $('#description').prop('readonly', false);
+                $('#profileForm input[type="radio"]').prop('disabled', false);
+                $('#avatarUpload').css('display', 'block'); // Show avatar upload
+                $('#editProfileBtn').hide();
+                $('#updateProfileBtn').show();
+                $('#dob').datepicker('option', 'disabled', false);  // Enable DatePicker
+                $('#successMessage').hide();  // Hide success message when editing
+                $('#errorMessage').hide();    // Hide error message when editing
+            });
+
+            $('#profileForm').submit(function (event) {
+                event.preventDefault();
+                var formData = new FormData(this);
+
+                // Get gender value and convert to true (Male) or false (Female)
+                var genderValue = $('input[name="gender"]:checked').val() === "Male" ? true : false;
+                formData.append("Gender", genderValue);
+
+                $.ajax({
+                    url: '/Account/UpdateUserProfile',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(response); // Log response to check the data
+                        if (response.success) {
+                            $('#successMessage').fadeIn();
+                            $('#errorMessage').hide();
+
+                            // Update the avatar image immediately after a successful update
+                            var updatedAvatarUrl = response.updatedAvatarUrl || $('#profileAvatar').attr('src');
+                            $('#profileAvatar').attr('src', updatedAvatarUrl);
+                            // Re-fetch user details and reopen modal without closing it first
+                            fetchUserDetails();
+                            setTimeout(function () {
+                                $('#successMessage').fadeOut();
+                                $('#profileModal').modal('hide');
+                            }, 2000);
+
+                            // Disable fields and revert buttons
+                            $('#profileName').prop('readonly', true);
+                            $('#profileRole').prop('readonly', true);
+                            $('#email').prop('readonly', true);
+                            $('#address').prop('readonly', true);
+                            $('#phoneNumber').prop('readonly', true);
+                            $('#description').prop('readonly', true);
+                            $('#profileForm input[type="radio"]').prop('disabled', true);
+                            $('#avatarUpload').hide();
+                            $('#editProfileBtn').show();
+                            $('#updateProfileBtn').hide();
+                            $('#dob').datepicker('option', 'disabled', true); // Disable DatePicker
+
+                        } else {
+                            $('#errorMessage').fadeIn();
+                            $('#successMessage').hide();
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        $('#errorMessage').fadeIn();
+                        $('#successMessage').hide();
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>

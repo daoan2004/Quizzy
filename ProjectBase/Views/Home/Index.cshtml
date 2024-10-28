@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model HomeViewModel
+
+<script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="~/css/IndexStyle.css" />
+<!-- Welcome page -->
+<body>
+<div class="container">
+    <div class="homepage-header">
+        <h1>The one and only quiz for you</h1>
+        <p>Try out our amazing quiz website</p>
+        <a asp-controller="Subjects" asp-action="Index" id="start_button" class="btn py-md-2 px-4">Get Started</a>
+    </div>
+    <div class="homepage-detail">
+        <div class="main-wrapper">
+                <div id="Mainslider" class="carousel slide" data-bs-ride="carousel">
+
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="~/picture/Carousel/OpenSlide.jpg" class="carousel-img" alt="OpentSlide">
+                            <div style="text-align: center;"
+                                 class="bg-dark p-2 text-light bg-opacity-25 carousel-caption d-none d-lg-block">
+                                <h2>Check out some blog!!!</h2>
+                                <a asp-controller="Blogs" asp-action="Index" class="btn btn-dark py-md-2 px-4">Get Started</a>
+                            </div>
+                        </div>
+                        @foreach (var item in Model.Sliders)
+                        {
+                            <div class="carousel-item ">
+                                <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID"><img src="/picture/Carousel/@item.image" class="carousel-img" alt="@item.Title"></a>
+                                <div style="text-align: left;"
+                                     class="bg-dark p-2 text-light bg-opacity-25 carousel-caption d-none d-lg-block">
+                                    <h2>@item.Title</h2>
+                                    <p>
+                                        @item.description
+                                    </p>
+                                    <p>by huydg May 15,2024</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#Mainslider" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#Mainslider" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
+                <div class="hot-post">
+                    <h1 id="blogs_text">HOT POST HERE</h1>
+                    <section class="BlogIndex px-1 py-1 p-md-1">
+                        <div class="container">
+                            @foreach (var item in Model.BlogView)
+                            {
+                                <div class="mb-5">
+                                    <div class="media d-flex align-items-center">
+                                        <img class="mr-3 img-fluid post-thumb blogs-image" src="/picture/Carousel/@item.blog_picture" alt="image">
+                                        <div class="media-body">
+                                            <h3 class="title blog-title-color"><a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">@item.title</a></h3>
+                                            <div class="meta "><span class="date">Published: @item.publishAt.ToString("dd/mm/yyyy")</span></div>
+                                            <div class="intro">@item.description</div>
+                                            <a class="more-link" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">Read more &rarr;</a>
+                                        </div><!--//media-body-->
+                                    </div><!--//media-->
+                                </div>
+                            }
+                        </div>
+                    </section>
+                </div> 
+        </div>
+
+
+        <div class="sidebar_lastestpost">
+                <div class="sidebar-box">
+                    @Html.Partial("_LastestPostPartial")
+                </div> 
+                <div id="featureSubjectPartial" class="sidebar-box">
+                    @Html.Partial("_SubjectFeaturedPartial")
+                </div>
+                
+        </div>
+    </div>                  
+</div>
+    @section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.lastestpost-item').each(function () {
+                    var userId = $(this).find('.post-details').find('.author').attr('id').split('-')[1];
+                    loadLastestPostInfo(userId);
+
+                });
+
+            });
+
+            // gọi yêu cầu AJAX tới BlogApi.cs để thực hiện function GetBlogUser cho lastest post
+            function loadLastestPostInfo(userId) {
+                $.ajax({
+                    url: '/api/BlogApi/GetBlogUser/' + userId,
+                    type: 'GET',
+                    success: function (data) {
+                        var user = data[0];
+                        var userHtml = '';
+                        userHtml += '<i class="fas fa-user"></i> '+ user.fullname;
+                        $('.lastestpost-item').find('.post-details').find('#author-' + userId).html(userHtml);
+
+                    },
+                    error: function (error) {
+                        console.error('Error loading user info:', error);
+                        $('.blog-post').find('#userid-' + userId).html('<span>Error loading user info</span>');
+                    }
+                });
+            }
+        </script>      
+    }
+</body>
+        
+

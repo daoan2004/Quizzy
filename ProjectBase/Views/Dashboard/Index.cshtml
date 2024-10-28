@@ -1,0 +1,456 @@
+﻿﻿﻿﻿@{
+    ViewData["Title"] = "Dashboard";
+    var totalSubjects = ViewData["TotalSubjects"];
+    var newSubjects = ViewData["NewSubjects"];
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>PracticeList</title>
+    <link rel="stylesheet" href="~/css/Dashboard.css">
+    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="content-wrapper">
+        <div class="container" id="mainContent">
+            <div class="mainContainer">
+                <div class="header-wrapper">
+                    <div class="page-name"><h3>Dashboard</h3></div>
+                    <div class="date-controls">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" id="startDate" value="">
+                        <label for="endDate">End Date:</label>
+                        <input type="date" id="endDate" value="">
+                        <button onclick="onViewButtonClick()">View</button>
+                    </div>
+                </div>
+                <!-- Dashboard Statistics Section -->
+                <div class="statistics">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Note the class addition for specific targeting -->
+                            <div class="stat-block">
+                                <h4>Customer Statistics</h4>
+                                <div class="subject-stats">
+                                    <div class="subject-stat-item">
+                                        <p class="subject-stat-title">Newly Registered:</p> <span id="newlyRegistered">Loading...</span>
+                                    </div>
+                                    <div class="subject-stat-item">
+                                        <p class="subject-stat-title">Newly Bought: </p><span id="newlyBought">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Subject Statistics Section -->
+                            <div class="stat-block">
+                                <h4>Subject Statistics</h4>
+                                <div class="subject-stats">
+                                    <div class="subject-stat-item">
+                                        <span class="subject-stat-title">New Subjects:</span>
+                                        <span id="newSubjectsCount">@newSubjects</span>
+                                    </div>
+                                    <div class="subject-stat-item">
+                                        <span class="subject-stat-title">Total Subjects:</span>
+                                        <span id="totalSubjectsCount">@totalSubjects</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- New Registrations -->
+                    <div class="stat-block">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4>New Registrations</h4>
+                                <div class="filter-buttons">
+                                    <button class="filter-btn active" onclick="filterRegistrations('All')">All</button>
+                                    <button class="filter-btn" onclick="filterRegistrations('Submitted')">Submitted</button>
+                                    <button class="filter-btn" onclick="filterRegistrations('Cancelled')">Cancelled</button>
+                                    <button class="filter-btn" onclick="filterRegistrations('Registrated')">Success</button>
+                                </div>
+                                <div id="registrationList" class="registration-list">
+                                    <!-- Registration items will be populated here by JavaScript -->
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="registrationStatusPieChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Revenues -->
+                    <div class="stat-block">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <canvas id="revenuePieChart"></canvas> <!-- Canvas cho biểu đồ tròn -->
+                            </div>
+                            <div class="col-md-6">
+                                <h4>Revenues</h4>
+                                <div class="revenue-total">
+                                    Total Revenue: <span id="totalRevenue">Loading...</span>
+                                </div>
+                                <div class="revenue-subjects">
+                                    <select id="subjectSelect" onchange="fetchRevenueBySubject(this.value)">
+                                        <option value="">Select a subject</option>
+                                        <!-- Các môn học sẽ được thêm vào đây -->
+                                    </select>
+                                </div>
+                                <div id="subjectRevenueResult"></div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Order Count Row -->
+                    <div class="order-count-section">
+                        <div class="stat-block chart">
+                            <h4>Order Count</h4>
+                            <div id="error-message" style="color: red;"></div>
+                            <canvas id="orderCountChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allRegistrations = [];
+
+        function fetchAndDrawRevenueChart() {
+            fetch('/api/dashboardapi/revenues-by-subject')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('revenuePieChart').getContext('2d');
+                    if (window.revenueChart) {
+                        window.revenueChart.destroy(); // Destroy the old chart if it exists
+                    }
+
+                    window.revenueChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: data.map(item => item.subjectName),
+                            datasets: [{
+                                label: 'Revenue by Subject',
+                                data: data.map(item => item.revenue),
+                                backgroundColor: generateColorArray(data.length),
+                                borderColor: 'rgba(255,255,255,0.5)',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                },
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Failed to load revenue data:', error);
+                });
+        }
+
+        // Helper function to generate random colors for the chart
+        function generateColorArray(num) {
+            const colors = [];
+            for (let i = 0; i < num; i++) {
+                colors.push(`hsl(${Math.random() * 360}, 100%, 75%)`); // Generate a random hue
+            }
+            return colors;
+        }
+
+        async function fetchCustomerStatistics() {
+            try {
+                const response = await fetch('/api/dashboardapi/customer-stats');
+                if (!response.ok) {
+                    throw new Error(`HTTP error, status = ${response.status}`);
+                }
+                const data = await response.json();
+                document.getElementById('newlyRegistered').textContent = data.newlyRegistered;
+                document.getElementById('newlyBought').textContent = data.newlyBought;
+            } catch (error) {
+                console.error('Error fetching customer statistics:', error.message);
+                document.getElementById('newlyRegistered').textContent = 'Failed to load';
+                document.getElementById('newlyBought').textContent = 'Failed to load';
+            }
+        }
+
+        async function updateChart(startDate, endDate) {
+            console.log("Received startDate:", startDate, "Received endDate:", endDate);
+
+            if (!startDate || !endDate || isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                console.error("Invalid date objects provided:", startDate, endDate);
+                alert("Invalid dates selected. Please select a valid date range.");
+                return;
+            }
+
+            const [orderData, registrationData] = await Promise.all([
+                fetchData(`/api/dashboardapi/order-count?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`),
+                fetchData(`/api/dashboardapi/registration-count?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
+            ]);
+            console.log("Order Data:", orderData);
+            console.log("Registration Data:", registrationData);
+
+           
+
+            // Process data to fill in missing dates
+            const labels = [];
+            const orderCounts = [];
+            const registrationCounts = [];
+
+            let currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+                const dateString = currentDate.toISOString().substring(0, 10);
+                labels.push(dateString);
+
+                const orderCountData = orderData.find(item => item.date === dateString);
+                const registrationCountData = registrationData.find(item => item.date === dateString);
+
+                orderCounts.push(orderCountData ? orderCountData.count : 0);
+                registrationCounts.push(registrationCountData ? registrationCountData.count : 0);
+
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            const ctxOrder = document.getElementById('orderCountChart').getContext('2d');
+            if (window.orderCountChart && typeof window.orderCountChart.destroy === 'function') {
+                window.orderCountChart.destroy();
+            }
+
+            window.orderCountChart = new Chart(ctxOrder, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Order Count',
+                            data: orderCounts,
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Registrated Count',
+                            data: registrationCounts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        async function fetchData(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch data");
+                }
+                const data = await response.json();
+
+                console.log("Fetched data:", data);
+
+                const result = data.map(item => ({
+                    date: item.date.substring(0, 10),
+                    count: item.count
+                }));
+
+                return result;
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+                return null;
+            }
+        }
+
+        function setupDateInputsAndChart() {
+            let startDateInput = document.getElementById('startDate');
+            let endDateInput = document.getElementById('endDate');
+            console.log(startDateInput.value);
+
+            if (!startDateInput.value) {
+                let today = new Date();
+                startDateInput.valueAsDate = new Date(today.setDate(today.getDate() - 7));
+            }
+            if (!endDateInput.value) {
+                endDateInput.valueAsDate = new Date();
+            }
+
+            updateChart(new Date(startDateInput.value), new Date(endDateInput.value));
+        }
+
+        function onViewButtonClick() {
+            var errorMessageDiv = document.getElementById("error-message");
+            let startDateInput = document.getElementById('startDate');
+            let endDateInput = document.getElementById('endDate');
+            let startDate = new Date(startDateInput.value);
+            let endDate = new Date(endDateInput.value);
+            if (!startDate || !endDate || endDate < startDate) {
+                errorMessageDiv.innerText = "Please select a valid date range.";
+                return;
+            } else {
+                errorMessageDiv.innerText = "";
+            }
+
+            updateChart(startDate, endDate);
+        }
+
+
+
+        function fetchRegistrations() {
+            fetch('/api/dashboardapi/registrations')
+                .then(response => response.json())
+                .then(data => {
+                    allRegistrations = data;
+                    updateRegistrations(allRegistrations);
+                    updateRegistrations(data);
+                    updatePieChart(data);
+                })
+                .catch(error => console.error('Failed to load registrations', error));
+        }
+
+        function filterRegistrations(status) {
+            let filteredData = allRegistrations;
+            if (status !== 'All') {
+                filteredData = allRegistrations.filter(reg => reg.status === status);
+            }
+            updateRegistrations(filteredData);
+            updateActiveButton(status);
+        }
+
+        function updateRegistrations(registrations) {
+            const container = document.getElementById('registrationList');
+            container.innerHTML = '';
+            registrations.forEach(reg => {
+                const div = document.createElement('div');
+                div.className = 'registration-item';
+                div.innerHTML = `<span>${reg.subjectTitle}</span><span class="status">${reg.status}</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        function updateActiveButton(status) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === status) {
+                    btn.classList.add('active');
+                } else if (status === 'All' && btn.textContent === 'All') {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function updatePieChart(data) {
+            const statusCounts = {
+                Submitted: data.filter(item => item.status === 'Submitted').length,
+                Cancelled: data.filter(item => item.status === 'Cancelled').length,
+                Success: data.filter(item => item.status === 'Registrated').length
+            };
+
+            const ctx = document.getElementById('registrationStatusPieChart').getContext('2d');
+            const pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Submitted', 'Cancelled', 'Success'],
+                    datasets: [{
+                        label: 'Registration Status',
+                        data: [statusCounts.Submitted, statusCounts.Cancelled, statusCounts.Success],
+                        backgroundColor: [
+                            '#4CAF50',  // blue
+                            '#f44336',  // yellow
+                            '#FFC107'   // green
+                        ],
+                        borderColor: [
+                            '#66bb6a',
+                            '#ff5252',
+                            '#FFD740'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Registration Status'
+                    }
+                }
+            });
+
+            fetchSubjects();
+            fetchTotalRevenue();
+            function fetchSubjects() {
+                fetch('/api/dashboardapi/Subjects')
+                    .then(response => response.json())
+                    .then(data => {
+                        const select = document.getElementById('subjectSelect');
+                        data.forEach(subject => {
+                            const option = document.createElement('option');
+                            option.value = subject.id;
+                            option.textContent = subject.title;
+                            select.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Failed to load subjects', error));
+            }
+
+            function fetchTotalRevenue() {
+                fetch('/api/dashboardapi/total-revenue')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Failed to fetch total revenue');
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById('totalRevenue').textContent = `${data.totalRevenue} USD`;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        document.getElementById('totalRevenue').textContent = 'Failed to load';
+                    });
+            }
+
+            window.fetchRevenueBySubject = function (subjectId) {
+                console.log(subjectId);
+                if (!subjectId) return;
+                fetch(`/api/dashboardapi/RevenuesBySubject?subjectId=${subjectId}`)
+
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('subjectRevenueResult').innerHTML = `Revenue for Subject: ${data.totalRevenue} USD`;
+                    })
+                    .catch(error => {
+                        console.error('Failed to load revenue by subject', error);
+                        document.getElementById('subjectRevenueResult').innerHTML = 'Failed to load data.';
+                    });
+            }
+
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchRegistrations();
+            setupDateInputsAndChart();
+            fetchCustomerStatistics();
+            fetchAndDrawRevenueChart(); // Call this function on page load
+        });
+    </script>
+
+</body>
+</html>

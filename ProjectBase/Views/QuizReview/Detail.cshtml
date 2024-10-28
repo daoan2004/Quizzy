@@ -1,0 +1,340 @@
+﻿@model QuizReviewViewModel
+
+@{
+    ViewData["Title"] = "Quiz Review";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="~/css/QuizReview.css" />
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Quiz Review</title>
+</head>
+<body>
+    <div class="row" id="content-wrapper">
+        <div class="container">
+            <div class="main-wrapper">
+                <div class="quiz_review_header">
+                    <h1 class="text_style">Quiz Review</h1>
+                    <button id="filter-correct" class="btn btn-primary">Show Correct Answers Only</button>
+                    <div class="text_style">
+                        <p><strong>Title:</strong> @Model.Practice?.title</p>
+                        <p><strong>Taken Date:</strong> @Model.Practice.taken_date</p>
+                        <p><strong>Quiz Duration:</strong> @ViewBag.DurationFormatted</p>
+                        <p><strong>Time Taken:</strong> @ViewBag.TimeTakenFormatted</p>
+                        <p><strong>Number of Questions:</strong> @Model.Practice.number_quest</p>
+                        <p><strong>Number of Correct Answers:</strong> @Model.Practice.number_correct</p>
+                        <p><strong>Number of Wrong Answers:</strong> @(Model.Practice.number_quest - Model.Practice.number_correct)</p>
+                        <p><strong>Percentage of Correct Answers:</strong> @(((Model.Practice.number_correct / (double)Model.Practice.number_quest) * 100).ToString("F2"))%</p>
+                        <p><strong>Status:</strong> @(Model.Practice.Status ? "Completed" : "Incomplete")</p>              
+                    </div>
+                </div>
+
+                <div class="quiz_review_question">
+                    @if (Model.QuizReviews != null)
+                    {
+
+                        var reviews = Model.QuizReviews.OrderBy(q => q.QuizID).ToList();
+                        int index = 1;
+
+                        foreach (var quiz_review in reviews)
+                        {
+                            <div id="question-@quiz_review.QuizID" class="quiz_question">
+                                <div class="quiz_bank" data-correct="@quiz_review.QuizBank.Qcorrect" data-answer="@quiz_review.QAnswer">
+                                    <div class="quiz_title">
+                                        <p class="text_style question_number"><strong>Question @index:</strong></p>
+                                    </div>
+
+                                    <p class="text_style">
+                                        <strong>@Html.Raw(quiz_review.QuizBank.Title)</strong>
+                                        @switch (quiz_review.QuizBank.GroupID)
+                                        {
+                                            case "1":
+                                                <span>(Y/N Question)</span>
+                                                break;
+                                            case "2":
+                                                <span>(Choose one answer)</span>
+                                                break;
+                                            case "3":
+                                                <span>(Choose multiple answers)</span>
+                                                break;
+                                            case "4":
+                                                <span>(Write answer)</span>
+                                                break;
+                                            default:
+                                                <span>(Unknown question type)</span>
+                                                break;
+                                        }
+                                    </p>
+
+                                    <div class="question">
+                                        @if (!string.IsNullOrEmpty(@quiz_review.QuizBank.QA))
+                                        {
+                                            @if (@quiz_review.QuizBank.Qcorrect.Contains("A"))
+                                            {
+                                                @if (@quiz_review.QAnswer.Contains("A"))
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>A:</strong> @quiz_review.QuizBank.QA <span><i class="fa-solid fa-check"></i></span>
+                                                    </p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>A:</strong> @quiz_review.QuizBank.QA
+                                                    </p>
+                                                }
+                                            }
+                                            else if (@quiz_review.QAnswer.Contains("A"))
+                                            {
+                                                <p style="background-color: #ff2323;">
+                                                    <strong>A:</strong> @quiz_review.QuizBank.QA <span><i class="fa-solid fa-x"></i></span>
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    <strong>A:</strong> @quiz_review.QuizBank.QA
+                                                </p>
+                                            }
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(@quiz_review.QuizBank.QB))
+                                        {
+                                            @if (@quiz_review.QuizBank.Qcorrect.Contains("B"))
+                                            {
+                                                @if (@quiz_review.QAnswer.Contains("B"))
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>B:</strong> @quiz_review.QuizBank.QB <span><i class="fa-solid fa-check"></i></span>
+                                                    </p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>B:</strong> @quiz_review.QuizBank.QB
+                                                    </p>
+                                                }
+                                            }
+                                            else if (@quiz_review.QAnswer.Contains("B"))
+                                            {
+                                                <p style="background-color: #ff2323;">
+                                                    <strong>B:</strong> @quiz_review.QuizBank.QB <span><i class="fa-solid fa-x"></i></span>
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    <strong>B:</strong> @quiz_review.QuizBank.QB
+                                                </p>
+                                            }
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(@quiz_review.QuizBank.QC))
+                                        {
+                                            @if (@quiz_review.QuizBank.Qcorrect.Contains("C"))
+                                            {
+                                                @if (@quiz_review.QAnswer.Contains("C"))
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>C:</strong> @quiz_review.QuizBank.QC <span><i class="fa-solid fa-check"></i></span>
+                                                    </p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>C:</strong> @quiz_review.QuizBank.QC
+                                                    </p>
+                                                }
+                                            }
+                                            else if (@quiz_review.QAnswer.Contains("C"))
+                                            {
+                                                <p style="background-color: #ff2323;">
+                                                    <strong>C:</strong> @quiz_review.QuizBank.QC <span><i class="fa-solid fa-x"></i></span>
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    <strong>C:</strong> @quiz_review.QuizBank.QC
+                                                </p>
+                                            }
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(@quiz_review.QuizBank.QD))
+                                        {
+                                            @if (@quiz_review.QuizBank.Qcorrect.Contains("D"))
+                                            {
+                                                @if (@quiz_review.QAnswer.Contains("D"))
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>D:</strong> @quiz_review.QuizBank.QD <span><i class="fa-solid fa-check"></i></span>
+                                                    </p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>D:</strong> @quiz_review.QuizBank.QD
+                                                    </p>
+                                                }
+                                            }
+                                            else if (@quiz_review.QAnswer.Contains("D"))
+                                            {
+                                                <p style="background-color: #ff2323;">
+                                                    <strong>D:</strong> @quiz_review.QuizBank.QD <span><i class="fa-solid fa-x"></i></span>
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    <strong>D:</strong> @quiz_review.QuizBank.QD
+                                                </p>
+                                            }
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(@quiz_review.QuizBank.QE))
+                                        {
+                                            @if (@quiz_review.QuizBank.Qcorrect.Contains("E"))
+                                            {
+                                                @if (@quiz_review.QAnswer.Contains("E"))
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>E:</strong> @quiz_review.QuizBank.QE <span><i class="fa-solid fa-check"></i></span>
+                                                    </p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>E:</strong> @quiz_review.QuizBank.QE
+                                                    </p>
+                                                }
+                                            }
+                                            else if (@quiz_review.QAnswer.Contains("E"))
+                                            {
+                                                <p style="background-color: #ff2323;">
+                                                    <strong>E:</strong> @quiz_review.QuizBank.QE <span><i class="fa-solid fa-x"></i></span>
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    <strong>E:</strong> @quiz_review.QuizBank.QE
+                                                </p>
+                                            }
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(@quiz_review.QuizBank.QF))
+                                        {
+                                            @if (@quiz_review.QuizBank.Qcorrect.Contains("F"))
+                                            {
+                                                @if (@quiz_review.QAnswer.Contains("F"))
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>F:</strong> @quiz_review.QuizBank.QF <span><i class="fa-solid fa-check"></i></span>
+                                                    </p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="background-color: #00FF47;">
+                                                        <strong>F:</strong> @quiz_review.QuizBank.QF
+                                                    </p>
+                                                }
+                                            }
+                                            else if (@quiz_review.QAnswer.Contains("F"))
+                                            {
+                                                <p style="background-color: #ff2323;">
+                                                    <strong>F:</strong> @quiz_review.QuizBank.QF <span><i class="fa-solid fa-x"></i></span>
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    <strong>F:</strong> @quiz_review.QuizBank.QF
+                                                </p>
+                                            }
+                                        }
+                                    </div>
+
+
+                                    <p class="text_style"><strong>Your Answer:</strong> @quiz_review.QAnswer</p>
+                                    <p class="text_style"><strong>Correct Answer:</strong> @quiz_review.QuizBank.Qcorrect</p>
+                                </div>
+                            </div>
+                            index++;
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="sidebar-container">
+                <div class="sidebar-wrapper">
+                    <h1><strong>Quiz Navigation</strong></h1>
+                    <ul class="sidebar-menu">
+                        @if (Model.QuizReviews != null)
+                        {
+                            var reviews = Model.QuizReviews.OrderBy(q => q.QuizID).ToList();
+                            int index = 1; // Initialize index to 1
+
+                            foreach (var quiz_review in reviews)
+                            {
+                                
+                                    <button class="sidebar-button" data-target="#question-@quiz_review.QuizID">
+                                        @index
+                                    </button>
+                                
+                                index++; // Increment index for each review
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+
+    <script>
+        $(document).ready(function () {
+            // Smooth scrolling for sidebar buttons
+            $('.sidebar-button').on('click', function (e) {
+                e.preventDefault();
+                var target = $(this).data('target');
+                $('html, body').animate({
+                    scrollTop: $(target).offset().top
+                }, 500);
+            });
+
+            // Filter button functionality
+            let filterState = 0; // 0 = show all, 1 = show correct, 2 = show incorrect
+
+            $('#filter-correct').on('click', function () {
+                filterState = (filterState + 1) % 3; // Cycle through states
+
+                $('.quiz_question').each(function () {
+                    var quizReview = $(this);
+                    var correctAnswers = quizReview.find('.quiz_bank').data('correct').trim();
+                    var userAnswers = quizReview.find('.quiz_bank').data('answer').trim();
+
+                    if (filterState === 0) {
+                        quizReview.show(); // Show all
+                    } else if (filterState === 1) {
+                        quizReview.toggle(correctAnswers === userAnswers); // Show correct
+                    } else if (filterState === 2) {
+                        quizReview.toggle(correctAnswers !== userAnswers); // Show incorrect
+                    }
+                });
+
+                // Update button text based on filter state
+                if (filterState === 0) {
+                    $(this).text('Show Correct Answers Only');
+                } else if (filterState === 1) {
+                    $(this).text('Show Incorrect Answers Only');
+                } else {
+                    $(this).text('Show All Answers');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

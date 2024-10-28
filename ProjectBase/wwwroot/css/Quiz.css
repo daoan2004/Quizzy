@@ -1,0 +1,163 @@
+﻿* {
+    padding: 5px;
+}
+
+body {
+    background-color: #FFA8A8 !important;
+    font-family: "Poppins", sans-serif;
+}
+#content-grapper {
+    background-color: #FC7878;
+    border-radius: 16px;
+    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
+}
+.main-detail {
+    flex: 3;
+    background-color: #FFB1B1 !important;
+    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
+    border-radius: 16px !important;
+    padding: 0;
+}
+.top-detail {  
+    font-weight: 500;
+    color: #840000;
+
+}
+.Practice_Detail {
+    display: flex;
+    padding: 0;
+    gap: 20px;
+}
+.quiz-item {
+    display: flex;
+    font-weight: 500;
+    font-size: 18px;
+}
+.main-wrapper{
+
+}
+.Practice-Progress {
+    flex: 3;
+    padding : 0;
+    background-color: #FFB1B1 !important;
+    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
+    border-radius: 16px !important;
+    padding: 15px;
+    margin-top: 15px;
+}
+.quiz-side {
+    width: 200px;
+    border-right: 2px solid black;
+}
+.quiz-answer {
+    font-size: 16px;
+}
+.status {
+    font-size: 16px;
+}
+.quiz-number {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* tạo lưới với 5 cột */
+    gap: 5px;
+    justify-items: center;
+}
+.question-button {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    line-height: 30px;
+    text-align: center;
+    margin: 5px;
+    border: 1px solid #000;
+    text-decoration: none;
+    color: #000;
+    padding: 0;
+    font-weight: 500;
+    font-size: 20px;
+    background-color: #FF6161;
+    border-radius: 16px;
+}
+.quest-img {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(3, 1fr); /* 2 cột */
+}
+    .quest-img img {
+        width: 100%;
+        height: 150px;
+    }
+.timer {
+    color: #840000;
+    font-weight: 500;
+    font-size: 30px;
+}
+.quiz-navigation h3 {
+    color: #840000;
+    font-weight: 500;
+    font-size: 30px;
+}
+.prev-button {
+    background-color: #FF8181;
+    border-radius: 16px;
+    color: white;
+}
+.next-button {
+    background-color: #16E17F;
+    border-radius: 16px;
+    color: white;
+}
+.mark-button {
+    background-color: #16E17F;
+    border-radius: 16px;
+    color: white;
+}
+.finish-attempt {
+    background-color: #16E17F;
+    border-radius: 16px;
+    color: white;
+    width: 14%;
+}
+.unmark-button {
+    background-color: #FF8181;
+    border-radius: 16px;
+    color: white;
+}
+.P-bar p {
+    color: #840000;
+    font-weight: 500;
+    font-size: 30px;
+    padding: 0;
+    margin-bottom: 0px;
+}
+#progress-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+}
+
+#progress-bar {
+    width: 5%;
+    height: 20px;
+    background-color: #76c7c0;
+}
+body {
+    font-family: Arial, sans-serif;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+}

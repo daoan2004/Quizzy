@@ -1,0 +1,104 @@
+﻿@* Login.cshtml *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewData["Title"]</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="@Url.Content("/css/Popup.css")"/>
+</head>
+<body>
+    <div class="container">
+        <div class="modal fade" tabindex="-1" id="loginModal" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div id="loginErrorMessage" class="alert alert-danger" style="display:none;">
+                        Invalid email or password. Please try again.
+                    </div>
+                        <h4 class="modal-title text-center w-100">Quizly</h4>
+                    <div class="modal-body">
+                        <form id="loginForm" asp-action="Login" asp-controller="Account">
+                            <div class="form-group d-flex justify-content-center">
+                                <input class="form-control" type="text" placeholder="Input your email here" id="inputUserNameLogin" />
+                            </div>
+                            <div class="form-group d-flex justify-content-center">
+                                <input class="form-control" type="password" placeholder="Password" id="inputPasswordLogin" />
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-primary btn-login mb-2" id="loginModelBtn">Login</button>
+                            </div>
+                            <div class="form-group text-center">
+                                <a href="/Account/ResetPasswordRequest" class="btn btn-link">Reset Password</a>
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="button" class="btn btn-secondary" id="registerBtnLogin">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var formData = {};
+            var isSubmitting = false; // Biến cờ để kiểm tra xem yêu cầu AJAX đã được gửi hay chưa
+            $('#loginForm').submit(function (event) {
+                event.preventDefault(); // Ngăn chặn việc submit form mặc định
+                var email = $('#inputUserNameLogin').val();
+                var password = $('#inputPasswordLogin').val();
+                // Xóa bất kỳ thông báo lỗi nào trước đó
+                $('#loginErrorMessage').hide();
+
+                // Kiểm tra xem người dùng đã nhập email và mật khẩu chưa
+                if (!email || !password) {
+                    $('#loginErrorMessage').text('Please enter both email and password.').show();
+                    return;
+                }
+
+                formData = {
+                    email: email,
+                    password: password
+                };
+                isSubmitting = true; // Đặt biến cờ thành true để biểu thị đang gửi yêu cầu AJAX
+                // Gửi yêu cầu AJAX đến action method Login trong controller AccountController
+                $.ajax({
+                    url: '/Account/Login',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData), // Lấy dữ liệu từ form
+                    success: function (response) {
+                        // Xử lý phản hồi từ yêu cầu AJAX
+                        if (response.success) {
+                            // Đăng nhập thành công, redirect hoặc thực hiện hành động phù hợp
+                            $('#buttonContainer').hide();
+                            $('#userMenu').show();
+                            location.reload();
+                        } else {
+                            // Hiển thị thông báo lỗi đăng nhập
+                            $('#loginErrorMessage').text(response.message).show();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Xử lý lỗi nếu có
+                        $('#loginErrorMessage').text('An error occurred while logging in.').show();
+                    },
+                    complete: function () {
+                        isSubmitting = false; // Đặt biến cờ lại thành false sau khi yêu cầu AJAX hoàn thành
+                    }
+                });
+            });
+            $('#registerBtnLogin').click(function () {
+                // Ẩn modal đăng nhập
+                $('#loginModal').modal('hide');
+                // Hiển thị modal đăng ký
+                $('#registerModal').modal('show');
+            });
+
+        });
+    </script>
+</body>
+</html>

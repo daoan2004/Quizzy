@@ -1,0 +1,25 @@
+﻿<div class="Lastestpost-wrapper">
+    <h1>Latest Posts</h1>
+    <div class="grid-container">
+    @foreach (var item in Model.LatestPosts)
+    {
+        <div class="lastestpost-item">
+            
+            <div class="post-details">
+                <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID" style="text-decoration: none; color: inherit;">@item.title</a>
+                <div>
+                    <span id="author-@item.userID" class="author"><i class="fas fa-user"></i></span> <br/>
+                    <span class="date"><i class="fas fa-calendar-alt"></i> @item.updatedAt.ToString("yyyy-MM-dd")</span>
+                </div>
+				
+            </div>  
+            <div class="lastestpost-thumbnail">
+            <img src="~/picture/Carousel/@item.blog_picture" alt="@item.title">
+            </div>
+        </div>
+    }
+		
+	</div>
+    <a style="text-align:right"><a class="contact" href="https://fpt.edu.vn/">Contact us <i class="fa-solid fa-share-nodes"></i> </a></a>
+</div>
+

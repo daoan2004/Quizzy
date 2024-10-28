@@ -1,0 +1,28 @@
+﻿<div class="Field3">
+    <h1 class="featured_text">Featured Subjects</h1>
+    <div class="grid-container">
+        @foreach (var subject in (List<ProjectBase.Models.SubjectsModel>)ViewData["FeaturedSubjects"])
+        {
+            <a asp-controller="Subjects" asp-action="Details" asp-route-id="@subject.ID" class="subject-link">
+                <div class="subject-item-side">
+                    <div class="thumbnail_side">
+                        <img src="~/picture/Subject/@subject.thumbnail_color" alt="Thumbnail Image Side" class="thumbnail_image_side">
+                        <div class="title_wrapper_side">
+                            <h2 class="subject_title_side">@subject.title</h2>
+                        </div>
+                    </div>
+                    <div class="content_side">
+                        <p id="brief_text">@subject.brief_info</p>
+                        <div class="subject_categories_side">
+                            @foreach (var subjectCategory in subject.Subject_Category)
+                            {
+                                <span id="category_side">@subjectCategory.Category.title</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+    <a style="text-align:right"><a class="contact" href="https://fpt.edu.vn/">Contact us <i class="fa-solid fa-share-nodes"></i> </a></a>
+</div>

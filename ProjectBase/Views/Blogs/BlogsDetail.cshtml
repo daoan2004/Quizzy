@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "BlogDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+@model BlogsViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>BlogList</title>
+    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/css/Blogs.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="row" id="content-grapper">
+        <div class="container">
+            <!--Blogdetail show start(field1)-->
+            <div class="main-wrapper">
+                <div class="DetailHeader">
+                    <h1>@Model.BlogDetail.title</h1>
+                    <div class="blog-info">
+                        <span>By <a href="#" style="color: #2FA9B1;">@Model.BlogUser.fullname</a><i class="bi bi-person"></i></span>
+                        <span class="last-updated">Last Updated: @Model.BlogDetail.updatedAt.Day @Model.BlogDetail.updatedAt.Date.ToString("MMMM", System.Globalization.CultureInfo.InvariantCulture) @Model.BlogDetail.updatedAt.Year <i class="bi bi-clock"></i></span>
+                    </div>
+                    <img class="header-img" src="~/picture/Carousel/@Model.BlogDetail.blog_picture" alt="@Model.BlogDetail.title">
+                </div>
+                <div class="blog-detail">
+                    <h5>@Model.BlogDetail.description</h5>
+                    <br/>
+                    <p>@Model.BlogDetail.body</p>
+                </div>
+                <div class="category-underdetail">
+                    @foreach (var item in Model.BlogCategory)
+                    {
+                        <span class="under-category">@item.title</span>
+                    }
+                </div>
+            </div>
+            <!--Blogdetail end (field1)-->
+            <div class="sidebar-container">
+                <!--Category show and search bar(field2)-->
+                <div class="sidebar_blog_category">
+                    <div class="sidebar-box">
+                        @Html.Partial("_CategorySideBarPartial")
+                    </div>
+                </div>
+                <!--Category show and search bar end(field2)-->
+                <!--lastest post show start(field 3)-->
+                <div class="sidebar_lastestpost">
+                    <div class="sidebar-box">
+                        @Html.Partial("_LastestPostPartial")
+                    </div>
+                </div>
+                <!--lastest post show end(field 3)-->
+            </div>
+        </div>
+	</div>
+    <script src="./js/script.js"></script>
+    <script src="/js/BlogsScript.js"></script>
+    <!--AJAX for showing blog category-->
+    @section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.post').each(function () {
+                    var userId = $(this).find('.post-details').find('.author').attr('id').split('-')[1];
+                    loadLastestPostInfo(userId);
+
+                });
+
+            });
+
+            
+
+            // gọi yêu cầu AJAX tới BlogApi.cs để thực hiện function GetBlogUser cho lastest post
+            function loadLastestPostInfo(userId) {
+                $.ajax({
+                    url: '/api/BlogApi/GetBlogUser/' + userId,
+                    type: 'GET',
+                    success: function (data) {
+                        var user = data[0];
+                        var userHtml = '';
+                        userHtml += user.fullname;
+                        $('.post').find('.post-details').find('#author-' + userId).html(userHtml);
+
+                    },
+                    error: function (error) {
+                        console.error('Error loading user info:', error);
+                        $('.blog-post').find('#userid-' + userId).html('<span>Error loading user info</span>');
+                    }
+                });
+            }
+        </script>
+    }
+
+
+</body>
+</html>

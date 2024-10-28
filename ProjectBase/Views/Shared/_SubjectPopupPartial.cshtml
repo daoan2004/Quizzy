@@ -1,0 +1,106 @@
+﻿@model ProjectBase.Models.SubjectViewModel
+
+<div id="subjectPopupContent">
+    @foreach (var subject in Model.Subjects)
+    {
+        <div class="thumbnail_register">
+            <img src="~/picture/Subject/@subject.thumbnail_color" alt="Thumbnail Image" class="thumbnail_image">
+            <div class="title_wrapper">
+                <h2 class="subject_title">@subject.title</h2>
+                <i id="icon" class="fa-solid fa-circle-check"></i>
+            </div>
+        </div>
+        <div class="content">
+            <div class="subject_categories">
+                @foreach (var subjectCategory in subject.Subject_Category)
+                {
+                    <span>@subjectCategory.Category.title</span>
+                }
+            </div>
+            <p id="brief_text">@subject.brief_info</p>
+
+            <form method="post" action="/SubjectRegister/Register">
+                <div class="package_wrapper_register">
+                    <input type="hidden" name="subjectId" value="@subject.ID" />
+                    <input type="hidden" name="userId" id="userId" value="" />
+
+                    @foreach (var pricePackage in subject.Price_package)
+                    {
+                        <div class="price_option">
+                            <input type="hidden" name="packageId" value="@pricePackage.ID" />
+                            <input type="radio" id="package_@pricePackage.PackageType" name="selectedPackage" value="@pricePackage.PackageType"
+                            @(Model.UserRegistration != null && Model.UserRegistration.PricePackage_ID == pricePackage.ID ? "checked" : "") />
+                            <label for="package_@pricePackage.PackageType">
+                                @if (pricePackage.PackageType == 1)
+                                {
+                                    <a id="package_text">3 Months Price Package For Only:</a>
+                                }
+                                else if (pricePackage.PackageType == 2)
+                                {
+                                    <a id="package_text">6 Months Price Package For Only:</a>
+                                }
+                                else if (pricePackage.PackageType == 3)
+                                {
+                                    <a id="package_text">12 Months Price Package For Only:</a>
+                                }
+
+                                <div class="price_wrapper">
+                                    <span id="list_price">@pricePackage.ListPrice USD</span>
+                                    <span id="sale_price">@pricePackage.SalePrice USD</span>
+                                </div>
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                @if (Model.UserID == 0)
+                {
+                    <p class="noti_regis">You need to be logged in to register</p>
+				}
+				else {
+                @if (Model.UserRegistration != null)
+                {
+                    <p class="noti">You already registered for this subject</p>
+                    <div class="center-button">
+                        <button id="register_button_popup_2" type="submit">
+                            Edit
+                        </button>
+                    </div>
+                } else {
+                <div class="center-button">
+                    <button id="register_button_popup_1" type="submit">
+                        Register
+                    </button>
+                    </div>
+                }
+                }
+            </form>
+        </div>
+    }
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        function GetUserDetails() {
+            $.ajax({
+                url: '/Account/GetUserDetails',
+                method: 'GET',
+                success: function (response) {
+                    console.log(response);
+                    if (response.success) {
+                        var userId = response.userDetails.userID;
+                        $('input[name="userId"]').val(userId);
+
+                        GetPracticePagination(1, userId);
+                        loadFilter(userId);
+
+                    }
+                }
+            });
+        }
+        GetUserDetails();
+    });
+
+</script>

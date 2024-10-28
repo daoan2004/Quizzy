@@ -1,0 +1,201 @@
+﻿@{
+    ViewData["Title"] = "Practice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>PracticeList</title>
+    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/css/Practice.css">
+
+
+</head>
+<body>
+    <div class="row" id="content-grapper">
+        <div class="container">
+            <!--Practice list header-->
+            <div class="headder-wrapper">
+               <div class="flex">
+                <div class="page-name">
+                    <h3>Practice List</h3>
+                </div>
+                <div class="dropdown-bar">
+                    <form>
+                        <select id="subjectFilter">
+                            <option value="">All Subjects</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="dropdown-bar">
+                    <for
+                        m>
+                        <select  id="levelFilter">
+                            <option value="">All level</option>
+                            
+                        </select>
+                    </for>
+                </div>
+			    </div>
+                <div class="flex" >
+                <div class="new-practice">
+                        <button class="headder-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'">New Practice</button>
+                </div>
+                <div class="simulation-exam ">
+                        <button class="headder-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">simulation exam</button>
+                </div>
+				</div>
+            </div>
+            <!--Practice list Table wrapper-->       
+            <div class="Table-wrapper">
+                <table>
+                    
+					<thead class="thead">
+						<tr>
+							<th>Subject Name</th>
+							<th>Practice Name</th>
+                            <th>Questions </th>
+							<th>Correct Rate</th>
+							<th>Dificulity</th>
+							<th>Date Taken</th>
+							<th></th>
+						</tr>
+					</thead>
+                   
+                    <tbody id="PracticeList">
+                        
+                    </tbody>
+				
+                </table>
+                
+                <div id="pagination">
+                    
+                </div>
+            </div>		
+        </div>
+    </div>
+
+@section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                // Hàm để lấy userId từ API
+                function GetUserDetails() {
+                    $.ajax({
+                        url: '/Account/GetUserDetails',
+                        method: 'GET',
+                        success: function (response) {
+                            console.log(response);
+                            if (response.success) {
+                                userId = response.userDetails.userID;
+                                // Bắt đầu tải mục đầu tiên sau khi lấy được userId    
+                                GetPracticePagination(1, userId);
+                                loadFilter(userId);
+                            } else {
+                                alert('Failed to get user details: ' + response.message);
+                            }
+                        },
+                        error: function () {
+                            alert('Error retrieving user details.');
+                        }
+                    });
+                }
+
+                // Gọi hàm GetUserDetails để khởi tạo userId và tải mục đầu tiên
+                GetUserDetails();
+
+                // Hàm để tải các mục phân trang
+                function GetPracticePagination(page, userId,subjectId=null,levelId=null) {
+                    $.ajax({
+                        url: '/api/PracticeApi/GetPracticePagination/' + userId,
+                        type: 'GET',
+                        data: { page: page, pageSize: 5, subjectId: subjectId, levelId : levelId},
+                        success: function (response) {
+                            $('#PracticeList').empty();
+                            response.practice.forEach(function (item) {
+                                var takenDate = new Date(item.taken_date).toLocaleDateString();
+                                var correctRate = Math.round((item.number_correct / item.number_quest) * 100);                               
+                                $('#PracticeList').append('<tr><td>' + item.subject.title + '</td>' +
+                                    '<td>' + item.title + '</td>' +
+                                    '<td>' + item.number_quest + '</td>' +
+                                    '<td>' + correctRate + '%</td>' +
+                                    '<td>' + item.level.title + '</td>' +
+                                    '<td>' + takenDate + '</td>' +
+                                    '<td><button href="#" id="'+item.id+'" class="details-button">View Details</button></td></tr>');
+                            });
+
+                            $('#pagination').empty();
+                            for (var i = 1; i <= response.totalPages; i++) {
+                                if (i === response.currentPage) {
+                                    $('#pagination').append('<span>' + i + '</span>');
+                                } else {
+                                    $('#pagination').append('<a href="#" data-page="' + i + '">' + i + '</a>');
+                                }
+                            }
+
+                        },
+                        error: function () {
+                            alert('Error loading items.');
+                        }
+                    });
+                }
+                //thêm sự kiện pagination
+                $('#pagination').on('click', 'a', function (e) {
+                    e.preventDefault();
+                    var page = $(this).data('page');
+                    var subjectId = $('#subjectFilter').val();
+                    var levelId = $('#levelFilter').val();
+                    GetPracticePagination(page, userId,subjectId,levelId);
+                });
+                //thêm sự kiện ấn button detail:
+                $('#PracticeList').on('click', '.details-button', function () {
+                    var id = $(this).attr('id');
+                    window.location.href = '/QuizReview/Detail?id=' + id;
+                });
+
+                // Sự kiện thay đổi bộ lọc
+                
+                $('#subjectFilter, #levelFilter').on('change', function () {
+                    var subjectId = $('#subjectFilter').val();
+                    var levelId = $('#levelFilter').val();
+                    GetPracticePagination(1, userId, subjectId, levelId);
+                });
+                
+                // hàm để tải filter
+                    function loadFilter(userId) { 
+                        $.ajax({
+                            url: '/api/PracticeApi/LoadFilter/' + userId,
+                            method: 'GET',
+                            success: function (response) {
+                                console.log(response);
+                                const seenTitles = new Set();
+                                const seenLevel = new Set();
+                                response.forEach(function (item) {
+                                    if (!seenTitles.has(item.subject.title)) {
+                                        $('#subjectFilter').append('<option value="' + item.subject.id + '">' + item.subject.title + '</option>');
+                                        seenTitles.add(item.subject.title);
+                                    }
+                                });
+                                response.forEach(function (item) {
+                                    if (!seenLevel.has(item.level.title)) {
+                                        $('#levelFilter').append('<option value="' + item.level.id + '">' + item.level.title + '</option>');
+                                        seenLevel.add(item.level.title);
+                                    }
+                                });
+                            },
+                            
+                        });
+                    }
+            });
+            
+    </script>
+}
+
+
+    
+</body>
+</html>

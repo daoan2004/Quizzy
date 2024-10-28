@@ -1,0 +1,212 @@
+﻿﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+    background-color: none;
+}
+
+
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+
+/* Header Styles */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 60px;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    display: flex;
+    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19);
+    background-color: rgba(255, 193, 193, 1); /* Ensure background color for header */
+    height: 100px; /* Add a fixed height */
+}
+
+
+
+.navbar {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    margin-left: 100px;
+    background-color: rgba(255, 193, 193, 1);
+}
+
+.button-wrapper {
+    display:flex;
+    justify-content:flex-end;
+}
+.register, .login {
+    font-size: 16px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+    border: none;
+    margin-left: 20px;
+    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19);
+}
+
+.register {
+    margin-left: 340px;
+    background-color: rgba(183, 252, 129, 1);
+}
+
+.login {
+    background-color: rgba(159, 255, 232, 1);
+}
+
+.search {
+    background-color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    margin-right: 30px;
+    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19);
+}
+
+/* Container Styles */
+.container {
+    margin-top: 120px; /* Add margin-top to ensure it starts below the header */
+    padding: 20px; /* Add some padding for better visual spacing */
+    margin-left: 180px;
+    margin-bottom: 140px;
+}
+
+/* Footer Styles */
+
+
+.footer-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.footer .contact, .footer .privacy {
+    font-size: 16px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+    border: none;
+    margin: 0 10px;
+    box-shadow: 0 -4px 2px 0 rgba(0,0,0,0.2), 0 -4px 8px 0 rgba(0,0,0,0.19);
+}
+
+.footer .contact {
+    background-color: rgba(183, 252, 129, 1);
+}
+
+.footer .privacy {
+    background-color: rgba(159, 255, 232, 1);
+}
+.action {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+}
+
+    .action .profile {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        overflow: hidden;
+        cursor: pointer;
+        background-color: beige;
+    }
+
+.fa-solid {
+    padding-left: 6px;
+    font-weight: 900;
+    font-size: 55px;
+    color: #661523;
+}
+
+        
+
+    .action .menu {
+        position: absolute;
+        top: 120px;
+        right: -10px;
+        padding: 10px 20px;
+        background-color: #FF7878;
+        width: 200px;
+        box-sizing: 0 5px 25px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        transition: 0.5s;
+        visibility: hidden;
+        opacity: 0;
+    }
+
+        .action .menu.active {
+            top: 80px;
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .action .menu::before {
+            content: "";
+            position: absolute;
+            top: -5px;
+            right: 28px;
+            width: 20px;
+            height: 20px;
+            background: #FF7878;
+            transform: rotate(45deg);
+        }
+
+        .action .menu h3 {
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            padding: 20px 0;
+            font-weight: 500;
+            color: #555;
+            line-height: 1.5em;
+        }
+
+            .action .menu h3 span {
+                font-size: 14px;
+                color: #cecece;
+                font-weight: 300;
+            }
+
+        .action .menu ul li {
+            list-style: none;
+            padding: 5px;
+            margin: 1px;
+            /* padding: 16px 0; */
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            /* color: aliceblue; */
+            background-color: #FFB6B6;
+            border-radius: 6px;
+            box-shadow: inset 0 0 10px #f48c8c;
+        }
+
+            .action .menu ul li img {
+                max-width: 20px;
+                margin-right: 10px;
+                opacity: 0.5;
+                transition: 0.5s;
+            }
+
+            .action .menu ul li:hover img {
+                opacity: 1;
+            }
+
+            .action .menu ul li a {
+                display: inline-block;
+                text-decoration: none;
+                color: #6C1E1E;
+                font-weight: 500;
+                transition: 0.5s;
+            }

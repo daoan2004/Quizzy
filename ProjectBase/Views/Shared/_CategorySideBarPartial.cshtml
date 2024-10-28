@@ -1,0 +1,19 @@
+﻿<div class="Category-wrapper">
+	<!--searchbar start-->
+	<form class="search" asp-controller="Blogs" asp-action="ShowSearchResults" method="post">
+		<input type="text" id="searchInput" name="searchPhrase" placeholder="Search blog posts here">
+	</form>
+	<!--searchbar end-->
+    <h1>Category</h1>
+    
+    <!--category show start-->
+    <div class="categories">
+        @foreach (var item in Model.Category)
+        {
+            <div class="category">@item.title </div>
+        }
+	</div>
+    @* <div class="show-allBtn"><button class="show-all">Show all</button> </div> *@
+
+    <!--category show end-->
+</div>

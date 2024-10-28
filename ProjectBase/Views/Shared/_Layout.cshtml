@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ProjectBase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ingrid+Darling&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="false" />
+    <link rel="stylesheet" href="~/ProjectBase.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/header-footer.css" />
+</head>
+
+<body id="bootstrap-overrides">
+    <header class="header">
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Quizly</a>
+                <form id="searchFormHome" asp-controller="Subjects" asp-action="ShowSearchResults" method="post">
+                    <input type="text" id="searchInput" name="searchPhrase" placeholder="Search Subjects here">
+                </form>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item text-dark">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " asp-area="" asp-controller="Blogs" asp-action="Index">Blogs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Subjects" asp-action="Index">Subjects</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">About us</a>
+                        </li>
+                    </ul>
+                </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="action" id="userMenu">
+                        <div class="profile" onclick="menuToggle();">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="menu">
+                            <ul>
+                                <li>
+                                    <a b-pbsg4zkbcg href="#" id="profileBtn">User profile</a>
+                                </li>
+                                <li>
+                                    <a b-pbsg4zkbcg href="#" id="changePasswordBtn">Change Password</a>
+                                </li>
+                                @if (User.IsInRole("Marketing"))
+                                {
+                                    <li>
+                                        <a b-pbsg4zkbcg asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                                    </li>
+                                }
+                                <li>
+                                    <a b-pbsg4zkbcg asp-controller="Practice" asp-action="Index">Practice List</a>
+                                </li>
+                                <li>
+                                    <a b-pbsg4zkbcg asp-controller="MyRegistrations" asp-action="Index">My Registrations</a>
+                                </li>                                
+                                <li>
+                                    <a b-pbsg4zkbcg asp-action="Logout" asp-controller="Account">Logout</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div id="buttonContainer">
+                        <button b-pbsg4zkbcg asp-controller="Account" class="register" type="button" id="registerBtn">Register</button>
+                        <button b-pbsg4zkbcg asp-controller="Account" class="login" type="button" id="loginBtn">Login</button>
+                    </div>
+                }
+                <script>
+                    function menuToggle() {
+                        const toggleMenu = document.querySelector(".menu");
+                        toggleMenu.classList.toggle("active");
+                    }
+                </script>
+        </nav>
+
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-logo">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="logo">Quizly</a>
+        </div>
+        <nav class="footer-navbar">
+            <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-area="" asp-controller="Blogs" asp-action="Index">Blogs</a>
+            <a asp-area="" asp-controller="Subjects" asp-action="Index">Subjects</a>
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">About us</a>
+        </nav>
+
+    </footer>
+
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await Html.PartialAsync("~/Views/Shared/Login.cshtml")
+    @await Html.PartialAsync("~/Views/Shared/Register.cshtml", new RegisterModel())
+    @await Html.PartialAsync("~/Views/User/ChangePassword.cshtml", new ChangePasswordModel())
+    @await Html.PartialAsync("~/Views/User/Profile.cshtml")
+    <script src="_framework/blazor.server.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Gắn sự kiện click vào phần tử cha của nút "Change Password"
+            $(document).on('click', '#changePasswordBtn', function () {
+                $('#changePasswordModal').modal('show');
+            });
+
+            // Gắn sự kiện click vào nút "Login"
+            $('#loginBtn').click(function () {
+                $('#loginModal').modal('show');
+            });
+
+            // Gắn sự kiện click vào nút "Register"
+            $('#registerBtn').click(function () {
+                $('#registerModal').modal('show');
+            });
+
+            // Gắn sự kiện click vào nút "User profile"
+            $('#profileBtn').click(function () {
+                $('#profileModal').modal('show');
+            });
+        });
+    </script>
+
+
+</body>
+</html>

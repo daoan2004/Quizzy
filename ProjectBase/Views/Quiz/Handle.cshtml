@@ -1,0 +1,404 @@
+﻿@{
+    ViewData["Title"] = "Quiz Handle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model ProjectBase.Models.PracticeModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>BlogList</title>
+    <link rel="stylesheet" href="~/css/Quiz.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="row" id="content-grapper">
+        <div class="container">
+            <div class="top-detail">
+                <h3 class="Practice-Title">@ViewData["SubjectTitle"] - @ViewData["QuizTitle"]</h3>
+                <div class="Practice_Detail">
+                    <h3>Type: @ViewData["Type"]</h3>
+                    <h3>Question: @ViewData["Number_quiz"]</h3>
+                    <h3>Difficulty: @ViewData["Level"]</h3>
+                </div>            
+			</div>
+            <div class="main-wrapper">
+                <div class="main-detail">
+                    <div class="quiz-item">
+                        <div class="quiz-side">
+                            <p class="question-index">Question No 1</p>
+                            <p class="status">status</p>
+                            <p class="ismark">mark</p>
+                            <div class="navigation-button">
+                                <button class="prev-button">Previous</button>
+                                <button class="next-button">Next</button>
+                            </div>
+                        </div>
+                        <div class="quiz-main">
+                            <div class="quiz-title">
+                                
+                            </div>
+                            <div class="quiz-answer">
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="Practice-Progress">
+                    <div class="timer">
+                       
+                    </div>
+                    <div class="P-bar">
+                        <p>Progress bar: </p><br/>
+                        <div id="progress-bar-container">
+                            <div id="progress-bar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                    </div>
+                    <div class="quiz-navigation">
+                        <h3>Quiz navigation:</h3>
+                        <div class="quiz-number" id="quiz-number">
+
+                        </div>
+                        <button  class="finish-attempt">Finish attempt ...</button>
+                    </div>
+                   
+
+                </div>
+            </Div>
+        </div>
+        <!-- Pop-up div -->
+    <div id="confirm-popup" class="popup">
+        <div class="popup-content">
+            <p>Are you sure you want to finish the attempt?</p>
+            <button id="confirm-yes">Yes</button>
+            <button id="confirm-no">No</button>
+        </div>
+    </div>
+    </div>
+</body>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        function startTimer(duration, display) {
+var timer = duration, hours, minutes, seconds;
+ var finishAttemptButton = $('.finish-attempt');
+    setInterval(function () {
+        hours = parseInt(timer / 3600, 10);
+        minutes = parseInt((timer % 3600) / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        hours = hours < 10 ? "0" + hours : hours;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.text("Time remaining: " + hours + ":" + minutes + ":" + seconds);
+
+        if (--timer < 0) {
+            timer = 0;
+            
+            finishAttemptButton.click();
+            // Add logic to submit the quiz or redirect to a submission page
+        }
+    }, 1000);
+}
+        function convertTimeOnlyToSeconds(timeString) {
+            var parts = timeString.split(':');
+            var hours = parseInt(parts[0], 10);
+            var minutes = parseInt(parts[1], 10);
+            var seconds = parseInt(parts[2], 10);
+
+            return (hours * 3600) + (minutes * 60) + seconds;
+        }
+        var currentQuestionID = 0;
+        var currentQuestionIndex = 0;
+        // This function will be executed when the DOM is fully loaded
+        $(document).ready(function () {
+            loadQuestionsList();
+            $('.finish-attempt').on('click', function() {
+                $.ajax({
+                    url: '/api/QuizApi/finishAttempt', // Thay đổi URL này thành endpoint API của bạn
+                    method: 'POST',
+                    data: {
+                        UserID: @Model.UserID,
+                        PracticeID: @Model.ID,
+
+                    },
+                    success: function(response) {
+                        window.location.href = '/Practice';
+                        // Bạn có thể thêm mã để xử lý sau khi hoàn thành bài kiểm tra, ví dụ: chuyển hướng đến trang kết quả
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error finishing quiz: ", status, error);
+                        alert('Error finishing quiz.');
+                    }
+                });
+            });
+            var duration = convertTimeOnlyToSeconds("@Model.duration.ToString("HH:mm:ss")"); // 10 minutes in seconds
+            var display = $('.timer'); // Element where the timer will be displayed
+
+            var endTime = localStorage.getItem('quizEndTime');
+
+            if (endTime) {
+                // Calculate the remaining time
+                var remainingTime = Math.floor((new Date(endTime) - new Date()) / 1000);
+
+                // If the remaining time is less than or equal to zero, reset the endTime
+                if (remainingTime <= 0) {
+                    endTime = null;
+                } else {
+                    startTimer(remainingTime, display);
+                    return;
+                }
+            }
+            
+            // Calculate the end time
+            var endTime = new Date(new Date().getTime() + duration * 1000);
+            localStorage.setItem('quizEndTime', endTime);
+            startTimer(duration, display); // Start the timer
+            
+        });
+
+        //loadquestionlist
+        function loadQuestionsList() {
+                $.ajax({
+                    url: '/api/QuizApi/getQuestionsList', // Endpoint của bạn để lấy danh sách câu hỏi
+                    method: 'GET',
+                    data: {
+                        UserID: @Model.UserID,
+                        PracticeID: @Model.ID
+                    },
+                    success: function(response) {
+                        var questionsListHtml = '';
+                        $.each(response, function(index, question) {
+                            questionsListHtml += '<button class="question-button" data-question-id="' + question.id + '" data-question-index="'+(index+1)+'">' + (index + 1) + '</button>';
+                           
+                        });
+                        $('#quiz-number').html(questionsListHtml);
+
+                        // Attach click event handler after buttons are added to DOM
+                        $('.question-button').on('click', function() {
+                            var questionId = $(this).data('question-id');
+                            currentQuestionIndex = $(this).data('question-index');
+                            currentQuestionID = questionId;
+                            loadQuestion(questionId);
+                        });
+                        // Attach click event for next and previous button
+                        $('.prev-button').on('click', function() {
+                            if (currentQuestionID > response[0].id) {
+                                currentQuestionID--; // Giảm vị trí hiện tại đi một đơn vị nếu vị trí không phải là câu hỏi đầu tiên
+                                currentQuestionIndex--;
+                                loadQuestion(currentQuestionID); // Load câu hỏi trước đó
+                            }
+                        });
+                        $('.next-button').on('click', function() {
+                            if (currentQuestionID < response[response.length-1].id) {
+                                currentQuestionID++; // Tăng vị trí hiện tại lên một đơn vị nếu vị trí không phải là câu hỏi cuối cùng
+                                currentQuestionIndex++;
+                                loadQuestion(currentQuestionID); // Load câu hỏi tiếp theo
+                            }
+                        });
+                        // Load the first question
+                        if (response.length > 0) {
+                            loadQuestion(response[0].id);
+                            currentQuestionID = response[0].id;
+                            currentQuestionIndex = 1;
+                        }
+                        
+                    
+
+                    },
+                    error: function() {
+                        alert('Error loading questions list.');
+                    }
+                });
+
+        }
+        function loadQuestion(questionId) {
+            $.ajax({
+                url: '/api/QuizApi/loadQuestion/'+questionId, // Endpoint của bạn để lấy danh sách câu hỏi
+                method: 'GET',      
+                success: function(response) {
+                    console.log("API response: ", response); // Debug: Kiểm tra dữ liệu trả về
+                    $.ajax({
+                        url: '/api/QuizApi/getQuestionsList',
+                        method: 'GET',
+                        data: {
+                            UserID: @Model.UserID,
+                            PracticeID: @Model.ID
+                        },
+                        success: function(response) {
+                            var totalQuestions = response.length;
+                            var answeredCount = 0;
+
+                            // Iterate through questions to count answered ones
+                            $.each(response, function(index, question) {
+                                if (question.status == 1) { // Assuming 'status' indicates answered or not
+                                    answeredCount++;
+                                }
+                            });
+
+                            // Update progress bar
+                            updateProgressBar(answeredCount, totalQuestions);
+
+                            // Rest of your code...
+                        },
+                        error: function() {
+                            alert('Error loading questions list.');
+                        }
+                    });
+                    
+
+                   if (response && typeof response.status !== 'undefined') {
+                    var status = response.status == 1 ? 'Status: Answered' : 'Status: Not yet answered';
+                        $('.status').html(status);
+                   } else {
+                        $('.status').html('Status: Unknown');
+                   }
+                    $('.quiz-title').html(response.quizBank.title);
+                    $('.question-index').html('Question No.'+ currentQuestionIndex);
+                    var mark = response.isMark == 1 ? '<button class="unmark-button">Unmark</button>' : '<button class="mark-button">Mark</button>';
+                        $('.ismark').html(mark);
+                    var quizanswer = '';
+                    if (response.quizBank.groupID == "1" || response.quizBank.groupID == "2") {
+                        var selectedAnswer = response.qAnswer || "";
+                        quizanswer += 'Choose One: </br><form class="answer-form">';
+                        if (response.quizBank.qa && response.quizBank.qa.trim() !== '') {
+                            quizanswer += '<label><input type="radio" name="answer" value="A" ' + (selectedAnswer == "A" ? ' checked' : '') + '> a. ' + response.quizBank.qa + '</label><br>';
+                        }
+                        if (response.quizBank.qb && response.quizBank.qb.trim() !== '') {
+                            quizanswer += '<label><input type="radio" name="answer" value="B" ' + (selectedAnswer == "B" ? ' checked' : '') + '> b. ' + response.quizBank.qb + '</label><br>';
+                        }
+                        if (response.quizBank.qc && response.quizBank.qc.trim() !== '') {
+                            quizanswer += '<label><input type="radio" name="answer" value="C" ' + (selectedAnswer == "C" ? ' checked' : '') + '> c. ' + response.quizBank.qc + '</label><br>';
+                        }
+                        if (response.quizBank.qd && response.quizBank.qd.trim() !== '') {
+                            quizanswer += '<label><input type="radio" name="answer" value="D" ' + (selectedAnswer == "D" ? ' checked' : '') + '> d. ' + response.quizBank.qd + '</label><br>';
+                        }
+                        if (response.quizBank.qe && response.quizBank.qe.trim() !== '') {
+                            quizanswer += '<label><input type="radio" name="answer" value="E" ' + (selectedAnswer == "E" ? ' checked' : '') + '> e. ' + response.quizBank.qe + '</label><br>';
+                        }
+                        if (response.quizBank.qf && response.quizBank.qf.trim() !== '') {
+                            quizanswer += '<label><input type="radio" name="answer" value="F" ' + (selectedAnswer == "F" ? ' checked' : '') + '> f. ' + response.quizBank.qf + '</label><br>';
+                        }
+                        
+                        quizanswer += '</form>';
+                    }
+                    else if (response.quizBank.groupID == "3") {
+                        var correctAnswer = response.quizBank.qcorrect.split(';');
+                        var length = correctAnswer.length;
+                        var userChoices = response.qanswer ? response.qanswer.split(';') : [];
+
+                        // Duyệt qua từng checkbox và đánh dấu nếu giá trị checkbox có trong mảng userChoices
+                        $('.answer-checkbox input[type="checkbox"]').each(function() {
+                            var checkboxValue = $(this).val();
+
+                            // Nếu giá trị của checkbox có trong mảng userChoices, đánh dấu checkbox
+                            if (userChoices.includes(checkboxValue)) {
+                                $(this).prop('checked', true);
+                            }
+                        });
+                        quizanswer += 'Choose '+length+' in answer: </br><form class="answer-checkbox">';
+                        if (response.quizBank.qa && response.quizBank.qa.trim() !== '') {
+                            quizanswer += '<label><input type="checkbox" name="answer" value="A"> a. ' + response.quizBank.qa + '</label><br>';
+                        }
+                        if (response.quizBank.qb && response.quizBank.qb.trim() !== '') {
+                            quizanswer += '<label><input type="checkbox" name="answer" value="B"> b. ' + response.quizBank.qb + '</label><br>';
+                        }
+                        if (response.quizBank.qc && response.quizBank.qc.trim() !== '') {
+                            quizanswer += '<label><input type="checkbox" name="answer" value="C"> c. ' + response.quizBank.qc + '</label><br>';
+                        }
+                        if (response.quizBank.qd && response.quizBank.qd.trim() !== '') {
+                            quizanswer += '<label><input type="checkbox" name="answer" value="D"> d. ' + response.quizBank.qd + '</label><br>';
+                        }
+                        if (response.quizBank.qe && response.quizBank.qe.trim() !== '') {
+                            quizanswer += '<label><input type="checkbox" name="answer" value="E"> e. ' + response.quizBank.qe + '</label><br>';
+                        }
+                        if (response.quizBank.qf && response.quizBank.qf.trim() !== '') {
+                            quizanswer += '<label><input type="checkbox" name="answer" value="F"> f. ' + response.quizBank.qf + '</label><br>';
+                        }
+                        
+                        quizanswer += '</form>';
+                    }
+                    else if (response.quizBank.groupID == "4") {
+                        quizanswer += 'Input Answer Here: </br>';
+                        var selectedAnswer = response.qAnswer || "";
+                        quizanswer += '<textarea name="answer" rows="4" cols="50" >'+selectedAnswer+'</textarea>';
+                    }
+                    $('.quiz-answer').html(quizanswer);
+                    $('.answer-form input').on('change', function() {
+                        submitAnswer(questionId, $(this).val());
+                    });
+                    $('textarea[name="answer"]').on('blur', function() {
+                        var answerValue = $(this).val().trim();
+                        if (answerValue !== '') { 
+                        submitAnswer(questionId, $(this).val());
+                        }
+                    });
+                    var selectedAnswers = [];
+                    var count = 0;
+
+                    $('.answer-checkbox input').on('change', function() {
+                        // Add the selected checkbox value to the array
+                        selectedAnswers.push($(this).val());
+                        count++;
+                            
+                        
+
+                        // Check if the number of selected checkboxes equals the correct answers count
+                        if (count == response.quizBank.qcorrect.split(';').length) {
+                            // Join selected answers into a string separated by ';'
+                            var answerString = selectedAnswers.join(';');
+        
+                            // Submit the answers
+                            submitAnswer(currentQuestionID, answerString);
+
+                            // Reset count and selectedAnswers array
+                            count = 0;
+                            selectedAnswers = [];
+                        }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading questions list: ", status, error); // Debug: In lỗi ra console
+                    alert('Error loading questions list.');
+                }
+            });
+        
+            
+        }
+        // Function to update progress bar
+        function updateProgressBar(answeredCount, totalCount) {
+            var progress = (answeredCount / totalCount) * 100; // Tính phần trăm tiến độ
+            $('#progress-bar').css('width', progress + '%'); // Cập nhật chiều rộng của thanh tiến độ
+            $('#progress-bar').attr('aria-valuenow', progress); // Cập nhật giá trị hiện tại của thanh tiến độ
+        }
+        //function to submit answer
+        function submitAnswer(currentQuestionID, answer) {
+            $.ajax({
+            url: '/api/QuizApi/submitAnswer', // Endpoint của bạn để lưu câu trả lời
+            method: 'POST',
+            data: {
+                questionId: currentQuestionID,
+                answer: answer,
+                PracticeID: @Model.ID
+            },
+            success: function(response) {
+                console.log("Answer submitted successfully");
+                
+                // Call the function to update progress bar with the new status
+                loadQuestion(currentQuestionID); // Reload the questions list to update progress bar
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting answer: ", status, error);
+                alert('Error submitting answer.');
+            }
+            });
+        }
+
+    </script>
+
+}
+</html>

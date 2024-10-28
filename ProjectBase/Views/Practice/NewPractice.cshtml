@@ -1,0 +1,232 @@
+﻿@{
+    ViewData["Title"] = "NewPractice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>New Practice</title>
+    <link rel="stylesheet" href="~/css/Practice.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="row" id="content-grapper">
+        <div class="container" style="padding: 25px;">
+            <!--New Practice Headder start-->
+			<div class="newpractice-headder"> 			
+				<div class="page-name">
+					<h3>New Practice Form</h3>
+			    </div>
+				<div class="simulation-button">
+                    <button class="headder-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">Simulation exam</button>
+				</div>			
+			</div>
+            <!--New Practice Headder end-->
+            <!--Subject scroll list start-->
+            
+                <div class="scroll-list-wrapper">
+                
+				</div>
+            
+            <!--Subject scroll list end-->
+            <!--Input infomation start-->
+            <div class="input-area">
+                <div class="form-group">
+                    <label for="test-name">Test Name: </label>
+                    <input class="inputform" type="text" id="test-name" placeholder="Exam Name " required="required">
+                    <div class="alerttestname"></div>
+                </div>
+                <div class="form-group">
+                    <label for="no-of-questions">No of Question: </label>
+                    <input class="inputform" type="number" id="no-of-questions" placeholder="Number of question" required="required">
+                    <div class="alertnoofquest"></div>
+                </div>
+                <div class="form-group">
+                    <label for="question-group">Question Group</label>
+                    <form>
+                        <select id="Quest-group">
+                            <option value="0">All</option>
+                            <option value="Yes/No Question">Yes/No Question</option>
+                            <option value="Choose one">Choose one</option>
+                            <option value="Multiple choice">Multiple choice</option>
+                            <option value="Essays question">Essays question</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="form-topic">
+                    <label for="select-topic">Subject topic:</label>
+                    <form>
+                        <select id="select-topic">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">Choose 3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="difficulty-level">
+                    <label>Difficulty Level: </label>
+                    <div class="difficulty-options">
+                        <input type="radio" id="easy" name="difficulty" value="1" checked>
+                        <label for="easy">Easy (90% easy quiz, 10% medium quiz)</label><br>
+                        <input type="radio" id="medium" name="difficulty" value="2">
+                        <label for="medium">Medium (30% easy quiz, 70% medium quiz)</label><br>
+                        <input type="radio" id="hard" name="difficulty" value="3">
+                        <label for="hard">Hard (60% medium quiz, 40% hard quiz)</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="test-duration">Test Duration: </label>
+                    <input class="inputform" type="Number" id="test-duration" placeholder="Test duration (in minutes)" required="required">
+                    <div class="alertduration"></div>
+                </div>
+                <div class="bottom-button">
+                <button class="submit-button">Practice</button> 
+                <div class="Back">
+                    <button class="headder-button" onclick="window.history.back()">Back</button>
+                </div>
+                <div class="alertbottom"></div>
+            </div>
+            <!--Input infomation end-->
+        </>
+    </div>
+
+        @section Scripts {
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    function GetUserDetails() {
+                        $.ajax({
+                            url: '/Account/GetUserDetails',
+                            method: 'GET',
+                            success: function (response) {
+                                console.log(response);
+                                if (response.success) {
+                                    userId = response.userDetails.userID;
+                                    // Bắt đầu tải mục đầu tiên sau khi lấy được userId
+                                    loadSubject(userId);
+                                } else {
+                                    alert('Failed to get user details: ' + response.message);
+                                }
+                            },
+                            error: function () {
+                                alert('Error retrieving user details.');
+                            }
+                        });
+                    }
+                    GetUserDetails();
+                    function loadSubject(userId) {
+                        $.ajax({
+                            url: '/api/PracticeApi/LoadSubject/' + userId,
+                            method: 'GET',
+                            success: function (response) {
+                                console.log(response);
+                                const seenSubjects = new Set();
+                                response.forEach(function (item) {
+                                    if (!seenSubjects.has(item.subjects.title)) {
+                                        $('.scroll-list-wrapper').append('<div class="scroll-list-item" data-subject="' + item.subjects.id + '" style="background-color: #FF9F9F;"><div class="title_wrapper_side"><h2 class="subject_title_side">' + item.subjects.title + '</h2></div></div>');
+                                        seenSubjects.add(item.subjects.title);
+                                    }
+                                });
+                            },
+                             error: function () {
+                                        alert('Error retrieving user details.');
+                             }
+
+                        });
+                    }
+
+
+                    var selectedSubject = null;
+
+                    $(document).on('click', '.scroll-list-item', function () {
+                        // Loại bỏ lớp 'selected' khỏi tất cả các mục
+                        $(".scroll-list-item").removeClass("selected");
+
+                        // Thêm lớp 'selected' vào mục được chọn
+                        $(this).addClass("selected");
+
+                        // Lưu lại giá trị của mục được chọn
+                        selectedSubject = $(this).data("subject");
+                    });
+
+                    $(".submit-button").click(function () {
+                        var title = $('#test-name').val();
+                        var noOfQuestions = $('#no-of-questions').val();
+                        var questionGroup = $('#Quest-group').val();
+                        var testDuration = $('#test-duration').val();
+                        var difficultyLevel = $('input[name="difficulty"]:checked').val(); // Assuming a button will be selected
+                        var practiceID = 0;
+                        var isPractice = true;
+                        if (!title) {
+                            $('.alerttestname').empty();
+                            $('.alerttestname').append('Please input Practice name!');
+                            return;
+                        }
+                        if (!noOfQuestions) {
+                            $('.alertnoofquest').empty();
+                            $('.alertnoofquest').append('Please input number of question!');
+                            return;
+                        }
+                        if (noOfQuestions <= 0) {
+                            $('.alertnoofquest').empty();
+                            $('.alertnoofquest').append('Input can not be negative!');
+                            return;
+                        }
+                        if (!testDuration) {
+                            $('.alertduration').empty();
+                            $('.alertduration').append('Duration is required!');
+                            return;
+                        }
+                        if (testDuration <= 0) {
+                            $('.alertduration').empty();
+                            $('.alertduration').append('Input can not be negative!');
+                            return;
+                        }
+
+                        if (selectedSubject) {
+                            var hours = Math.floor(testDuration / 60);
+                            var minutes = testDuration % 60;
+                            var durationFormatted = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':00';
+
+                            $.ajax({
+                                type: "POST",
+                                url: "/api/PracticeApi/AddPractice",
+                                contentType: "application/x-www-form-urlencoded",
+                                data: ({
+                                    UserID : userId,
+                                    SubjectID : selectedSubject,
+                                    title: title,
+                                    number_quest: noOfQuestions,
+                                    Quest_group: questionGroup,
+                                    duration: durationFormatted,
+                                    levelID: difficultyLevel
+                                    // Thêm các thuộc tính khác tương ứng trong data object
+                                }),
+                                success: function (response) {
+                                    practiceID = response
+                                    window.location.href = '/Quiz/Handle?UserID=' + userId + '&PracticeID=' + practiceID + '&IsPractice=' + isPractice;
+                                },
+                                error: function (xhr, status, error) {
+                                    alert("An error occurred: " + error);
+                                }
+                            });
+                            
+
+                        } else {
+                            $('.alertbottom').empty();
+                            $('.alertbottom').append('Please choose subject first');
+                        }
+                    });          
+
+
+                });
+
+            </script>
+        }
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+﻿﻿body {
+    font-family: Arial, sans-serif;
+}
+
+.home-page {
+    padding: 20px;
+}
+
+.popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    width: 650px; /* Adjusted for a more reasonable size */
+    height: 725px;
+    top: 50%;
+    left: 75%; /* Move the popup to the right */
+    transform: translate(-50%, -50%);
+    background: #FF9191;
+    border-radius: 16px 0px 0px 0px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.popup-content {
+    padding: 20px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.profile {
+    display: flex;
+    gap: 20px;
+}
+
+.avatar img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}
+
+.details {
+    margin-left: 20px; /* Move the details to the right */
+}
+
+    .details p {
+        margin: 5px 0;
+    }
+
+#updateBtn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.UserContainer {
+    align-content: center;
+    display: flex;
+    justify-content: space-between;
+    margin-left
+}
+.property-value {
+    background-color: #fff; /* Background color for the property value box */
+    padding: 5px 50px; /* Padding for the property value box */
+    border-radius: 4px; /* Rounded corners for the property value box */
+    display: inline-block; /* Display as inline-block to wrap content */
+    margin-left: 5px; /* Spacing between property name and value */
+}
+
+

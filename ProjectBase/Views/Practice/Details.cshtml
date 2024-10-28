@@ -1,0 +1,145 @@
+﻿@{
+    ViewData["Title"] = "PracticeDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model PracticeModel
+	<link rel="stylesheet" href="~/css/Practice.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <div class="row" id="content-grapper">
+        <div class="Container">
+            <!--Practice detail header wrapper start-->
+            <div class="headder-wrapper">
+                <div class="flex">
+                    <div class="page-name">
+                        <h3>Practice Detail</h3>
+                    </div>
+                    
+                </div>
+                <div class="flex">
+                    <div class="new-practice">
+                    <button class="headder-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'">New Practice</button>
+                    </div>
+                    <div class="simulation-exam ">
+                    <button class="headder-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">Simulation exam</button>
+                    </div>
+                </div>
+            </div>
+            <!--Practice detail header wrapper end-->
+            <div class="practice_detail">
+            <!--Main Subject wrapper start-->
+        <div class="subject">
+                <div class="main_subject">
+                        <div class="thumbnail_side" style="background-color:red">
+                         
+                        <div class="title_wrapper_side">
+                                <h2 class="subject_title_side">@Model.Subject.title</h2>
+                            </div>
+                        </div>
+						
+                        <div class="content_side">
+                        <h5 id="brief_text">@Model.Subject.Description</h5>
+                            <div class="subject_categories_side">   
+                            @foreach (var Subject in Model.Subject.Subject_Category.ToList())
+                            {
+                                <span id="category_side">@Subject.Category.title</span>
+                            }
+                        </div>
+                        </div>
+
+                </div>
+		    
+            <!--Main Subject wrapper end-->
+            <!--Main Subject detail wrapper start-->
+                <div class="detail_wrapper">
+                        <div class="detail-item">
+                            <h5>Test Name</h5>
+                            <div class="detail">
+                                <p>@Model.title</p>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <h5>Number of Question</h5>
+                            <div class="detail">
+                                <p>@Model.number_quest</p>
+                            </div>
+                        </div>
+                    <div class="detail-item">
+                        <h5>Topic</h5>
+                        <div class="detail">
+                            <p>@Model.Topic.title</p>
+                        </div>
+                    </div>
+                        <div class="detail-item">
+                            <h5>Question group</h5>
+                            <div class="detail">
+                                <p>@Model.Quest_group</p>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <h5>Dificulity</h5>
+                            <div class="detail">
+                                <p>@Model.Level.title</p>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <h5>Correction rate</h5>
+                            <div class="detail">
+                                <p>
+                                @if (Model.number_quest != 0)
+                                {
+                                    var correctionRate = (double)Model.number_correct / Model.number_quest * 100;
+                                    @correctionRate.ToString("0.##")
+                                    // Định dạng để hiển thị phần trăm với 2 chữ số sau dấu thập phân
+                                    <text>%</text>
+                                }
+                                else
+                                {
+                                    <text>N/A</text>
+                                    // Trường hợp số lượng câu hỏi bằng 0, hiển thị "N/A" (không áp dụng)
+                                }
+                                </p>
+                            </div>
+                        </div>
+                    @{
+                        var hour = Model.time_taken.Hour;
+                        var minute = Model.time_taken.Minute;
+                    }
+                        <div class="detail-item">
+                            <h5>Time taken</h5>
+                            <div class="detail">
+                            <p>@(hour == 1 ? "1 hour" : $"{hour} hours") @(minute == 1 ? "1 minute" : $"{minute} minutes")</p>
+                            </div>
+                        </div>
+                    @{
+                        var hours = Model.duration.Hour;
+                        var minutes = Model.duration.Minute;
+                    }
+                    <div class="detail-item">
+                        <h5>Duration</h5>
+                        <div class="detail">
+                            <p>
+                                @(hours == 1 ? "1 hour" : $"{hours} hours") @(minutes == 1 ? "1 minute" : $"{minutes} minutes")
+                            </p>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <h5>Date taken</h5>
+                        <div class="detail">
+                            <p>@Model.taken_date.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                    
+                </div>
+		</div>
+            <!--Main Subject detail wrapper end-->
+			</div>
+            <div class="bottom-button">            
+                <div class="Back">
+                <button class="headder-button" onclick="window.history.back()">Back</button>
+                </div>
+                <div class="Review-practice">
+                <button class="headder-button" onclick="location.href='@Url.Action("Handle", "Quiz", new { id = Model.ID })'">Review Practice</button>
+                </div>       
+			</div>
+        </div>
+    </div>
