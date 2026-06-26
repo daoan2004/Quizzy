@@ -4,7 +4,7 @@
         @foreach (var subject in (ViewData["FeaturedSubjects"] as List<ProjectBase.Models.SubjectsModel>) ?? new List<ProjectBase.Models.SubjectsModel>())
         {
             <a asp-controller="Subjects" asp-action="Details" asp-route-id="@subject.ID" class="subject-link">
-                <div class="subject-item-side">
+                <div class="subject-item-side glass-card js-tilt-card">
                     <div class="thumbnail_side">
                         <img src="~/picture/Subject/@subject.thumbnail_color" alt="Thumbnail Image Side" class="thumbnail_image_side">
                         <div class="title_wrapper_side">
@@ -24,5 +24,5 @@
             </a>
         }
     </div>
-    <div class="contact-wrapper"><a class="contact" href="https://fpt.edu.vn/">Contact us <i class="fa-solid fa-share-nodes"></i></a></div>
+    <div class="contact-wrapper"><a class="contact" href="https://fpt.edu.vn/">Contact us <i class="bi bi-share"></i></a></div>
 </div>

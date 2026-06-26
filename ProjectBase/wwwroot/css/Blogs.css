@@ -4,11 +4,11 @@
    ============================================================ */
 
 body {
-    background-color: var(--color-bg);
     font-family: var(--font-main);
 }
 
-#content-wrapper {
+#content-wrapper,
+#content-grapper {
     margin: 40px auto 30px;
 }
 
@@ -20,8 +20,11 @@ body {
 .main-wrapper {
     flex: 3;
     padding: 40px 20px;
-    background-color: var(--color-bg-light);
-    box-shadow: var(--shadow-card);
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-highlight);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border-radius: var(--radius-md);
 }
 
@@ -34,8 +37,9 @@ body {
 
 .blog-post {
     font-family: var(--font-main);
-    background-color: #FF9494;
-    box-shadow: var(--shadow-card);
+    background: rgba(255, 255, 255, 0.58);
+    border: var(--glass-border);
+    box-shadow: var(--glass-highlight);
     border-radius: var(--radius-md);
     margin: 0;
     box-sizing: border-box;
@@ -50,7 +54,7 @@ body {
 
 .blog-post:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-hover), var(--glass-highlight);
 }
 
 /* ── Blog Thumbnail ── */
@@ -73,14 +77,15 @@ body {
 
 /* ── Blog Content ── */
 .blog-content {
-    padding: 5px;
+    padding: 12px 14px 12px 0;
     flex: 1;
+    min-width: 0;
 }
 
 .blog-content h5 {
     font-size: 20px;
-    font-weight: 600;
-    color: var(--color-text-mid);
+    font-weight: 800;
+    color: var(--color-text-dark);
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -90,10 +95,21 @@ body {
     padding: 10px 0 0 0;
 }
 
+.blog-content h5 a {
+    color: var(--color-text-dark) !important;
+    text-decoration: none;
+}
+
 .blog-content .meta-info {
     font-size: 14px;
-    font-weight: 600;
-    color: #A42424;
+    font-weight: 700;
+    color: var(--color-text-muted);
+}
+
+.blog-content .meta-info a {
+    color: var(--color-accent-hover);
+    text-decoration: none;
+    font-weight: 800;
 }
 
 .blog-content .meta-info span {
@@ -108,7 +124,7 @@ body {
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     font-weight: 400;
-    color: #901C1C;
+    color: var(--color-text-body);
     margin-bottom: 0;
     font-size: 13px;
 }
@@ -131,13 +147,13 @@ body {
 }
 
 .blog-content .blog-category span {
-    background-color: #FFA1A1;
+    background: var(--color-accent-soft);
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 999px;
     margin-right: 5px;
     font-size: 10px;
-    color: #953030;
-    font-weight: 500;
+    color: var(--color-text-dark);
+    font-weight: 800;
     white-space: nowrap;
 }
 
@@ -145,13 +161,21 @@ body {
     display: flex;
     justify-content: space-between;
     font-weight: 600;
-    color: #A42424;
+    color: var(--color-text-muted);
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+.blog-info a {
+    color: var(--color-accent-hover);
+    font-weight: 800;
+    text-decoration: none;
 }
 
 .read-more a {
     font-size: 13px;
-    font-weight: 500;
-    color: #7E1111;
+    font-weight: 800;
+    color: var(--color-accent-hover);
     text-decoration: none !important;
     padding: 0;
     transition: color var(--transition-fast);
@@ -167,22 +191,25 @@ body {
 }
 
 .DetailHeader h1 {
-    font-size: 40px;
-    font-weight: 600;
-    color: var(--color-text-mid);
+    font-size: clamp(30px, 5vw, 48px);
+    font-weight: 800;
+    color: var(--color-text-dark);
 }
 
 .header-img {
     width: 100%;
-    max-width: 766px;
+    max-width: 100%;
     height: 406px;
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    border-radius: var(--radius-md);
     object-fit: cover;
+    box-shadow: var(--shadow-card);
 }
 
 .blog-detail {
     border-radius: var(--radius-md);
-    background-color: var(--color-bg-card);
+    background: rgba(255, 255, 255, 0.62);
+    border: var(--glass-border);
+    box-shadow: var(--glass-highlight);
     padding: 30px;
     color: var(--color-text-body);
     font-weight: 500;
@@ -192,15 +219,17 @@ body {
 
 .category-underdetail {
     display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
 }
 
 .under-category {
-    font-weight: 500;
-    font-size: 20px;
-    color: #953030;
-    padding: 2px 8px;
-    background-color: var(--color-bg-card-dark);
-    border-radius: 15px;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--color-text-dark);
+    padding: 7px 12px;
+    background: var(--color-accent-soft);
+    border-radius: 999px;
 }
 
 .Category-wrapper {
@@ -232,17 +261,20 @@ body {
 }
 
 .pagination-container .pagination li a {
-    color: var(--color-text-white);
-    background-color: #FF8585;
+    color: var(--color-text-dark);
+    background: rgba(255, 255, 255, 0.62);
+    border: var(--glass-border);
     padding: 8px 12px;
     border-radius: var(--radius-full);
     text-decoration: none;
-    transition: background-color var(--transition-normal);
+    transition: background-color var(--transition-normal), transform var(--transition-fast), color var(--transition-fast);
 }
 
 .pagination-container .pagination li a:hover,
 .pagination-container .pagination li a.active {
-    background-color: #FF5858;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
+    color: var(--color-text-white);
+    transform: translateY(-1px);
 }
 
 /* ── Custom dropdown select ── */
@@ -252,9 +284,9 @@ body {
 
 .select-option input {
     width: 95%;
-    background-color: #fff;
-    color: #000;
-    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--color-text-dark);
+    border-radius: var(--radius-sm);
     cursor: pointer;
     font-size: 18px;
     padding: 6px;
@@ -274,10 +306,10 @@ body {
 }
 
 .content.dropdown-content {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: var(--glass-bg-strong);
+    border: var(--glass-border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-card);
     display: none;
 }
 

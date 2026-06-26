@@ -4,32 +4,31 @@
 }
 @model PracticeModel
 	<link rel="stylesheet" href="~/css/Practice.css">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <div class="row" id="content-grapper">
-        <div class="Container">
+        <div class="Container practice-shell glass-panel" data-aos="fade-up">
             <!--Practice detail header wrapper start-->
             <div class="header-wrapper">
                 <div class="flex">
                     <div class="page-name">
-                        <h3>Practice Detail</h3>
+                        <h3><i class="bi bi-card-checklist"></i> Practice Detail</h3>
                     </div>
                     
                 </div>
                 <div class="flex">
                     <div class="new-practice">
-                    <button class="header-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'">New Practice</button>
+                    <button class="header-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'"><i class="bi bi-plus-circle"></i> New Practice</button>
                     </div>
                     <div class="simulation-exam ">
-                    <button class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">Simulation exam</button>
+                    <button class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'"><i class="bi bi-clipboard2-check"></i> Simulation Exam</button>
                     </div>
                 </div>
             </div>
             <!--Practice detail header wrapper end-->
-            <div class="practice_detail">
+            <div class="practice_detail glass-panel" data-aos="fade-up" data-aos-delay="100">
             <!--Main Subject wrapper start-->
         <div class="subject">
-                <div class="main_subject">
-                        <div class="thumbnail_side" style="background-color:red">
+                <div class="main_subject glass-card">
+                        <div class="thumbnail_side">
                          
                         <div class="title_wrapper_side">
                                 <h2 class="subject_title_side">@Model.Subject.title</h2>
@@ -135,10 +134,10 @@
 			</div>
             <div class="bottom-button">            
                 <div class="Back">
-                <button class="header-button" onclick="window.history.back()">Back</button>
+                <button class="header-button" onclick="window.history.back()"><i class="bi bi-arrow-left"></i> Back</button>
                 </div>
                 <div class="Review-practice">
-                <button class="header-button" onclick="location.href='@Url.Action("Handle", "Quiz", new { id = Model.ID })'">Review Practice</button>
+                <button class="header-button" onclick="location.href='@Url.Action("Handle", "Quiz", new { id = Model.ID })'"><i class="bi bi-eye"></i> Review Practice</button>
                 </div>       
 			</div>
         </div>

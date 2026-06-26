@@ -4,20 +4,62 @@
    ============================================================ */
 
 body {
-    background-color: var(--color-bg);
     font-family: var(--font-main);
     overflow-x: hidden;
 }
 
-#content-wrapper {
+#content-wrapper,
+#content-grapper {
     margin: 40px auto 30px;
 }
 
 /* ── Container ── */
-.container {
-    background-color: var(--color-bg-light);
+.container,
+.Container,
+.practice-shell {
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-highlight);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border-radius: var(--radius-md);
-    padding: 20px 20px 0 20px;
+    padding: var(--padding-card);
+}
+
+.header-wrapper,
+.newpractice-header {
+    gap: var(--gap-md);
+    padding-bottom: var(--gap-md);
+}
+
+.page-name h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+}
+
+.dropdown-bar select,
+.search-bar input,
+.search-bar button,
+.inputform,
+.input-area select {
+    min-height: 42px;
+    border-radius: 999px;
+    border: var(--glass-border);
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--color-text-dark);
+    padding: 8px 14px;
+    outline: none;
+    font-family: var(--font-main);
+    font-weight: 700;
+}
+
+.search-bar button {
+    background: linear-gradient(135deg, var(--color-info), var(--color-indigo));
+    color: var(--color-text-white);
+    border: 0;
 }
 
 /* ── Practice Detail Card ── */
@@ -26,9 +68,11 @@ body {
     display: grid;
     grid-auto-rows: auto;
     gap: var(--gap-sm);
-    background-color: var(--color-bg-card);
+    background: rgba(255, 255, 255, 0.48);
+    border: var(--glass-border);
+    box-shadow: var(--glass-highlight);
     border-radius: var(--radius-md);
-    color: var(--color-text-white);
+    color: var(--color-text-body);
 }
 
 /* ── Subject Preview (Practice Detail — larger thumbnail) ── */
@@ -38,10 +82,11 @@ body {
 
 .main_subject {
     display: flex;
-    background-color: var(--color-bg-card-dark);
+    background: rgba(255, 255, 255, 0.58);
+    border: var(--glass-border);
     justify-content: center;
     border-radius: 10px;
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--glass-highlight);
     padding: 0;
 }
 
@@ -49,7 +94,7 @@ body {
 .subject .thumbnail_side {
     width: 360px;
     height: 210px;
-    background-color: #f5424e;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
 }
 
 /* Override shared content_side for Practice Detail */
@@ -60,11 +105,11 @@ body {
 }
 
 .subject_categories_side .category-side-tag {
-    background-color: #FF5252;
+    background: var(--color-accent-soft);
     border-radius: 11px;
     padding: 6px;
     font-weight: 500;
-    color: var(--color-text-white);
+    color: var(--color-text-dark);
     font-size: 15px;
 }
 
@@ -80,15 +125,19 @@ body {
 }
 
 .detail-item {
-    background-color: #FF6969;
+    background: rgba(255, 255, 255, 0.62);
+    border: var(--glass-border);
+    box-shadow: var(--glass-highlight);
     border-radius: var(--radius-lg);
     justify-content: center;
     padding: var(--padding-card);
 }
 
 .detail {
-    background-color: #FF4C4C;
+    background: var(--color-accent-soft);
     border-radius: var(--radius-lg);
+    color: var(--color-text-dark);
+    font-weight: 800;
 }
 
 .bottom-button {
@@ -105,8 +154,11 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    border-radius: 10px;
-    transition: border var(--transition-normal);
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(255, 79, 123, 0.28), rgba(99, 102, 241, 0.26));
+    border: var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    transition: border var(--transition-normal), transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 .scroll-list-wrapper {
@@ -114,11 +166,14 @@ body {
     grid-auto-flow: column;
     gap: var(--gap-md);
     overflow: auto;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
+    padding: var(--gap-sm) 0;
 }
 
 .scroll-list-item.selected {
-    border: 8px solid #2196F3;
+    border: 3px solid rgba(56, 189, 248, 0.78);
+    box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.14), var(--shadow-hover);
+    transform: translateY(-3px);
 }
 
 /* ── New Practice Form ── */
@@ -128,7 +183,9 @@ body {
 }
 
 .input-area {
-    background-color: #FF6969;
+    background: rgba(255, 255, 255, 0.58);
+    border: var(--glass-border);
+    box-shadow: var(--glass-highlight);
     border-radius: var(--radius-md);
     margin-top: 15px;
     padding: var(--gap-lg);
@@ -136,7 +193,7 @@ body {
 
 .form-group {
     font-weight: 500;
-    color: var(--color-text-white);
+    color: var(--color-text-dark);
     display: flex;
     gap: var(--gap-sm);
     align-items: center;
@@ -144,7 +201,7 @@ body {
 
 .form-topic {
     font-weight: 500;
-    color: var(--color-text-white);
+    color: var(--color-text-dark);
     display: flex;
     gap: var(--gap-sm);
     align-items: center;
@@ -153,7 +210,7 @@ body {
 .difficulty-level {
     display: flex;
     font-weight: 500;
-    color: var(--color-text-white);
+    color: var(--color-text-dark);
     gap: var(--gap-sm);
     align-items: center;
 }
@@ -167,13 +224,13 @@ body {
 }
 
 .submit-button {
-    border-radius: var(--radius-sm);
-    background-color: var(--color-accent);
-    font-weight: 500;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
+    font-weight: 800;
     color: var(--color-text-white);
     border: none;
     padding: var(--gap-sm);
-    box-shadow: var(--shadow-card);
+    box-shadow: 0 14px 28px rgba(255, 79, 123, 0.22);
     cursor: pointer;
     transition: filter var(--transition-fast), transform var(--transition-fast);
 }
@@ -191,7 +248,7 @@ body {
     margin-top: var(--gap-md);
     font-weight: 500;
     font-size: 20px;
-    color: var(--color-text-white);
+    color: var(--color-danger);
 }
 
 .Back {
@@ -201,6 +258,33 @@ body {
 
 .dropdown-bar {
     align-content: center;
+}
+
+.Table-wrapper {
+    background: rgba(255, 255, 255, 0.52);
+    border: var(--glass-border);
+    box-shadow: var(--glass-highlight);
+}
+
+.Table-wrapper thead,
+.Table-wrapper tr {
+    background: rgba(255, 255, 255, 0.64);
+    color: var(--color-text-dark);
+}
+
+.Table-wrapper table {
+    color: var(--color-text-dark);
+}
+
+.details-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--color-mint), var(--color-cyan));
+    color: var(--color-text-dark);
+    font-weight: 800;
 }
 
 /* ════════════════════════════════════

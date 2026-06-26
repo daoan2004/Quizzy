@@ -5,30 +5,40 @@
 
 :root {
     /* ── Màu nền (Background) ── */
-    --color-bg:           #FFA8A8;   /* nền trang chính */
-    --color-bg-light:     #FFD4D4;   /* card sáng (main wrapper, sidebar) */
-    --color-bg-card:      #FF9F9F;   /* card trung bình (table wrapper, blog detail) */
-    --color-bg-card-dark: #FF8181;   /* card tối (subject item, latest post) */
-    --color-bg-card-mid:  #FFCACA;   /* category tags nhạt */
-    --color-bg-hover:     #FFB3B3;   /* hover state */
+    --color-bg:           #FFF7FB;   /* nền trang chính */
+    --color-bg-light:     rgba(255, 255, 255, 0.68);
+    --color-bg-card:      rgba(255, 255, 255, 0.58);
+    --color-bg-card-dark: rgba(255, 111, 145, 0.72);
+    --color-bg-card-mid:  rgba(255, 214, 226, 0.76);
+    --color-bg-hover:     rgba(255, 255, 255, 0.82);
+    --app-bg-gradient:
+        radial-gradient(circle at top left, rgba(255, 111, 145, 0.22), transparent 32%),
+        radial-gradient(circle at top right, rgba(56, 189, 248, 0.18), transparent 30%),
+        linear-gradient(135deg, #fff7fb 0%, #eef9ff 48%, #f7fff8 100%);
 
     /* ── Màu chữ (Text) ── */
-    --color-text-dark:    #8D0606;   /* tiêu đề, text đậm */
-    --color-text-mid:     #752C2C;   /* rgba(117, 44, 44, 1) — logo, link */
-    --color-text-light:   #A72525;   /* rgba(167, 37, 37, 1) — nav links */
-    --color-text-muted:   #B20F0F;   /* brief text, meta */
-    --color-text-body:    #691D1D;   /* body text trong blog detail */
+    --color-text-dark:    #172033;   /* tiêu đề, text đậm */
+    --color-text-mid:     #334155;   /* logo, link */
+    --color-text-light:   #475569;   /* nav links */
+    --color-text-muted:   #64748B;   /* brief text, meta */
+    --color-text-body:    #243043;   /* body text trong blog detail */
     --color-text-white:   #FFFFFF;
 
     /* ── Màu accent / trạng thái ── */
-    --color-accent:       #F33A3A;   /* primary action button */
-    --color-accent-dark:  #A40A0A;   /* price badge */
-    --color-accent-hover: #C11E1E;   /* pagination hover */
-    --color-success:      #6EFF9F;   /* nút details/mark */
-    --color-success-dark: #1FD948;   /* pay/yes button */
-    --color-lime:         #C1F949;   /* register button */
-    --color-lime-text:    #117A1C;
-    --color-info:         #3D95A8;   /* secondary button */
+    --color-accent:       #FF4F7B;   /* primary action button */
+    --color-accent-dark:  #BE123C;   /* price badge */
+    --color-accent-hover: #E11D48;   /* pagination hover */
+    --color-accent-soft:  rgba(255, 79, 123, 0.14);
+    --color-cyan:         #38BDF8;
+    --color-mint:         #34D399;
+    --color-indigo:       #6366F1;
+    --color-success:      #34D399;   /* nút details/mark */
+    --color-success-dark: #059669;   /* pay/yes button */
+    --color-warning:      #F59E0B;
+    --color-danger:       #EF4444;
+    --color-lime:         #D9F99D;   /* register button */
+    --color-lime-text:    #166534;
+    --color-info:         #0EA5E9;   /* secondary button */
     --color-strikethrough: #ff0000;  /* list price gạch */
 
     /* ── Border Radius ── */
@@ -46,13 +56,23 @@
     --padding-card: 20px;
 
     /* ── Box Shadow ── */
-    --shadow-card:   0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.19);
-    --shadow-inward: inset 0 0 10px rgba(155, 39, 39, 0.6);
-    --shadow-modal:  0px 0px 20px rgba(0, 0, 0, 0.1);
+    --shadow-card:   0 18px 45px rgba(15, 23, 42, 0.10);
+    --shadow-hover:  0 24px 60px rgba(15, 23, 42, 0.16);
+    --shadow-inward: inset 0 0 18px rgba(255, 255, 255, 0.32);
+    --shadow-modal:  0 24px 80px rgba(15, 23, 42, 0.22);
+
+    /* ── Glassmorphism ── */
+    --glass-bg: rgba(255, 255, 255, 0.62);
+    --glass-bg-strong: rgba(255, 255, 255, 0.78);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.68);
+    --glass-blur: 22px;
+    --glass-shadow: 0 22px 70px rgba(15, 23, 42, 0.12);
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.72);
 
     /* ── Typography ── */
-    --font-main: "Poppins", sans-serif;
-    --font-logo: "Ingrid Darling", sans-serif;
+    --font-main: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-heading: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+    --font-logo: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
 
     /* ── Transition ── */
     --transition-fast:   0.15s ease;

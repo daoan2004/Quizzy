@@ -39,7 +39,13 @@ namespace ProjectBase.Controllers
             var lastestpost = _dataContext.Blogs.Where(blog => EF.Functions.DateDiffDay(blog.updatedAt, DateTime.Now) <= 14)
    .ToList();
             var blogdetail = _dataContext.Blogs.Where(b => b.ID == blogid).FirstOrDefault();
-            var bloguser = _dataContext.Users.Where(u => u.ID == userid).FirstOrDefault();
+            if (blogdetail == null)
+            {
+                return NotFound();
+            }
+
+            var bloguser = _dataContext.Users.Where(u => u.ID == blogdetail.userID).FirstOrDefault()
+                ?? _dataContext.Users.Where(u => u.ID == userid).FirstOrDefault();
             var blogcategory = (from c in _dataContext.Category
                               join bc in _dataContext.Blogs_Category on c.ID equals bc.CategoryID
                               where bc.BlogID == blogid

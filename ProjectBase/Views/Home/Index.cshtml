@@ -4,35 +4,35 @@
 }
 @model HomeViewModel
 
-<script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="~/css/IndexStyle.css" />
 <!-- Welcome page -->
 
 <div class="container">
-    <div class="homepage-header">
+    <div class="homepage-header" data-aos="fade-up">
+        <p class="home-eyebrow"><i class="bi bi-stars"></i> Learn faster with Quizly</p>
         <h1>The one and only quiz for you</h1>
-        <p>Try out our amazing quiz website</p>
-        <a asp-controller="Subjects" asp-action="Index" id="start_button" class="btn py-md-2 px-4">Get Started</a>
+        <p>Browse subjects, practice smarter, and review your progress in one smooth place.</p>
+        <a asp-controller="Subjects" asp-action="Index" id="start_button" class="btn py-md-2 px-4">
+            Get Started <i class="bi bi-arrow-right"></i>
+        </a>
     </div>
     <div class="homepage-detail">
         <div class="main-wrapper">
-                <div id="Mainslider" class="carousel slide" data-bs-ride="carousel">
+                <div id="Mainslider" class="carousel slide glass-panel" data-bs-ride="carousel" data-aos="fade-up" data-aos-delay="100">
 
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <img src="~/picture/Carousel/OpenSlide.jpg" class="carousel-img" alt="OpentSlide">
-                            <div style="text-align: center;"
-                                 class="bg-dark p-2 text-light bg-opacity-25 carousel-caption d-none d-lg-block">
+                            <div class="carousel-caption d-none d-lg-block">
                                 <h2>Check out some blog!!!</h2>
-                                <a asp-controller="Blogs" asp-action="Index" class="btn btn-dark py-md-2 px-4">Get Started</a>
+                                <a asp-controller="Blogs" asp-action="Index" class="btn carousel-cta py-md-2 px-4">Get Started</a>
                             </div>
                         </div>
                         @foreach (var item in Model.Sliders)
                         {
                             <div class="carousel-item ">
                                 <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID"><img src="/picture/Carousel/@item.image" class="carousel-img" alt="@item.Title"></a>
-                                <div style="text-align: left;"
-                                     class="bg-dark p-2 text-light bg-opacity-25 carousel-caption d-none d-lg-block">
+                                <div class="carousel-caption d-none d-lg-block">
                                     <h2>@item.Title</h2>
                                     <p>
                                         @item.description
@@ -52,20 +52,20 @@
                     </button>
                 </div>
 
-                <div class="hot-post">
-                    <h1 id="blogs_text">HOT POST HERE</h1>
+                <div class="hot-post glass-panel" data-aos="fade-up">
+                    <h1 id="blogs_text"><i class="bi bi-fire"></i> Hot Posts</h1>
                     <section class="BlogIndex px-1 py-1 p-md-1">
                         <div class="container">
                             @foreach (var item in Model.BlogView)
                             {
-                                <div class="mb-5">
-                                    <div class="media d-flex align-items-center">
+                                <div class="mb-4" data-aos="fade-up">
+                                    <div class="media d-flex align-items-center glass-card js-tilt-card">
                                         <img class="mr-3 img-fluid post-thumb blogs-image" src="/picture/Carousel/@item.blog_picture" alt="image">
                                         <div class="media-body">
                                             <h2 class="title blog-title-color"><a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">@item.title</a></h2>
                                             <div class="meta "><span class="date">Published: @item.publishAt.ToString("dd/MM/yyyy")</span></div>
                                             <div class="intro">@item.description</div>
-                                            <a class="more-link" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">Read more &rarr;</a>
+                                            <a class="more-link" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">Read more <i class="bi bi-arrow-right"></i></a>
                                         </div><!--//media-body-->
                                     </div><!--//media-->
                                 </div>
@@ -77,10 +77,10 @@
 
 
         <div class="sidebar_LatestPost">
-                <div class="sidebar-box">
+                <div class="sidebar-box" data-aos="fade-left">
                     <partial name="_LatestPostPartial" />
                 </div> 
-                <div id="featureSubjectPartial" class="sidebar-box">
+                <div id="featureSubjectPartial" class="sidebar-box" data-aos="fade-left" data-aos-delay="100">
                     <partial name="_SubjectFeaturedPartial" />
                 </div>
                 
@@ -88,7 +88,6 @@
     </div>                  
 </div>
     @section Scripts {
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
                 $('.latestPost-item').each(function () {
@@ -105,9 +104,12 @@
                     url: '/api/BlogApi/GetBlogUser/' + userId,
                     type: 'GET',
                     success: function (data) {
+                        if (!data || !data.length) {
+                            return;
+                        }
                         var user = data[0];
                         var userHtml = '';
-                        userHtml += '<i class="fas fa-user"></i> '+ user.fullname;
+                        userHtml += '<i class="bi bi-person"></i> '+ user.fullname;
                         $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html(userHtml);
 
                     },

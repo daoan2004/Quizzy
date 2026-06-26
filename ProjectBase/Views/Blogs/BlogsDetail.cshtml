@@ -4,25 +4,34 @@
     
 }
 @model BlogsViewModel
+@{
+    var blog = Model.BlogDetail;
+    var authorName = Model.BlogUser?.fullname ?? "Quizly Team";
+}
 
 <link rel="stylesheet" href="~/css/Blogs.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <div class="row" id="content-grapper">
         <div class="container">
             <!--Blogdetail show start(field1)-->
-            <div class="main-wrapper">
-                <div class="DetailHeader">
-                    <h1>@Model.BlogDetail.title</h1>
+            <div class="main-wrapper glass-panel" data-aos="fade-up">
+                <div class="DetailHeader" data-aos="fade-up">
+                    <h1>@(blog?.title ?? "Blog detail")</h1>
                     <div class="blog-info">
-                        <span>By <a href="#" style="color: #2FA9B1;">@Model.BlogUser.fullname</a><i class="bi bi-person"></i></span>
-                        <span class="last-updated">Last Updated: @Model.BlogDetail.updatedAt.Day @Model.BlogDetail.updatedAt.Date.ToString("MMMM", System.Globalization.CultureInfo.InvariantCulture) @Model.BlogDetail.updatedAt.Year <i class="bi bi-clock"></i></span>
+                        <span><i class="bi bi-person"></i> By <a href="#">@authorName</a></span>
+                        @if (blog != null)
+                        {
+                            <span class="last-updated"><i class="bi bi-clock"></i> Last Updated: @blog.updatedAt.Day @blog.updatedAt.Date.ToString("MMMM", System.Globalization.CultureInfo.InvariantCulture) @blog.updatedAt.Year</span>
+                        }
                     </div>
-                    <img class="header-img" src="~/picture/Carousel/@Model.BlogDetail.blog_picture" alt="@Model.BlogDetail.title">
+                    @if (blog != null)
+                    {
+                        <img class="header-img" src="~/picture/Carousel/@blog.blog_picture" alt="@blog.title">
+                    }
                 </div>
-                <div class="blog-detail">
-                    <h5>@Model.BlogDetail.description</h5>
+                <div class="blog-detail glass-card" data-aos="fade-up">
+                    <h5>@(blog?.description ?? "This article is not available.")</h5>
                     <br/>
-                    <p>@Model.BlogDetail.body</p>
+                    <p>@blog?.body</p>
                 </div>
                 <div class="category-underdetail">
                     @foreach (var item in Model.BlogCategory)
@@ -35,14 +44,14 @@
             <div class="sidebar-container">
                 <!--Category show and search bar(field2)-->
                 <div class="sidebar_blog_category">
-                    <div class="sidebar-box">
+                    <div class="sidebar-box" data-aos="fade-left">
                         <partial name="_CategorySideBarPartial" />
                     </div>
                 </div>
                 <!--Category show and search bar end(field2)-->
                 <!--lastest post show start(field 3)-->
                 <div class="sidebar_LatestPost">
-                    <div class="sidebar-box">
+                    <div class="sidebar-box" data-aos="fade-left" data-aos-delay="100">
                         <partial name="_LatestPostPartial" />
                     </div>
                 </div>
@@ -50,14 +59,12 @@
             </div>
         </div>
 	</div>
-    <script src="./js/script.js"></script>
     <script src="/js/BlogsScript.js"></script>
     <!--AJAX for showing blog category-->
     @section Scripts {
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
-                $('.post').each(function () {
+                $('.latestPost-item').each(function () {
                     var userId = $(this).find('.post-details').find('.author').data('user-id');
                     loadLatestPostInfo(userId);
 
@@ -73,10 +80,13 @@
                     url: '/api/BlogApi/GetBlogUser/' + userId,
                     type: 'GET',
                     success: function (data) {
+                        if (!data || !data.length) {
+                            return;
+                        }
                         var user = data[0];
                         var userHtml = '';
-                        userHtml += user.fullname;
-                        $('.post').find('.post-details').find('.author-user-' + userId).html(userHtml);
+                        userHtml += '<i class="bi bi-person"></i> ' + user.fullname;
+                        $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html(userHtml);
 
                     },
                     error: function (error) {

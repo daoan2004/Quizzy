@@ -4,24 +4,22 @@
     ViewData["Title"] = "Subjects";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="~/css/Subjects.css" />
 <link rel="stylesheet" href="~/css/SubjectRegister.css" />
 
 <div class="row" id="content-wrapper">
     <div class="container">
         <!-- Main content area -->
-        <div class="main-wrapper">
+        <div class="main-wrapper glass-panel" data-aos="fade-up">
             @foreach (var subject in Model)
             {
-                <div class="subject-item">
+                <div class="subject-item glass-card js-tilt-card" data-aos="fade-up">
                     <a asp-controller="Subjects" asp-action="Details" asp-route-id="@subject.ID" class="subject-link">
                         <div class="thumbnail">
                             <img src="~/picture/Subject/@subject.thumbnail_color" alt="Thumbnail Image" class="thumbnail_image">
                             <div class="title_wrapper">
                                 <h2 class="subject_title">@subject.title</h2>
-                                <i class="subject-status-icon fa-solid fa-circle-check"></i>
+                                <i class="subject-status-icon bi bi-patch-check-fill"></i>
                             </div>
                         </div>
                         <div class="content">
@@ -44,7 +42,7 @@
                                     </div>
 
                                     <a class="register_button register-button" data-subject-id="@subject.ID" href="#">
-                                        Register Now
+                                        Register Now <i class="bi bi-arrow-right"></i>
                                     </a>
                                     <input type="hidden" name="userId" value="" />
                                 </div>
@@ -66,13 +64,13 @@
         <!-- Sidebar area -->
         <div class="sidebar-container">
             <div class="sidebar_subject_category">
-                <div class="sidebar-box">
+                <div class="sidebar-box" data-aos="fade-left">
                     <partial name="_SubjectSideBarPartial" />
                 </div>
             </div>
 
             <div class="sidebar_subject_featured">
-                <div class="sidebar-box">
+                <div class="sidebar-box" data-aos="fade-left" data-aos-delay="100">
                     <partial name="_SubjectFeaturedPartial" />
                 </div>
             </div>
@@ -101,7 +99,6 @@
                 url: '/Account/GetUserDetails',
                 method: 'GET',
                 success: function (response) {
-                    console.log(response);
                     if (response.success) {
                         var userId = response.userDetails.userID;
                         $('input[name="userId"]').val(userId);

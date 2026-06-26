@@ -8,12 +8,12 @@
 <link rel="stylesheet" href="~/css/Practice.css">
 
 <div class="row" id="content-grapper">
-        <div class="container">
+        <div class="container practice-shell glass-panel" data-aos="fade-up">
             <!--Practice list header-->
             <div class="header-wrapper">
                <div class="flex">
-                <div class="page-name">
-                    <h3>Practice List</h3>
+                    <div class="page-name">
+                    <h3><i class="bi bi-journal-check"></i> Practice List</h3>
                 </div>
                 <div class="dropdown-bar">
                     <form>
@@ -33,15 +33,15 @@
 			    </div>
                 <div class="flex" >
                 <div class="new-practice">
-                        <button class="header-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'">New Practice</button>
+                        <button class="header-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'"><i class="bi bi-plus-circle"></i> New Practice</button>
                 </div>
                 <div class="simulation-exam ">
-                        <button class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">simulation exam</button>
+                        <button class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'"><i class="bi bi-clipboard2-check"></i> Simulation Exam</button>
                 </div>
 				</div>
             </div>
             <!--Practice list Table wrapper-->       
-            <div class="Table-wrapper">
+            <div class="Table-wrapper glass-panel" data-aos="fade-up" data-aos-delay="100">
                 <table>
                     
 					<thead class="thead">
@@ -70,7 +70,6 @@
     </div>
 
 @section Scripts {
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
                 // Hàm để lấy userId từ API
@@ -79,7 +78,6 @@
                         url: '/Account/GetUserDetails',
                         method: 'GET',
                         success: function (response) {
-                            console.log(response);
                             if (response.success) {
                                 userId = response.userDetails.userID;
                                 // Bắt đầu tải mục đầu tiên sau khi lấy được userId    
@@ -115,7 +113,7 @@
                                     '<td>' + correctRate + '%</td>' +
                                     '<td>' + item.level.title + '</td>' +
                                     '<td>' + takenDate + '</td>' +
-                                    '<td><button href="#" id="'+item.id+'" class="details-button">View Details</button></td></tr>');
+                                    '<td><button href="#" id="'+item.id+'" class="details-button"><i class="bi bi-eye"></i> View</button></td></tr>');
                             });
 
                             $('#pagination').empty();
@@ -161,7 +159,6 @@
                             url: '/api/PracticeApi/LoadFilter/' + userId,
                             method: 'GET',
                             success: function (response) {
-                                console.log(response);
                                 const seenTitles = new Set();
                                 const seenLevel = new Set();
                                 response.forEach(function (item) {

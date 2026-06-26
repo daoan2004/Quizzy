@@ -3,13 +3,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
     <link rel="stylesheet" href="~/css/Practice.css">
+    <link rel="stylesheet" href="~/css/SimulationExam.css">
     <div class="row" id="content-grapper">
-        <div class="Container" id="mainContent">
+        <div class="Container practice-shell glass-panel" id="mainContent" data-aos="fade-up">
             <!--Practice list header-->
             <div class="header-wrapper">
                 <div class="flex">
                     <div class="page-name">
-                        <h3>Simulation Exam</h3>
+                        <h3><i class="bi bi-clipboard2-check"></i> Simulation Exam</h3>
                     </div>
                     <div class="dropdown-bar">
                         <form>
@@ -21,16 +22,16 @@
                     <div class="search-bar">
                         <form>
                             <input type="text" id="nameSearchBox" placeholder="Search by Name..." />
-                            <button type="button" id="searchButton">Search</button>
+                            <button type="button" id="searchButton"><i class="bi bi-search"></i> Search</button>
                         </form>
                     </div>
                     <div class="Back">
-                        <button class="header-button" onclick="window.history.back()">Back</button>
+                        <button class="header-button" onclick="window.history.back()"><i class="bi bi-arrow-left"></i> Back</button>
                     </div>
                 </div>
             </div>
             <!--Practice list Table wrapper-->
-            <div class="Table-wrapper">
+            <div class="Table-wrapper glass-panel" data-aos="fade-up" data-aos-delay="100">
                 <table>
 
                     <thead class="thead">
@@ -57,7 +58,6 @@
         </div>
     </div>
     @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
                 function GetUserDetails() {
@@ -65,7 +65,6 @@
                         url: '/Account/GetUserDetails',
                         method: 'GET',
                         success: function (response) {
-                            console.log(response);
                             if (response.success) {
                                 userId = response.userDetails.userID;
                                 // Bắt đầu tải mục đầu tiên sau khi lấy được userId
@@ -82,11 +81,11 @@
                     });
                 }
         GetUserDetails();
-                function GetExamPagination(page, userId, subjectId = null) {
+                function GetExamPagination(page, userId, levelId = null) {
                     $.ajax({
                         url: '/api/SimulationExamApi/GetExamPagination/' + userId,
                         type: 'GET',
-                        data: { page: page, pageSize: 5, subjectId: subjectId},
+                        data: { page: page, pageSize: 5, levelId: levelId},
                         success: function (response) {
                             $('#simulationExamList').empty();
                             response.practice.forEach(function (item) {
@@ -98,7 +97,7 @@
                                         '<td>' + exam.number_Question + '</td>' +
                                         '<td>' + exam.duration + '</td>' +
                                         '<td>' + exam.passrate + '%</td>' +
-                                        '<td><button href="#" id="' + exam.id + '" class="details-button">Do Exam</button></td></tr>');
+                                        '<td><button href="#" id="' + exam.id + '" class="details-button"><i class="bi bi-play-circle"></i> Do Exam</button></td></tr>');
                                 });
                             });
 
@@ -121,8 +120,8 @@
                 $('#pagination').on('click', 'a', function (e) {
                     e.preventDefault();
                     var page = $(this).data('page');
-                    var subjectId = $('#subjectFilter').val();               
-                    GetPracticePagination(page, userId, subjectId, levelId);
+                    var levelId = $('#subjectFilter').val();
+                    GetExamPagination(page, userId, levelId);
                 });
                 // hàm để tải filter
                 function loadFilter(userId) {
@@ -130,7 +129,6 @@
                         url: '/api/SimulationExamApi/LoadFilter/' + userId,
                         method: 'GET',
                         success: function (response) {
-                            console.log(response);
                             const seenTitles = new Set();
                            
                             response.forEach(function (item) {
@@ -148,11 +146,13 @@
                 }
                 $('#subjectFilter').on('change', function () {
                     
-                    var levelId = $('#levelFilter').val();
-                    GetPracticePagination(1, userId, levelId);
+                    var levelId = $('#subjectFilter').val();
+                    GetExamPagination(1, userId, levelId);
                 });
-                $('.details-button').on('click', function (e) {
-                    
+                $('#simulationExamList').on('click', '.details-button', function (e) {
+                    e.preventDefault();
+                    var examId = $(this).attr('id');
+                    window.location.href = '/Quiz/Handle?UserID=' + userId + '&PracticeID=' + examId + '&IsPractice=false';
                 });
         });
 

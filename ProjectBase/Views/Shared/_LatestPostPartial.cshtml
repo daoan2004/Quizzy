@@ -3,13 +3,13 @@
     <div class="grid-container">
     @foreach (var item in Model.LatestPosts)
     {
-        <div class="latestPost-item">
+        <div class="latestPost-item glass-card js-tilt-card">
             
             <div class="post-details">
                 <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID" style="text-decoration: none; color: inherit;">@item.title</a>
                 <div>
-                    <span class="author author-user-@item.userID" data-user-id="@item.userID"><i class="fas fa-user"></i></span> <br/>
-                    <span class="date"><i class="fas fa-calendar-alt"></i> @item.updatedAt.ToString("yyyy-MM-dd")</span>
+                    <span class="author author-user-@item.userID" data-user-id="@item.userID"><i class="bi bi-person"></i></span> <br/>
+                    <span class="date"><i class="bi bi-calendar3"></i> @item.updatedAt.ToString("yyyy-MM-dd")</span>
                 </div>
 				
             </div>  
@@ -20,6 +20,6 @@
     }
 		
 	</div>
-    <div class="contact-wrapper"><a class="contact" href="https://fpt.edu.vn/">Contact us <i class="fa-solid fa-share-nodes"></i></a></div>
+    <div class="contact-wrapper"><a class="contact" href="https://fpt.edu.vn/">Contact us <i class="bi bi-share"></i></a></div>
 </div>
 

@@ -4,7 +4,6 @@
    ============================================================ */
 
 body {
-    background-color: var(--color-bg);
     font-family: var(--font-main);
     overflow-x: hidden;
 }
@@ -26,16 +25,18 @@ body {
     grid-auto-rows: auto;
     gap: var(--gap-md);
     padding: var(--padding-card);
-    background-color: var(--color-bg-light);
-    box-shadow: var(--shadow-card);
-    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-highlight);
+    border-radius: var(--radius-md);
 }
 
 /* ── Subject Card ── */
 .subject-item {
     font-family: var(--font-main);
-    background-color: var(--color-bg-card-dark);
-    box-shadow: var(--shadow-card);
+    background: rgba(255, 255, 255, 0.58);
+    border: var(--glass-border);
+    box-shadow: var(--glass-highlight);
     border-radius: var(--radius-md);
     margin: 0;
     box-sizing: border-box;
@@ -51,7 +52,7 @@ body {
 
 .subject-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-hover), var(--glass-highlight);
 }
 
 .placeholder {
@@ -90,7 +91,7 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.1);
+    background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.64));
     color: var(--color-text-white);
     padding: var(--gap-sm);
     box-sizing: border-box;
@@ -98,15 +99,16 @@ body {
 }
 
 .subject_title {
-    font-family: var(--font-main);
-    font-size: 35px;
+    font-family: var(--font-heading);
+    font-size: 28px;
     margin-left: 18px !important;
+    font-weight: 800;
 }
 
 .subject-status-icon {
-    font-size: 35px;
+    font-size: 28px;
     margin-right: 18px;
-    color: #7FEE27;
+    color: var(--color-mint);
 }
 
 /* ── Content Area ── */
@@ -122,8 +124,9 @@ body {
 
 /* Subject categories — Subjects page version */
 .subject_categories span {
-    background-color: #FFCACA;
-    color: #333;
+    background: var(--color-accent-soft);
+    color: var(--color-text-dark);
+    font-weight: 700;
 }
 
 .brief-text {
@@ -143,15 +146,17 @@ body {
 
 .register-button {
     font-family: var(--font-main);
-    border-radius: var(--radius-md);
-    background-color: var(--color-lime);
-    color: var(--color-lime-text);
-    font-size: 18px;
-    font-weight: 600;
-    padding: 5px 30px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
+    color: var(--color-text-white);
+    font-size: 16px;
+    font-weight: 800;
+    padding: 8px 22px;
     border: none;
-    box-shadow: var(--shadow-card);
-    display: block;
+    box-shadow: 0 14px 28px rgba(255, 79, 123, 0.22);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     margin: 0 auto;
     cursor: pointer;
     transition: transform var(--transition-fast), filter var(--transition-fast);
@@ -180,32 +185,35 @@ body {
 }
 
 .pagination li a {
-    color: var(--color-bg-card-dark);
+    color: var(--color-text-dark);
     float: left;
     padding: 8px 16px;
     text-decoration: none;
-    transition: background-color var(--transition-slow);
-    border: 1px solid #ddd;
+    transition: background-color var(--transition-slow), transform var(--transition-fast);
+    border: var(--glass-border);
     margin: 0 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.58);
 }
 
 .pagination li a.active {
-    background-color: var(--color-bg-card-dark);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
     color: var(--color-text-white);
-    border: 1px solid var(--color-bg-card-dark);
+    border-color: transparent;
 }
 
 .pagination li a:hover:not(.active) {
-    background-color: #ddd;
+    background-color: rgba(255, 255, 255, 0.88);
+    transform: translateY(-1px);
 }
 
 /* ── Back Button ── */
 #back_button {
     text-decoration: none !important;
     font-weight: 400 !important;
-    border-radius: 10px !important;
+    border-radius: 999px !important;
     color: aliceblue !important;
-    background-color: #19A0B3 !important;
+    background: linear-gradient(135deg, var(--color-info), var(--color-indigo)) !important;
     padding: 5px 30px !important;
     font-size: 30px !important;
     box-shadow: var(--shadow-card) !important;
