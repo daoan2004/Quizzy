@@ -63,7 +63,8 @@ namespace ProjectBase.Helpers
             modelBuilder.Entity<PricePackageModel>()
                 .HasOne(pp => pp.Subjects)
                 .WithMany(s => s.Price_package)
-                .HasForeignKey(pp => pp.SubjectID);
+                .HasForeignKey(pp => pp.SubjectID)
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<RecipeModel>()
             .HasOne(r => r.PricePackage)
             .WithMany(pp => pp.Recipe)
@@ -85,6 +86,9 @@ namespace ProjectBase.Helpers
                 .WithMany(e => e.Exams)
                 .HasForeignKey(s => s.SubjectID);
             modelBuilder.Entity<SimulationExam>()
+                .Property(s => s.Passrate)
+                .HasPrecision(5, 2);
+            modelBuilder.Entity<SimulationExam>()
                 .HasOne(s => s.Level)
                 .WithMany(e => e.Exams)
                 .HasForeignKey(l => l.LevelID);
@@ -96,6 +100,22 @@ namespace ProjectBase.Helpers
                 .HasOne(q => q.QuizBank)
                 .WithMany(s => s.QuizHandle)
                 .HasForeignKey(s => s.QuizID);
+            modelBuilder.Entity<Role>().HasData(
+                new Role { RoleID = 1, RoleName = "Admin" },
+                new Role { RoleID = 2, RoleName = "Customer" },
+                new Role { RoleID = 3, RoleName = "Marketing" },
+                new Role { RoleID = 4, RoleName = "Sale" },
+                new Role { RoleID = 5, RoleName = "Expert" },
+                new Role { RoleID = 6, RoleName = "Guest" }
+            );
+            modelBuilder.Entity<PracticeLevel>().HasData(
+                new PracticeLevel { ID = 1, title = "Easy", Description = "Easy" },
+                new PracticeLevel { ID = 2, title = "Medium", Description = "Medium" },
+                new PracticeLevel { ID = 3, title = "Hard", Description = "Hard" }
+            );
+            modelBuilder.Entity<SubjectTopicModel>().HasData(
+                new SubjectTopicModel { id = 1, subjectId = 0, title = "General" }
+            );
             base.OnModelCreating(modelBuilder);
            
 

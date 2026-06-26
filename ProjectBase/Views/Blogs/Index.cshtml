@@ -1,19 +1,11 @@
-﻿@{
+@{
     ViewData["Title"] = "BlogsList";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @model BlogsViewModel
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>BlogList</title>
-    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="~/css/Blogs.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
-</head>
-<body>
+<link rel="stylesheet" href="~/css/Blogs.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
     
     <div class="row" id="content-grapper">
         <div class="container">
@@ -28,7 +20,7 @@
 			    </div>
                 <div class="blog-content">
                     <h5><a style="text-decoration: none; color:#A42424" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">@item.title</a></h5>
-                    <div id="userid-@item.userID" class="meta-info">
+                    <div class="meta-info blog-user-meta blog-user-@item.userID" data-user-id="@item.userID">
                         <!--js will add user meta info here-->
                     </div>
                         <div class="meta-info">
@@ -61,14 +53,14 @@
             <!--Category show and search bar(field2)-->
             <div class="sidebar_blog_category">
                 <div class="sidebar-box">
-                    @Html.Partial("_CategorySideBarPartial")
+                    <partial name="_CategorySideBarPartial" />
 				</div>
 		    </div>
             <!--Category show and search bar end(field2)-->
             <!--lastest post show start(field 3)-->
-            <div class="sidebar_lastestpost">
+            <div class="sidebar_LatestPost">
                 <div class="sidebar-box">
-                    @Html.Partial("_LastestPostPartial")
+                    <partial name="_LatestPostPartial" />
                 </div>
 			</div>
             <!--lastest post show end(field 3)-->
@@ -85,13 +77,13 @@
             $(document).ready(function () {
                 $('.blog-post').each(function () {
                     var blogId = $(this).find('.blog-category').attr('id').split('-')[2];
-                    var userId = $(this).find('.meta-info').attr('id').split('-')[1];                                
+                    var userId = $(this).find('.blog-user-meta').data('user-id');                                
                     loadUserInfo(userId);
                     loadCategories(blogId);
                 });
-                $('.lastestpost-item').each(function () {
-                    var userId = $(this).find('.post-details').find('.author').attr('id').split('-')[1];
-                    loadLastestPostInfo(userId);
+                $('.latestPost-item').each(function () {
+                    var userId = $(this).find('.post-details').find('.author').data('user-id');
+                    loadLatestPostInfo(userId);
 
                 });
                 
@@ -106,7 +98,7 @@
                     success: function (data) {
                         var categoriesHtml = '';
                         data.forEach(function (category) {
-                            categoriesHtml += '<span id="category" >' + category.title + '</span> ';
+                            categoriesHtml += '<span class="category" >' + category.title + '</span> ';
                         });
                         $('#blog-category-' + blogId).html(categoriesHtml);
                     },
@@ -126,18 +118,18 @@
                         var userHtml = '';
                         userHtml += '<span>By<a href="#" style="color: #FFD2D2;">'+user.fullname+'</a><i class="bi bi-person"></i></span>' +
                             '<span>Blogs<i class="bi bi-tag-fill"></i></span>';
-                        $('.blog-post').find('#userid-'+userId).html(userHtml);
+                        $('.blog-post').find('.blog-user-' + userId).html(userHtml);
     
                     },
                     error: function (error) {
                         console.error('Error loading user info:', error);
-                        $('.blog-post').find('#userid-' + userId).html('<span>Error loading user info</span>');
+                        $('.blog-post').find('.blog-user-' + userId).html('<span>Error loading user info</span>');
                     }
                 });
             }
             
             // gọi yêu cầu AJAX tới BlogApi.cs để thực hiện function GetBlogUser cho lastest post
-            function loadLastestPostInfo(userId) {
+            function loadLatestPostInfo(userId) {
                 $.ajax({
                     url: '/api/BlogApi/GetBlogUser/' + userId,
                     type: 'GET',
@@ -145,7 +137,7 @@
                         var user = data[0];
                         var userHtml = '';
                         userHtml += '<i class="fas fa-user"></i> ' + user.fullname;
-                        $('.lastestpost-item').find('.post-details').find('#author-' + userId).html(userHtml);
+                        $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html(userHtml);
 
                     },
                     error: function (error) {
@@ -169,7 +161,3 @@
             }
         </script>
     }
-
-   
-</body>
-</html>

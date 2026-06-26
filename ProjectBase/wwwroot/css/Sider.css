@@ -169,14 +169,14 @@
     padding-bottom: 15px;
 }
 
-#category_side {
+.category-side {
     background-color: #F95050;
     color: #FFE7E7;
     padding: 5px;
     border-radius: 6px;
 }
 
-#brief_text {
+.brief-text {
     padding-top: 11px;
     margin: 0px;
 }

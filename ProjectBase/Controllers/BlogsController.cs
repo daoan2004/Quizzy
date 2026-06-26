@@ -18,6 +18,7 @@ namespace ProjectBase.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            ViewData["MetaDescription"] = "Read Quizly learning posts, study tips, and subject updates for better quiz preparation.";
             var category = _dataContext.Category.ToList();
             var bloglist = _dataContext.Blogs.OrderByDescending(b => b.updatedAt).ToList();
             var lastestpost = _dataContext.Blogs.Where(blog => EF.Functions.DateDiffDay(blog.updatedAt, DateTime.Now) <= 25)
@@ -33,6 +34,7 @@ namespace ProjectBase.Controllers
         }
         public async Task<IActionResult> BlogsDetail(long blogid ,long userid)
         {
+            ViewData["MetaDescription"] = "Read a Quizly blog article with study guidance and quiz learning insights.";
             var category = _dataContext.Category.ToList();
             var lastestpost = _dataContext.Blogs.Where(blog => EF.Functions.DateDiffDay(blog.updatedAt, DateTime.Now) <= 14)
    .ToList();
@@ -71,6 +73,7 @@ namespace ProjectBase.Controllers
                 return RedirectToAction(nameof(Index));
             }
             else {
+                ViewData["MetaDescription"] = $"Search Quizly blog posts matching {searchPhrase}.";
                 var category = _dataContext.Category.ToList();
                 var bloglist = _dataContext.Blogs.Where(b => b.title.Contains(searchPhrase)).ToList();
 

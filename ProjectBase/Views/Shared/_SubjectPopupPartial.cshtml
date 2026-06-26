@@ -1,4 +1,4 @@
-﻿@model ProjectBase.Models.SubjectViewModel
+@model ProjectBase.Models.SubjectViewModel
 
 <div id="subjectPopupContent">
     @foreach (var subject in Model.Subjects)
@@ -7,7 +7,7 @@
             <img src="~/picture/Subject/@subject.thumbnail_color" alt="Thumbnail Image" class="thumbnail_image">
             <div class="title_wrapper">
                 <h2 class="subject_title">@subject.title</h2>
-                <i id="icon" class="fa-solid fa-circle-check"></i>
+                <i class="subject-status-icon fa-solid fa-circle-check"></i>
             </div>
         </div>
         <div class="content">
@@ -17,7 +17,7 @@
                     <span>@subjectCategory.Category.title</span>
                 }
             </div>
-            <p id="brief_text">@subject.brief_info</p>
+            <p class="brief-text">@subject.brief_info</p>
 
             <form method="post" action="/SubjectRegister/Register">
                 <div class="package_wrapper_register">
@@ -33,20 +33,20 @@
                             <label for="package_@pricePackage.PackageType">
                                 @if (pricePackage.PackageType == 1)
                                 {
-                                    <a id="package_text">3 Months Price Package For Only:</a>
+                                    <a class="package-text">3 Months Price Package For Only:</a>
                                 }
                                 else if (pricePackage.PackageType == 2)
                                 {
-                                    <a id="package_text">6 Months Price Package For Only:</a>
+                                    <a class="package-text">6 Months Price Package For Only:</a>
                                 }
                                 else if (pricePackage.PackageType == 3)
                                 {
-                                    <a id="package_text">12 Months Price Package For Only:</a>
+                                    <a class="package-text">12 Months Price Package For Only:</a>
                                 }
 
                                 <div class="price_wrapper">
-                                    <span id="list_price">@pricePackage.ListPrice USD</span>
-                                    <span id="sale_price">@pricePackage.SalePrice USD</span>
+                                    <span class="list-price">@pricePackage.ListPrice USD</span>
+                                    <span class="sale-price">@pricePackage.SalePrice USD</span>
                                 </div>
                             </label>
                         </div>
@@ -92,9 +92,6 @@
                     if (response.success) {
                         var userId = response.userDetails.userID;
                         $('input[name="userId"]').val(userId);
-
-                        GetPracticePagination(1, userId);
-                        loadFilter(userId);
 
                     }
                 }

@@ -21,7 +21,7 @@ namespace ProjectBase.Models
         public DateTime publishAt { get; set; }
         public DateTime updatedAt { get; set; }
 
-        [ForeignKey("UserID")]
+        [ForeignKey("userID")]
         public User User { get; set; }
     }
 }

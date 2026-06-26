@@ -1,5 +1,10 @@
-﻿body {
-    background-color: #FFA8A8 !important;
+/* ============================================================
+   QuizReview.css — Trang xem lại kết quả quiz
+   ============================================================ */
+
+body {
+    background-color: var(--color-bg);
+    font-family: var(--font-main);
 }
 
 #content-wrapper {
@@ -8,49 +13,47 @@
 
 .container {
     display: flex;
+    gap: var(--gap-md);
 }
 
 .mainContainer {
     display: flex;
+    gap: var(--gap-md);
 }
 
+/* ── Main Content ── */
 .main-wrapper {
     display: flex;
     flex-direction: column;
-    width: 1103px !important;
     height: fit-content;
-    gap: 20px;
+    gap: var(--gap-md);
     flex: 3;
-    margin-right: 20px
+    margin-right: var(--gap-md);
 }
 
+/* ── Question Header Card ── */
 .quiz_review_header {
-    background-color: #ff7979 !important;
-    padding: 20px;
-    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.19) !important;
-    border-radius: 8px !important;
+    background-color: #ff7979;
+    padding: var(--padding-card);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-sm);
 }
 
+/* ── Individual Question ── */
 .quiz_question {
     background-color: rgb(255, 173, 173);
-    padding: 20px;
-    border-radius: 8px !important;
+    padding: var(--padding-card);
+    border-radius: var(--radius-sm);
 }
 
 .quiz_review_question {
     background-color: #ff7979;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.19) !important;
-    border-radius: 8px !important;
-}
-
-p {
-    padding: 5px;
-    border-radius: 6px !important;
-    margin-bottom: 5px !important;
+    gap: var(--gap-md);
+    padding: var(--padding-card);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-sm);
 }
 
 .quiz_title {
@@ -59,7 +62,9 @@ p {
     margin-bottom: 25px;
     border: solid;
     border-color: #7d0e0e;
+    padding: var(--gap-sm);
 }
+
 .text_style {
     color: #840000;
 }
@@ -68,57 +73,92 @@ p {
     font-size: 18px;
 }
 
-.sidebar-container {
- 
-    flex: 1;
+h2 {
+    color: #840000;
+    padding-bottom: var(--gap-sm);
 }
 
-    
+/* ── Sidebar Navigator ── */
+.sidebar-container {
+    flex: 1;
+}
 
 .sidebar-wrapper {
     display: flex;
     flex-direction: column;
-    background-color: #ff7979 !important;
-    padding: 20px;
-    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.19) !important;
-    border-radius: 8px !important;
+    background-color: #ff7979;
+    padding: var(--padding-card);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-sm);
     align-items: center;
+    position: sticky;
+    top: var(--gap-md);
 }
 
 .sidebar-menu {
-    padding-top: 10px;
+    padding-top: var(--gap-sm);
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: baseline;
-    padding-left: 0px;
+    padding-left: 0;
 }
 
 .quiz_text {
-    padding-bottom: 10px
+    padding-bottom: var(--gap-sm);
 }
 
-h2 {
-    color: #840000;
-    padding-bottom: 10px
-}
-
-
-/* Style for sidebar links */
+/* ── Sidebar Buttons ── */
 .sidebar-button {
     display: block;
-    padding: 10px;
-    margin-bottom: 5px;
+    padding: var(--gap-sm);
+    margin: 4px;
     background-color: #007bff;
-    color: #fff;
+    color: var(--color-text-white);
     border: none;
     cursor: pointer;
     text-align: center;
-    margin: 4px;
-    border-radius: 6px;
+    border-radius: var(--radius-xs);
+    transition: background-color var(--transition-fast);
 }
 
 .sidebar-button:hover {
     background-color: #0056b3;
 }
 
+/* ════════════════════════════════════
+   RESPONSIVE — QuizReview Page
+   ════════════════════════════════════ */
+@media (max-width: 992px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .main-wrapper {
+        flex: none;
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .sidebar-container {
+        width: 100%;
+        flex: none;
+    }
+
+    .sidebar-wrapper {
+        position: static;
+    }
+
+    .sidebar-menu {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 767px) {
+    .sidebar-button {
+        width: 38px;
+        height: 38px;
+        padding: 5px;
+        font-size: 13px;
+    }
+}

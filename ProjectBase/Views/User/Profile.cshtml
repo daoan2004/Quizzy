@@ -1,13 +1,3 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>@ViewData["Title"]</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="@Url.Content("/css/Popup.css")" />
-</head>
-<body>
     <div class="container">
         <div class="modal fade" tabindex="-1" id="profileModal" data-keyboard="false" data-backdrop="static">
             <div class="modal-dialog modal-lg">
@@ -17,7 +7,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group d-flex justify-content-center">
-                                        <img id="profileAvatar" src="" alt="User Avatar" class="img-thumbnail" style="width: 150px; height: 150px;" />
+                                        <img id="profileAvatar" src="/picture/DropList/user.png" alt="User Avatar" class="img-thumbnail" style="width: 150px; height: 150px;" />
                                     </div>
                                     <div class="form-group d-flex justify-content-center">
                                         <input id="profileName" name="fullName" class="form-control" type="text" placeholder="Name" readonly />
@@ -31,7 +21,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="form-group">
-                                        <label class="form-label" id="lable-text">Gender:</label>
+                                        <label class="form-label label-text">Gender:</label>
                                         <div class="genderOptions">
                                             <div class="genderOption">
                                                 <input type="radio" name="gender" value="true" disabled>
@@ -44,23 +34,23 @@
                                         </div>                                       
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" id="lable-text">Address:</label>
+                                        <label class="form-label label-text">Address:</label>
                                         <input id="address" name="address" type="text" class="form-control" placeholder="Your address here" readonly>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" id="lable-text" >Email:</label>
+                                        <label class="form-label label-text" >Email:</label>
                                         <input id="email" name="email" type="email" class="form-control" readonly autocomplete="on">
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" id="lable-text">Phone number:</label>
+                                        <label class="form-label label-text">Phone number:</label>
                                         <input id="phoneNumber" name="phone" type="text" class="form-control" readonly>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" id="lable-text">Date of birth:</label>
+                                        <label class="form-label label-text">Date of birth:</label>
                                         <input id="dob" name="dob" type="text" class="form-control" readonly>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" id="lable-text">Description:</label>
+                                        <label class="form-label label-text">Description:</label>
                                         <textarea id="description" name="description" class="form-control" readonly></textarea>
                                     </div>
                                     <div class="form-group text-center">
@@ -81,11 +71,6 @@
             </div>
         </div>
     </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/Popup.js"></script> <!-- Đường dẫn đến file Popup.js -->
     <script>
         $(document).ready(function () {
             $('#profileBtn').click(function () {
@@ -100,7 +85,7 @@
                         console.log(response); // Log response to check the data
                         if (response.success) {
                             var data = response.userDetails;
-                            $('#profileAvatar').attr('src', data.avatarUrl || 'default-avatar.png'); // Set default avatar if none
+                            $('#profileAvatar').attr('src', data.avatarUrl || '/picture/DropList/user.png'); // Set default avatar if none
                             $('#profileName').val(data.fullName);
                             $('#profileRole').val(data.role);
                             $('input[name="gender"][value="' + data.gender + '"]').prop('checked', true);
@@ -208,5 +193,3 @@
         });
 
     </script>
-</body>
-</html>

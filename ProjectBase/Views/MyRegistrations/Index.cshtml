@@ -1,22 +1,15 @@
-﻿@model IEnumerable<ProjectBase.Models.SubjectsModel>
+@model IEnumerable<ProjectBase.Models.SubjectsModel>
 
 @{
     ViewData["Title"] = "MyRegistrations";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>MyRegistrations</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="~/css/SubjectDetail.css" />
     <link rel="stylesheet" href="~/css/SubjectRegister.css" />
     <link rel="stylesheet" href="~/css/MyRegistrations.css">
     <link rel="stylesheet" href="~/css/Sider.css">
-</head>
-<body>
     <div class="row" id="content-wrapper">
         <div class="container" id="mainContent">
             <div class="mainContainer">
@@ -54,14 +47,14 @@
             </div>
             <!-- Sidebar area -->
             <div class="sidebar-container">
-                <div id="" class="sidebar_subject_category">
+                <div class="sidebar_subject_category">
                     <div class="sidebar-box">
-                        @Html.Partial("_SubjectSideBarPartial")
+                        <partial name="_SubjectSideBarPartial" />
                     </div>
                 </div>
-                <div id="" class="sidebar_subject_featured">
+                <div class="sidebar_subject_featured">
                     <div class="sidebar-box">
-                        @Html.Partial("_SubjectFeaturedPartial")
+                        <partial name="_SubjectFeaturedPartial" />
                     </div>
                 </div>
             </div>
@@ -425,5 +418,3 @@
 
 
 
-</body>
-</html>

@@ -23,6 +23,7 @@ namespace ProjectBase.Controllers
         // GET: Subjects
         public async Task<IActionResult> Index()
         {
+            ViewData["MetaDescription"] = "Browse Quizly subjects, compare learning packages, and register for quiz practice courses.";
             var subjects = await _context.Subjects
                 .Include(s => s.Subject_Category)
                 .ThenInclude(sc => sc.Category)
@@ -66,6 +67,7 @@ namespace ProjectBase.Controllers
                 .Include(s => s.Price_package)
                 .Where(s => s.ID.Equals(Detail_id) == true)
                 .ToListAsync();
+            ViewData["MetaDescription"] = subjects.FirstOrDefault()?.brief_info ?? "View Quizly subject details, packages, and related learning categories.";
 
             // Get the first three subjects of the un-fitered list
             var featuredSubjects = subjects_base.Take(3).ToList();
@@ -95,6 +97,7 @@ namespace ProjectBase.Controllers
             }
 
             var tagList = searchPhrase.Split(',').ToList();
+            ViewData["MetaDescription"] = $"Search Quizly subjects matching {searchPhrase}.";
 
             // Un-fitered List
 
@@ -139,6 +142,7 @@ namespace ProjectBase.Controllers
 
             // Un-fitered List
             var tagList = tags.Split(',').ToList();
+            ViewData["MetaDescription"] = $"Browse Quizly subjects tagged with {tags}.";
 
             var subjects_base = await _context.Subjects
                 .Include(s => s.Subject_Category)

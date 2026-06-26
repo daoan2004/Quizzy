@@ -1,12 +1,13 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
+    ViewData["MetaDescription"] ??= "Quizly helps learners browse subjects, read learning posts, practice quizzes, and review progress.";
 }
 @model HomeViewModel
 
 <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="~/css/IndexStyle.css" />
 <!-- Welcome page -->
-<body>
+
 <div class="container">
     <div class="homepage-header">
         <h1>The one and only quiz for you</h1>
@@ -36,7 +37,7 @@
                                     <p>
                                         @item.description
                                     </p>
-                                    <p>by huydg May 15,2024</p>
+                                    <p>by @(item.User?.fullname ?? "Quizly Team") @item.updatedAt.ToString("dd/MM/yyyy")</p>
                                 </div>
                             </div>
                         }
@@ -61,8 +62,8 @@
                                     <div class="media d-flex align-items-center">
                                         <img class="mr-3 img-fluid post-thumb blogs-image" src="/picture/Carousel/@item.blog_picture" alt="image">
                                         <div class="media-body">
-                                            <h3 class="title blog-title-color"><a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">@item.title</a></h3>
-                                            <div class="meta "><span class="date">Published: @item.publishAt.ToString("dd/mm/yyyy")</span></div>
+                                            <h2 class="title blog-title-color"><a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">@item.title</a></h2>
+                                            <div class="meta "><span class="date">Published: @item.publishAt.ToString("dd/MM/yyyy")</span></div>
                                             <div class="intro">@item.description</div>
                                             <a class="more-link" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">Read more &rarr;</a>
                                         </div><!--//media-body-->
@@ -75,12 +76,12 @@
         </div>
 
 
-        <div class="sidebar_lastestpost">
+        <div class="sidebar_LatestPost">
                 <div class="sidebar-box">
-                    @Html.Partial("_LastestPostPartial")
+                    <partial name="_LatestPostPartial" />
                 </div> 
                 <div id="featureSubjectPartial" class="sidebar-box">
-                    @Html.Partial("_SubjectFeaturedPartial")
+                    <partial name="_SubjectFeaturedPartial" />
                 </div>
                 
         </div>
@@ -90,16 +91,16 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
-                $('.lastestpost-item').each(function () {
-                    var userId = $(this).find('.post-details').find('.author').attr('id').split('-')[1];
-                    loadLastestPostInfo(userId);
+                $('.latestPost-item').each(function () {
+                    var userId = $(this).find('.post-details').find('.author').data('user-id');
+                    loadLatestPostInfo(userId);
 
                 });
 
             });
 
             // gọi yêu cầu AJAX tới BlogApi.cs để thực hiện function GetBlogUser cho lastest post
-            function loadLastestPostInfo(userId) {
+            function loadLatestPostInfo(userId) {
                 $.ajax({
                     url: '/api/BlogApi/GetBlogUser/' + userId,
                     type: 'GET',
@@ -107,7 +108,7 @@
                         var user = data[0];
                         var userHtml = '';
                         userHtml += '<i class="fas fa-user"></i> '+ user.fullname;
-                        $('.lastestpost-item').find('.post-details').find('#author-' + userId).html(userHtml);
+                        $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html(userHtml);
 
                     },
                     error: function (error) {
@@ -118,6 +119,6 @@
             }
         </script>      
     }
-</body>
+
         
 

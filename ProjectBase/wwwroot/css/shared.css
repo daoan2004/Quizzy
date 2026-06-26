@@ -1,0 +1,721 @@
+/* ============================================================
+   shared.css — Styles dùng chung cho nhiều trang trong Quizly
+   Các class này KHÔNG được định nghĩa lại trong file CSS riêng.
+   ============================================================ */
+
+/* ──────────────────────────────────────────
+   1. SIDEBAR COMPONENTS
+   Dùng trong: Home, Blogs, Subjects, SubjectDetail
+   ────────────────────────────────────────── */
+
+.sidebar-container {
+    flex: 1;
+}
+
+.sidebar-box {
+    flex: 1;
+    padding: var(--padding-card);
+    background-color: var(--color-bg-light);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-sm);
+    margin-left: 30px;
+    margin-right: -36px;
+}
+
+.sidebar_subject_featured {
+    margin-top: 30px;
+}
+
+/* ──────────────────────────────────────────
+   2. SUBJECT CARD — SIDEBAR (small version)
+   Dùng trong: Home, Subjects, SubjectDetail, Blogs
+   ────────────────────────────────────────── */
+
+.subject-item-side {
+    display: flex;
+    background-color: var(--color-bg-card-dark);
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.subject-item-side:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
+.thumbnail_side {
+    width: 120px;
+    height: 89px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background-color: #f5424e;
+    overflow: hidden;
+}
+
+.thumbnail_image_side {
+    width: 210px;
+    height: 132px;
+}
+
+.title_wrapper_side {
+    position: absolute;
+}
+
+.subject_title_side {
+    font-family: var(--font-main);
+    font-size: 23px;
+    margin: 0;
+    color: var(--color-text-white);
+}
+
+.content_side {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    flex-grow: 1;
+    justify-content: center;
+    padding-left: 6px;
+}
+
+.subject_categories_side {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+}
+
+.subject_categories_side span {
+    margin-right: var(--gap-sm);
+}
+
+.category-side {
+    background-color: #F95050;
+    color: #FFE7E7;
+    padding: 5px;
+    border-radius: var(--radius-xs);
+    display: inline-block;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.category-side:hover {
+    transform: scale(1.06);
+    filter: brightness(1.05);
+}
+
+.subject-link {
+    text-decoration: none !important;
+}
+
+/* ──────────────────────────────────────────
+   3. LATEST POST SIDEBAR
+   Dùng trong: Home, Blogs
+   ────────────────────────────────────────── */
+
+.latestPost-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.latestPost-wrapper h1 {
+    text-align: center;
+    font-size: 25px;
+    margin-bottom: var(--gap-sm);
+    font-weight: 600;
+    color: var(--color-text-light);
+}
+
+.latestPost-item {
+    display: flex;
+    box-sizing: border-box;
+    background-color: var(--color-bg-card-dark);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    padding: 0;
+    margin-bottom: var(--gap-md);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.latestPost-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
+.latestPost-thumbnail {
+    overflow: hidden;
+    padding: 0;
+}
+
+.latestPost-thumbnail img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 0;
+}
+
+.post-details {
+    max-width: 150px;
+    padding: 5px;
+}
+
+.post-details a {
+    margin: 0;
+    font-size: 14px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    font-weight: 600;
+    color: var(--color-text-white) !important;
+}
+
+.post-details .author,
+.post-details .date {
+    font-size: 12px;
+    color: #FFD2D2;
+}
+
+/* ──────────────────────────────────────────
+   4. SIDEBAR — CATEGORY & FEATURED SUBJECTS
+   Dùng trong: Home, Blogs, Subjects, SubjectDetail
+   ────────────────────────────────────────── */
+
+.Field3 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.grid-container {
+    display: grid;
+    gap: var(--gap-md);
+}
+
+.featured_text {
+    text-align: center;
+    font-size: 25px;
+    margin-bottom: var(--gap-sm);
+    font-weight: 600;
+    color: var(--color-text-light);
+}
+
+.contact {
+    font-size: 18px;
+    text-align: right;
+    color: var(--color-text-mid);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.Field2 h1 {
+    text-align: center;
+    font-size: 25px;
+    margin-bottom: var(--gap-sm);
+    font-weight: 600;
+    color: var(--color-text-light);
+}
+
+/* ──────────────────────────────────────────
+   5. CATEGORY TAGS & SEARCH
+   Dùng trong: Blogs, Subjects, SubjectDetail
+   ────────────────────────────────────────── */
+
+.categories {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap-xs);
+}
+
+.category_tags {
+    font-size: 15px;
+    background-color: #F37E7E;
+    text-align: center;
+    border: none;
+    padding: 5px;
+    border-radius: var(--radius-md);
+    width: 100%;
+    margin-top: var(--gap-sm);
+    cursor: pointer;
+    box-shadow: var(--shadow-card);
+    color: var(--color-text-white) !important;
+    text-decoration: none !important;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.category_tags:hover {
+    transform: scale(1.04);
+    filter: brightness(0.9);
+}
+
+.show-all {
+    background-color: var(--color-bg-hover);
+    border: none;
+    color: var(--color-accent-hover);
+    padding: var(--gap-sm);
+    border-radius: var(--radius-lg);
+    width: 40%;
+    margin-top: var(--gap-md);
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+    transition: filter var(--transition-normal);
+}
+
+.show-all:hover {
+    filter: brightness(0.95);
+}
+
+.show-allBtn {
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+}
+
+#searchForm {
+    margin-bottom: var(--gap-sm);
+    display: flex;
+    justify-content: space-around;
+    border-radius: var(--radius-sm);
+}
+
+.search input {
+    font-size: 16px;
+    padding: 6px 12px;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: calc(100% - 20px);
+    margin: var(--gap-sm);
+    font-family: var(--font-main);
+}
+
+.search input::placeholder {
+    color: #999;
+}
+
+.search input:focus {
+    border-color: #555;
+}
+
+.search-icon {
+    position: absolute;
+    right: 24px;
+    top: 21%;
+    transform: translateY(-50%);
+    color: #ff5f6d;
+}
+
+/* ──────────────────────────────────────────
+   6. TABLE PATTERN
+   Dùng trong: Practice, SimulationExam, MyRegistrations
+   ────────────────────────────────────────── */
+
+.container-main {
+    background-color: var(--color-bg-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    padding: var(--padding-card);
+}
+
+.header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-name h3 {
+    font-weight: 500;
+    color: var(--color-text-dark);
+    margin: 0;
+}
+
+.Table-wrapper {
+    padding: var(--padding-card);
+    display: grid;
+    grid-auto-rows: auto;
+    gap: var(--gap-sm);
+    background-color: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    margin-top: 15px;
+}
+
+.Table-wrapper table {
+    font-weight: 500;
+    color: var(--color-text-white);
+    border-collapse: separate;
+    border-spacing: 0 var(--gap-sm);
+    width: 100%;
+}
+
+.Table-wrapper thead {
+    background-color: #FF5555;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+}
+
+.Table-wrapper tr {
+    background-color: #FF5555;
+    box-shadow: var(--shadow-card);
+}
+
+thead th:first-child {
+    border-top-left-radius: 10px;
+}
+
+thead th:last-child {
+    border-top-right-radius: 10px;
+}
+
+tbody td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+tbody td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+th, td {
+    padding: 15px 5px 15px 15px;
+}
+
+td:nth-child(n+3) {
+    text-align: center;
+}
+
+/* ──────────────────────────────────────────
+   7. TABLE — ACTION BUTTONS
+   ────────────────────────────────────────── */
+
+.header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-button {
+    border-radius: var(--radius-sm);
+    background-color: var(--color-accent);
+    font-weight: 500;
+    color: var(--color-text-white);
+    border: none;
+    padding: var(--gap-sm);
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+    font-family: var(--font-main);
+    transition: filter var(--transition-fast), transform var(--transition-fast);
+}
+
+.header-button:hover {
+    filter: brightness(0.9);
+    transform: translateY(-2px);
+}
+
+.header-button:active {
+    transform: translateY(0);
+}
+
+.details-button {
+    font-weight: 500;
+    background-color: var(--color-success);
+    border-radius: var(--radius-sm);
+    border: none;
+    padding: 5px var(--gap-sm);
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+    font-family: var(--font-main);
+    transition: background-color 0.2s ease, color 0.2s ease, filter 0.2s ease, transform 0.2s ease;
+}
+
+.details-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.9);
+}
+
+.details-button:active {
+    transform: translateY(0);
+}
+
+/* ──────────────────────────────────────────
+   8. PAGINATION — TABLE STYLE
+   Dùng trong: Practice, SimulationExam, MyRegistrations
+   ────────────────────────────────────────── */
+
+#pagination {
+    justify-self: center;
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--color-accent-hover);
+}
+
+#pagination a {
+    color: var(--color-accent-hover);
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color var(--transition-slow);
+    border: 1px solid #ddd;
+    margin: 0 4px;
+}
+
+#pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+#pagination span {
+    padding: 8px 16px;
+    text-decoration: none;
+    margin: 0 4px;
+    background-color: var(--color-bg-card-dark);
+    color: var(--color-text-white);
+    border: 1px solid var(--color-bg-card-dark);
+}
+
+#filterupdown {
+    padding: 0;
+}
+
+#subject {
+    width: 200px;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+/* ──────────────────────────────────────────
+   9. PRICE DISPLAY
+   Dùng trong: Subjects, SubjectDetail
+   ────────────────────────────────────────── */
+
+.price-text {
+    font-size: 18px;
+    color: var(--color-text-white);
+    background-color: var(--color-accent-dark);
+    border-radius: 2px;
+    padding: 0 var(--gap-sm);
+}
+
+.price_wrapper {
+    display: flex;
+    justify-content: space-evenly;
+    font-weight: 500;
+    align-items: flex-end;
+}
+
+.list-price {
+    color: #B03535;
+    font-size: 25px;
+    text-decoration: line-through solid var(--color-strikethrough);
+}
+
+.sale-price {
+    color: #BC0404;
+    font-size: 28px;
+}
+
+/* ──────────────────────────────────────────
+   10. BODY & GLOBAL DEFAULTS
+   ────────────────────────────────────────── */
+
+.page-bg {
+    background-color: var(--color-bg);
+    font-family: var(--font-main);
+    overflow-x: hidden;
+}
+
+#content-wrapper {
+    margin: 40px auto 30px;
+}
+
+.brief-text {
+    color: var(--color-text-muted);
+    margin-bottom: 0 !important;
+}
+
+/* ──────────────────────────────────────────
+   11. SUBJECT CATEGORIES TAG ROW
+   Base — các trang override màu span riêng
+   ────────────────────────────────────────── */
+
+.subject_categories {
+    font-family: var(--font-main);
+    display: flex;
+    gap: var(--radius-sm);
+    align-items: center;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.subject_categories::-webkit-scrollbar {
+    display: none;
+}
+
+.subject_categories span {
+    font-family: var(--font-main);
+    border-radius: var(--radius-sm);
+    padding: 5px var(--gap-sm);
+    font-size: 14px;
+    flex-shrink: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.subject_categories span:hover {
+    transform: scale(1.06);
+    filter: brightness(1.05);
+}
+
+/* ════════════════════════════════════════════════════
+   RESPONSIVE MEDIA QUERIES — Shared Components
+   ════════════════════════════════════════════════════ */
+
+/* ── Tablet landscape (≤ 1100px) ── */
+@media (max-width: 1100px) {
+    .main-wrapper {
+        width: 100% !important;
+    }
+
+    .main_wrapper_detail {
+        width: 100% !important;
+    }
+
+    .sidebar-box {
+        margin-right: 0;
+    }
+}
+
+/* ── Tablet portrait (≤ 992px): sidebar xuống dưới ── */
+@media (max-width: 992px) {
+    /* Container chuyển thành column */
+    .container {
+        flex-direction: column !important;
+    }
+
+    .mainContainer {
+        flex-direction: column !important;
+    }
+
+    .sidebar-container {
+        width: 100%;
+        margin-top: var(--gap-md);
+    }
+
+    .sidebar-box {
+        margin-left: 0;
+        margin-right: 0;
+        border-radius: var(--radius-sm);
+    }
+
+    /* Table header căn trái thay vì center */
+    .Table-wrapper thead {
+        text-align: left;
+    }
+
+    /* header wrapper stack */
+    .header-wrapper {
+        flex-wrap: wrap;
+        gap: var(--gap-sm);
+    }
+}
+
+/* ── Mobile landscape / tablet nhỏ (≤ 767px) ── */
+@media (max-width: 767px) {
+    #content-wrapper {
+        margin: 20px auto 20px;
+    }
+
+    /* Subject sidebar cards stack */
+    .subject-item-side {
+        flex-direction: column;
+    }
+
+    .thumbnail_side {
+        width: 100%;
+        height: 120px;
+        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    /* Latest post full width */
+    .latestPost-item {
+        flex-direction: column;
+    }
+
+    .latestPost-thumbnail img {
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+        height: 140px;
+    }
+
+    .post-details {
+        max-width: 100%;
+        padding: var(--gap-sm);
+    }
+
+    /* Category grid: 2 columns trên mobile */
+    .categories {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Table scroll horizontal */
+    .Table-wrapper {
+        overflow-x: auto;
+    }
+
+    .Table-wrapper table {
+        min-width: 500px;
+    }
+
+    /* Pagination center */
+    #pagination {
+        text-align: center;
+    }
+
+    /* Price wrapper */
+    .price_wrapper {
+        margin-right: 0;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* Show-all button full width */
+    .show-all {
+        width: 80%;
+    }
+}
+
+/* ── Mobile portrait (≤ 480px) ── */
+@media (max-width: 480px) {
+    /* Category tags: 1 column */
+    .categories {
+        grid-template-columns: 1fr;
+    }
+
+    /* Pagination buttons smaller */
+    #pagination a,
+    #pagination span {
+        padding: 6px 10px;
+        margin: 0 2px;
+    }
+
+    /* Table buttons smaller */
+    .header-button {
+        font-size: 13px;
+        padding: 6px;
+    }
+
+    .details-button {
+        font-size: 12px;
+        padding: 4px 6px;
+    }
+}

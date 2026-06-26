@@ -1,16 +1,16 @@
-﻿<div class="Field2">
+<div class="Field2">
     <!--searchbar start-->
-    <form id="searchForm" asp-controller="Subjects" asp-action="ShowSearchResults" method="post">
-        <input type="text" id="searchInput" name="searchPhrase" placeholder="Search Subjects here">
+    <form id="subjectSidebarSearchForm" asp-controller="Subjects" asp-action="ShowSearchResults" method="post">
+        <input type="text" id="subjectSidebarSearchInput" name="searchPhrase" placeholder="Search Subjects here">
     </form>
     <!--searchbar end-->
     <h1>Categories</h1>
     <!--category show start-->
     <div class="categories">
-        @foreach (var category in (List<ProjectBase.Models.CategoryModel>)ViewData["Categories"])
+        @foreach (var category in (ViewData["Categories"] as List<ProjectBase.Models.CategoryModel>) ?? new List<ProjectBase.Models.CategoryModel>())
         {
             <div class="category_tags">
-                <a id="button" asp-controller="Subjects" asp-action="SearchByTags" asp-route-tags="@category.title" class="category_buttons">@category.title</a>
+                <a asp-controller="Subjects" asp-action="SearchByTags" asp-route-tags="@category.title" class="category_buttons">@category.title</a>
                 </div>
         }
     </div>

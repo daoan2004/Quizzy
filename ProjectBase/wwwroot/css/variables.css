@@ -1,0 +1,61 @@
+/* ============================================================
+   variables.css — Design Tokens cho toàn bộ Quizly
+   Import file này ĐẦU TIÊN trong _Layout.cshtml
+   ============================================================ */
+
+:root {
+    /* ── Màu nền (Background) ── */
+    --color-bg:           #FFA8A8;   /* nền trang chính */
+    --color-bg-light:     #FFD4D4;   /* card sáng (main wrapper, sidebar) */
+    --color-bg-card:      #FF9F9F;   /* card trung bình (table wrapper, blog detail) */
+    --color-bg-card-dark: #FF8181;   /* card tối (subject item, latest post) */
+    --color-bg-card-mid:  #FFCACA;   /* category tags nhạt */
+    --color-bg-hover:     #FFB3B3;   /* hover state */
+
+    /* ── Màu chữ (Text) ── */
+    --color-text-dark:    #8D0606;   /* tiêu đề, text đậm */
+    --color-text-mid:     #752C2C;   /* rgba(117, 44, 44, 1) — logo, link */
+    --color-text-light:   #A72525;   /* rgba(167, 37, 37, 1) — nav links */
+    --color-text-muted:   #B20F0F;   /* brief text, meta */
+    --color-text-body:    #691D1D;   /* body text trong blog detail */
+    --color-text-white:   #FFFFFF;
+
+    /* ── Màu accent / trạng thái ── */
+    --color-accent:       #F33A3A;   /* primary action button */
+    --color-accent-dark:  #A40A0A;   /* price badge */
+    --color-accent-hover: #C11E1E;   /* pagination hover */
+    --color-success:      #6EFF9F;   /* nút details/mark */
+    --color-success-dark: #1FD948;   /* pay/yes button */
+    --color-lime:         #C1F949;   /* register button */
+    --color-lime-text:    #117A1C;
+    --color-info:         #3D95A8;   /* secondary button */
+    --color-strikethrough: #ff0000;  /* list price gạch */
+
+    /* ── Border Radius ── */
+    --radius-xs:  6px;
+    --radius-sm:  8px;
+    --radius-md:  16px;
+    --radius-lg:  20px;
+    --radius-full:50%;
+
+    /* ── Spacing ── */
+    --gap-xs:  5px;
+    --gap-sm:  10px;
+    --gap-md:  20px;
+    --gap-lg:  40px;
+    --padding-card: 20px;
+
+    /* ── Box Shadow ── */
+    --shadow-card:   0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.19);
+    --shadow-inward: inset 0 0 10px rgba(155, 39, 39, 0.6);
+    --shadow-modal:  0px 0px 20px rgba(0, 0, 0, 0.1);
+
+    /* ── Typography ── */
+    --font-main: "Poppins", sans-serif;
+    --font-logo: "Ingrid Darling", sans-serif;
+
+    /* ── Transition ── */
+    --transition-fast:   0.15s ease;
+    --transition-normal: 0.2s ease;
+    --transition-slow:   0.3s ease;
+}

@@ -1,9 +1,11 @@
 /* Make sure that the user can scoll when hover to the invisible scoll bar */
 
-const container = document.querySelector('.subject_categories');
-container.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    container.scrollLeft += e.deltaY;
+const categoryContainers = document.querySelectorAll('.subject_categories');
+categoryContainers.forEach((container) => {
+    container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        container.scrollLeft += e.deltaY;
+    });
 });
 
 
@@ -13,6 +15,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const posts = document.querySelectorAll('.subject-item:not(.placeholder)');
     const paginationContainer = document.querySelector('.pagination');
     const placeholder = document.querySelector('.placeholder');
+
+    if (!posts.length || !paginationContainer) {
+        return;
+    }
 
     // Create and display pagination links
     function displayPagination() {
@@ -46,9 +52,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // Adjust the placeholder visibility if the last page has an odd number of items
-        if (pageNumber === numPages && (posts.length % 2 !== 0)) {
+        if (placeholder && pageNumber === numPages && (posts.length % 2 !== 0)) {
             placeholder.style.display = 'block';
-        } else {
+        } else if (placeholder) {
             placeholder.style.display = 'none';
         }
     }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjectBase.Models.SubjectsModel>
+@model IEnumerable<ProjectBase.Models.SubjectsModel>
 
 @{
     ViewData["Title"] = "Subjects";
@@ -21,7 +21,7 @@
                             <img src="~/picture/Subject/@subject.thumbnail_color" alt="Thumbnail Image" class="thumbnail_image">
                             <div class="title_wrapper">
                                 <h2 class="subject_title">@subject.title</h2>
-                                <i id="icon" class="fa-solid fa-circle-check"></i>
+                                <i class="subject-status-icon fa-solid fa-circle-check"></i>
                             </div>
                         </div>
                         <div class="content">
@@ -31,22 +31,22 @@
                                     <span>@subjectCategory.Category.title</span>
                                 }
                             </div>
-                            <p id="brief_text">@subject.brief_info</p>
+                            <p class="brief-text">@subject.brief_info</p>
 
                             @foreach (var pricePackage in subject.Price_package.Where(pp => pp.PackageType == 1))
                             {
                                 <div class="package_wrapper">
-                                    <a id="price_text">
+                                    <div class="price-text">
                                         @pricePackage.PackageType Months Price Package For Only:
                                         <div class="price_wrapper">
-                                            <a id="list_price">@pricePackage.ListPrice USD</a> <a id="sale_price">@pricePackage.SalePrice USD</a>
+                                            <span class="list-price">@pricePackage.ListPrice USD</span> <span class="sale-price">@pricePackage.SalePrice USD</span>
                                         </div>
-                                    </a>
+                                    </div>
 
-                                    <a id="register_button" data-subject-id="@subject.ID" class="register_button" href="#">
+                                    <a class="register_button register-button" data-subject-id="@subject.ID" href="#">
                                         Register Now
                                     </a>
-                                    <input type="hidden" id="userId" name="userId" value="" />
+                                    <input type="hidden" name="userId" value="" />
                                 </div>
                             }
                         </div>
@@ -65,15 +65,15 @@
 
         <!-- Sidebar area -->
         <div class="sidebar-container">
-            <div id="" class="sidebar_subject_category">
+            <div class="sidebar_subject_category">
                 <div class="sidebar-box">
-                    @Html.Partial("_SubjectSideBarPartial")
+                    <partial name="_SubjectSideBarPartial" />
                 </div>
             </div>
 
-            <div id="" class="sidebar_subject_featured">
+            <div class="sidebar_subject_featured">
                 <div class="sidebar-box">
-                    @Html.Partial("_SubjectFeaturedPartial")
+                    <partial name="_SubjectFeaturedPartial" />
                 </div>
             </div>
         </div>
@@ -105,8 +105,6 @@
                     if (response.success) {
                         var userId = response.userDetails.userID;
                         $('input[name="userId"]').val(userId);
-                        GetPracticePagination(1, userId);
-                        loadFilter(userId);
                    
                 }            
                 }

@@ -1,25 +1,16 @@
-﻿@{
+@{
     ViewData["Title"] = "Practice";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>PracticeList</title>
-    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="~/css/Practice.css">
+<link rel="stylesheet" href="~/css/Practice.css">
 
-
-</head>
-<body>
-    <div class="row" id="content-grapper">
+<div class="row" id="content-grapper">
         <div class="container">
             <!--Practice list header-->
-            <div class="headder-wrapper">
+            <div class="header-wrapper">
                <div class="flex">
                 <div class="page-name">
                     <h3>Practice List</h3>
@@ -32,21 +23,20 @@
                     </form>
                 </div>
                 <div class="dropdown-bar">
-                    <for
-                        m>
+                    <form>
                         <select  id="levelFilter">
                             <option value="">All level</option>
                             
                         </select>
-                    </for>
+                    </form>
                 </div>
 			    </div>
                 <div class="flex" >
                 <div class="new-practice">
-                        <button class="headder-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'">New Practice</button>
+                        <button class="header-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'">New Practice</button>
                 </div>
                 <div class="simulation-exam ">
-                        <button class="headder-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">simulation exam</button>
+                        <button class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">simulation exam</button>
                 </div>
 				</div>
             </div>
@@ -197,5 +187,3 @@
 
 
     
-</body>
-</html>

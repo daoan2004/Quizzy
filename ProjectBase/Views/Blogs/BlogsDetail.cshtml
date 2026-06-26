@@ -1,20 +1,12 @@
-﻿@{
+@{
     ViewData["Title"] = "BlogDetail";
     Layout = "~/Views/Shared/_Layout.cshtml";
     
 }
 @model BlogsViewModel
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>BlogList</title>
-    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="~/css/Blogs.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
-</head>
-<body>
+<link rel="stylesheet" href="~/css/Blogs.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <div class="row" id="content-grapper">
         <div class="container">
             <!--Blogdetail show start(field1)-->
@@ -44,14 +36,14 @@
                 <!--Category show and search bar(field2)-->
                 <div class="sidebar_blog_category">
                     <div class="sidebar-box">
-                        @Html.Partial("_CategorySideBarPartial")
+                        <partial name="_CategorySideBarPartial" />
                     </div>
                 </div>
                 <!--Category show and search bar end(field2)-->
                 <!--lastest post show start(field 3)-->
-                <div class="sidebar_lastestpost">
+                <div class="sidebar_LatestPost">
                     <div class="sidebar-box">
-                        @Html.Partial("_LastestPostPartial")
+                        <partial name="_LatestPostPartial" />
                     </div>
                 </div>
                 <!--lastest post show end(field 3)-->
@@ -66,8 +58,8 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 $('.post').each(function () {
-                    var userId = $(this).find('.post-details').find('.author').attr('id').split('-')[1];
-                    loadLastestPostInfo(userId);
+                    var userId = $(this).find('.post-details').find('.author').data('user-id');
+                    loadLatestPostInfo(userId);
 
                 });
 
@@ -76,7 +68,7 @@
             
 
             // gọi yêu cầu AJAX tới BlogApi.cs để thực hiện function GetBlogUser cho lastest post
-            function loadLastestPostInfo(userId) {
+            function loadLatestPostInfo(userId) {
                 $.ajax({
                     url: '/api/BlogApi/GetBlogUser/' + userId,
                     type: 'GET',
@@ -84,7 +76,7 @@
                         var user = data[0];
                         var userHtml = '';
                         userHtml += user.fullname;
-                        $('.post').find('.post-details').find('#author-' + userId).html(userHtml);
+                        $('.post').find('.post-details').find('.author-user-' + userId).html(userHtml);
 
                     },
                     error: function (error) {
@@ -95,7 +87,3 @@
             }
         </script>
     }
-
-
-</body>
-</html>

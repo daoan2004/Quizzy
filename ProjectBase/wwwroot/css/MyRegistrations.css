@@ -1,264 +1,116 @@
-﻿* {
-    padding: 5px;
-}
+/* ============================================================
+   MyRegistrations.css — Trang danh sách đăng ký
+   Styles chung đã chuyển sang shared.css
+   ============================================================ */
 
 body {
-    background-color: #FFA8A8 !important;
-    font-family: "Poppins", sans-serif;
+    background-color: var(--color-bg);
+    font-family: var(--font-main);
     overflow-x: hidden;
-    align-content: center;
 }
-#summited{
-    margin-bottom:20px;
+
+#summited {
+    margin-bottom: var(--gap-md);
 }
+
 #content-wrapper {
     margin: 40px auto 30px;
 }
+
 .mainContainer {
     grid-auto-rows: auto;
-    gap: 10px;
-    background-color: #FFD4D4 !important;
-    border-radius: 16px !important;
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
-    padding: 20px;
+    gap: var(--gap-sm);
+    background-color: var(--color-bg-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    padding: var(--padding-card);
 }
+
 .dropdown-bar {
-    margin: 0 10px;
+    margin: 0 var(--gap-sm);
 }
 
-    .dropdown-bar select {
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-#mainContent {
-    display:flex;
-}
-
-.headder-wrapper {
-    display: flex;
-    justify-content: space-between;
-}
-
-.Table-wrapper {
-    padding: 20px;
-    display: grid;
-    grid-auto-rows: auto;
-    gap: 10px;
-    background-color: #FF9F9F !important;
-    border-radius: 16px !important;
-    margin-top:15px;
-}
-
-    .Table-wrapper table {
-        font-weight: 500;
-        color: #A12525;
-        border-collapse: separate;
-        border-spacing: 0 10px;
-    }
-
-    .Table-wrapper thead {
-        background-color: #FF5555;
-    }
-
-    .Table-wrapper tr {
-        background-color: #FFCCCC;
-    }
-
-.page-name h3 {
-    font-weight: 500;
-    color: #8D0606;
-}
-
-.headder-button {
-    border-radius: 8px;
-    background-color: #F33A3A;
-    font-weight: 500;
-    color: #FFFFFF;
-    border: none;
-    padding: 10px;
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
-}
-
-.details-button {
-    font-weight: 500;
-    background-color: #6EFF9F;
-    border-radius: 8px;
-    border: none;
+.dropdown-bar select {
     padding: 5px;
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: var(--font-main);
 }
 
-thead th:first-child {
-    border-top-left-radius: 10px; /* Adjust the border-radius value as needed */
-}
-
-thead th:last-child {
-    border-top-right-radius: 10px; /* Adjust the border-radius value as needed */
-}
-
-/*tbody td:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-tbody td:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}*/
-
-th, td {
-    padding: 15px 5px 15px 15px;
-}
-
-    td:nth-child(n+3) {
-        text-align: center;
-    }
-
-#filterupdown {
-    padding: 0;
-}
-
-#pagination {
-    justify-self: center;
-    font-weight: 500;
-    font-size: 20px;
-    color: #C11E1E;
-}
-
-    #pagination a {
-        color: #C11E1E;
-        padding: 8px 16px;
-        text-decoration: none;
-        transition: background-color 0.3s;
-        border: 1px solid #ddd;
-        margin: 0 4px;
-    }
-
-        #pagination a:hover:not(.active) {
-            background-color: #ddd;
-        }
-
-    #pagination span {
-        padding: 8px 16px;
-        text-decoration: none;
-        margin: 0 4px;
-        background-color: #FF8181;
-        color: white;
-        border: 1px solid #FF8181;
-    }
-
-#subject {
-    width: 200px;
-}
-
-.flex {
+#mainContent {
     display: flex;
 }
 
-thead {
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
+/* ── Table row overrides (MyRegistrations — light row color) ── */
+.Table-wrapper tr {
+    background-color: #FFCCCC;
+    color: #A12525;
 }
 
-tr {
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
-}
-.sidebar-box {
-    margin-right: -36px;
-    flex: 1;
-    padding: 20px;
-    background-color: #FFD4D4 !important;
-    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.19) !important;
-    border-radius: 8px !important;
-    margin-left: 30px;
-}
-
-.sidebar-container {
-    flex: 1;
-}
-
-.sidebar_subject_featured {
-    margin-top: 30px;
-}
-
-.search-bar input {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-.search-bar button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-}
+/* ── Button Container ── */
 .button-row td {
     text-align: center;
 }
+
 .button-container {
     display: flex;
-    justify-content: space-evenly; /* Các nút sẽ nằm ngang và cách đều nhau */
+    justify-content: space-evenly;
     align-items: center;
 }
 
 .bttn {
-    padding: 5px 10px;
-    margin: 5px; /* Khoảng cách giữa các nút */
-    border-radius: 16px;
+    padding: 5px var(--gap-sm);
+    margin: 5px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    border:none;
-    color:white;
-}
-.btn-new-practice {
-    background-color: #5585FF;
-}
-
-.btn-simulation-exam {
-    background-color: #3BCBC2;
+    border: none;
+    color: var(--color-text-white);
+    font-family: var(--font-main);
+    font-weight: 500;
+    transition: filter var(--transition-fast), transform var(--transition-fast);
 }
 
-.btn-details {
-    background-color: #FF7373;
-}
-.btn-pay {
-    background-color: #1FD948;
-}
-.btn-cancel {
-    background-color: #F33A3A;
-}
-.btn:hover {
-    background-color: #0056b3;
+.bttn:hover {
+    filter: brightness(0.9);
+    transform: translateY(-1px);
 }
 
-.btnControl{
-    padding-top:0px;
-    padding-bottom:0px;
+.bttn:active {
+    transform: translateY(0);
 }
-.btn-yes {
-    background-color: #1FD948;
+
+.btn-new-practice    { background-color: #5585FF; }
+.btn-simulation-exam { background-color: #3BCBC2; }
+.btn-details         { background-color: #FF7373; }
+.btn-pay             { background-color: var(--color-success-dark); }
+.btn-cancel          { background-color: var(--color-accent); }
+.btn-yes             { background-color: var(--color-success-dark); }
+.btn-no              { background-color: var(--color-accent); }
+
+.btnControl {
+    padding-top: 0;
+    padding-bottom: 0;
 }
-.btn-no {
-    background-color: #F33A3A;
-}
-#myModal {
-    display: none;
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
+
+/* ── Cancel Confirmation Modal ── */
+#myModal,
 #payModal {
     display: none;
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    background-color: rgba(0, 0, 0, 0.4);
 }
+
 .modal-content {
     justify-content: center;
     background-color: #fefefe;
     text-align: center;
     margin: auto;
-    padding: 20px;
+    padding: var(--padding-card);
     border: 1px solid #888;
     width: 80%;
+    border-radius: var(--radius-sm);
 }
+
+/* ── Toast Notification ── */
 #notification {
     position: fixed;
     top: 0;
@@ -268,16 +120,15 @@ tr {
     text-align: center;
     z-index: 1000;
     font-size: 16px;
+    font-family: var(--font-main);
 }
 
-    #notification.success {
-        background-color: #4CAF50; /* Green */
-        color: white;
-    }
+#notification.success {
+    background-color: #4CAF50;
+    color: var(--color-text-white);
+}
 
-    #notification.error {
-        background-color: #f44336; /* Red */
-        color: white;
-    }
-
-
+#notification.error {
+    background-color: #f44336;
+    color: var(--color-text-white);
+}

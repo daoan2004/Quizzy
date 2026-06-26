@@ -1,66 +1,76 @@
-﻿* {
-    padding: 5px;
-}
+/* ============================================================
+   Quiz.css — Trang làm bài quiz
+   ============================================================ */
 
 body {
-    background-color: #FFA8A8 !important;
-    font-family: "Poppins", sans-serif;
+    background-color: var(--color-bg);
+    font-family: var(--font-main);
 }
+
+/* ── Main Container ── */
 #content-grapper {
     background-color: #FC7878;
-    border-radius: 16px;
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
 }
+
 .main-detail {
     flex: 3;
-    background-color: #FFB1B1 !important;
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
-    border-radius: 16px !important;
+    background-color: #FFB1B1;
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-md);
     padding: 0;
 }
-.top-detail {  
-    font-weight: 500;
-    color: #840000;
 
+.top-detail {
+    font-weight: 500;
+    color: var(--color-text-dark);
 }
+
 .Practice_Detail {
     display: flex;
     padding: 0;
-    gap: 20px;
+    gap: var(--gap-md);
 }
+
+/* ── Question Item ── */
 .quiz-item {
     display: flex;
     font-weight: 500;
     font-size: 18px;
 }
-.main-wrapper{
 
-}
+/* ── Progress Section ── */
 .Practice-Progress {
     flex: 3;
-    padding : 0;
-    background-color: #FFB1B1 !important;
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
-    border-radius: 16px !important;
+    background-color: #FFB1B1;
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-md);
     padding: 15px;
     margin-top: 15px;
 }
+
+/* ── Sidebar Question Navigator ── */
 .quiz-side {
     width: 200px;
     border-right: 2px solid black;
 }
+
 .quiz-answer {
     font-size: 16px;
 }
+
 .status {
     font-size: 16px;
 }
+
 .quiz-number {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* tạo lưới với 5 cột */
+    grid-template-columns: repeat(5, 1fr);
     gap: 5px;
     justify-items: center;
 }
+
 .question-button {
     display: inline-block;
     width: 45px;
@@ -75,74 +85,109 @@ body {
     font-weight: 500;
     font-size: 20px;
     background-color: #FF6161;
-    border-radius: 16px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: filter var(--transition-fast), transform var(--transition-fast);
 }
+
+.question-button:hover {
+    filter: brightness(0.9);
+    transform: scale(1.05);
+}
+
+/* ── Question Images ── */
 .quest-img {
     display: grid;
     gap: 15px;
-    grid-template-columns: repeat(3, 1fr); /* 2 cột */
+    grid-template-columns: repeat(3, 1fr);
 }
-    .quest-img img {
-        width: 100%;
-        height: 150px;
-    }
+
+.quest-img img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+/* ── Timer ── */
 .timer {
-    color: #840000;
+    color: var(--color-text-dark);
     font-weight: 500;
     font-size: 30px;
 }
+
+/* ── Navigation ── */
 .quiz-navigation h3 {
-    color: #840000;
+    color: var(--color-text-dark);
     font-weight: 500;
     font-size: 30px;
 }
+
 .prev-button {
-    background-color: #FF8181;
-    border-radius: 16px;
-    color: white;
+    background-color: var(--color-bg-card-dark);
+    border-radius: var(--radius-md);
+    color: var(--color-text-white);
+    border: none;
+    cursor: pointer;
+    transition: filter var(--transition-fast);
 }
-.next-button {
-    background-color: #16E17F;
-    border-radius: 16px;
-    color: white;
-}
-.mark-button {
-    background-color: #16E17F;
-    border-radius: 16px;
-    color: white;
-}
+
+.prev-button:hover { filter: brightness(0.9); }
+
+.next-button,
+.mark-button,
 .finish-attempt {
     background-color: #16E17F;
-    border-radius: 16px;
-    color: white;
+    border-radius: var(--radius-md);
+    color: var(--color-text-white);
+    border: none;
+    cursor: pointer;
+    transition: filter var(--transition-fast);
+}
+
+.next-button:hover,
+.mark-button:hover,
+.finish-attempt:hover { filter: brightness(0.9); }
+
+.finish-attempt {
     width: 14%;
 }
+
 .unmark-button {
-    background-color: #FF8181;
-    border-radius: 16px;
-    color: white;
+    background-color: var(--color-bg-card-dark);
+    border-radius: var(--radius-md);
+    color: var(--color-text-white);
+    border: none;
+    cursor: pointer;
+    transition: filter var(--transition-fast);
 }
+
+.unmark-button:hover { filter: brightness(0.9); }
+
+/* ── Progress Bar ── */
 .P-bar p {
-    color: #840000;
+    color: var(--color-text-dark);
     font-weight: 500;
     font-size: 30px;
     padding: 0;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
+
 #progress-bar-container {
     width: 100%;
     background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 #progress-bar {
     width: 5%;
-    height: 20px;
-    background-color: #76c7c0;
-}
-body {
-    font-family: Arial, sans-serif;
+    height: 8px;
+    background: linear-gradient(90deg, #FF8181, #FF4444);
+    border-radius: 10px;
+    transition: width 0.4s ease;
 }
 
+/* ── Submit Popup ── */
 .popup {
     display: none;
     position: fixed;
@@ -157,7 +202,61 @@ body {
 
 .popup-content {
     background-color: white;
-    padding: 20px;
+    padding: var(--padding-card);
     border-radius: 5px;
     text-align: center;
+}
+
+/* ════════════════════════════════════
+   RESPONSIVE — Quiz Page
+   ════════════════════════════════════ */
+@media (max-width: 992px) {
+    .Practice_Detail {
+        flex-direction: column;
+    }
+
+    .quiz-side {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid black;
+        padding-bottom: var(--gap-sm);
+        margin-bottom: var(--gap-sm);
+    }
+
+    .quest-img {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .quiz-number {
+        grid-template-columns: repeat(7, 1fr);
+    }
+
+    .question-button {
+        width: 36px;
+        height: 36px;
+        font-size: 15px;
+        margin: 2px;
+    }
+
+    .timer {
+        font-size: 22px;
+    }
+
+    .quest-img {
+        grid-template-columns: 1fr;
+    }
+
+    .prev-button,
+    .next-button,
+    .mark-button,
+    .finish-attempt {
+        font-size: 13px;
+        padding: 5px 10px;
+    }
+
+    .finish-attempt {
+        width: auto;
+    }
 }

@@ -20,7 +20,8 @@ namespace ProjectBase.Controllers
 
         public IActionResult Index()
         {
-            var slider = _dataContext.Slider.ToList();
+            ViewData["MetaDescription"] = "Quizly home page with featured subjects, latest learning posts, and quiz practice recommendations.";
+            var slider = _dataContext.Slider.Include(s => s.User).ToList();
             var lastestpost = _dataContext.Blogs.Where(blog => EF.Functions.DateDiffDay(blog.updatedAt, DateTime.Now) <= 14).ToList();
             var hotsubject = _dataContext.Subjects.Where(subject => subject.isHot == true).ToList();
             var blogview = _dataContext.Blogs.ToList();
@@ -43,6 +44,7 @@ namespace ProjectBase.Controllers
         
         public IActionResult Privacy()
         {
+            ViewData["MetaDescription"] = "Learn more about Quizly and the online quiz learning experience.";
             return View();
         }
 

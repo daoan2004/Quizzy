@@ -4,7 +4,7 @@
         console.log("Register Now button clicked!"); // Log message to console
 
         var subjectId = $(this).data('subject-id');
-        var userId = $('#userId').val();
+        var userId = $('input[name="userId"]').first().val();
 
         // Set userId to 0 if it is null or empty
         if (!userId) {

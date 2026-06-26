@@ -1,184 +1,74 @@
-﻿* {
-    padding: 5px;
+/* ============================================================
+   Practice.css — Practice List, Detail, NewPractice pages
+   Styles chung đã chuyển sang shared.css
+   ============================================================ */
+
+body {
+    background-color: var(--color-bg);
+    font-family: var(--font-main);
+    overflow-x: hidden;
 }
-body{
-    background-color: #FFA8A8 !important;
-    font-family: "Poppins", sans-serif;
-    overflow-x:hidden;
-    align-content: center;
-}
+
 #content-wrapper {
     margin: 40px auto 30px;
 }
-.container { 
-    background-color: #FFD4D4 !important;
-    border-radius: 16px !important;
+
+/* ── Container ── */
+.container {
+    background-color: var(--color-bg-light);
+    border-radius: var(--radius-md);
     padding: 20px 20px 0 20px;
-
-}
-.headder-wrapper {
-    display: flex;
-    justify-content:space-between;
-}
-.Table-wrapper {
-    padding: 20px;
-    display: grid;
-    grid-auto-rows: auto;
-    gap: 10px;
-    background-color: #FF9F9F !important;
-    border-radius: 16px !important;
-}
-    .Table-wrapper table {
-        font-weight: 500;
-        color: #FFFFFF;
-        border-collapse: separate;
-        border-spacing: 0 10px;
-    }
-    .Table-wrapper thead {
-        background-color: #FF5555;
-        text-align: center;
-    }
-    .Table-wrapper tr {
-        background-color: #FF5555;
-    }
-.page-name h3 {
-    font-weight: 500;
-    color: #8D0606;
-}
-.headder-button {
-    border-radius: 8px;
-    background-color: #F33A3A;
-    font-weight: 500;
-    color: #FFFFFF;
-    border: none;
-    padding: 10px;
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
-}
-.details-button {
-    font-weight: 500;
-    background-color: #6EFF9F;
-    border-radius: 8px;
-    border: none;
-    padding: 5px;
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
 }
 
-thead th:first-child {
-    border-top-left-radius: 10px; /* Adjust the border-radius value as needed */
-}
-
-thead th:last-child {
-    border-top-right-radius: 10px; /* Adjust the border-radius value as needed */
-}
-tbody td:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius:10px;
-}
-tbody td:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-th, td {
-    padding: 15px 5px 15px 15px;
-}
-    td:nth-child(n+3) {
-        text-align: center;
-    }
-
-#filterupdown {
-    padding: 0;
-}
-
-#pagination {
-    justify-self: center;
-    font-weight: 500;
-    font-size: 20px;
-    color: #C11E1E;
-}
-    #pagination a {
-        color: #C11E1E;
-        padding: 8px 16px;
-        text-decoration: none;
-        transition: background-color 0.3s;
-        border: 1px solid #ddd;
-        margin: 0 4px;
-    }
-    #pagination a:hover:not(.active) {
-        background-color: #ddd;
-    }
-    #pagination span {
-        padding: 8px 16px;
-        text-decoration: none;
-        margin: 0 4px;
-        background-color: #FF8181;
-        color: white;
-        border: 1px solid #FF8181;
-    }
-#subject {
-    width: 200px;
-}
-.flex {
-    display:flex;
-}
-thead {
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
-}
-tr {
-box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
-}
-/*css for practice detail*/
+/* ── Practice Detail Card ── */
 .practice_detail {
-    padding: 20px;
+    padding: var(--padding-card);
     display: grid;
     grid-auto-rows: auto;
-    gap: 10px;
-    background-color: #FF9F9F !important;
-    border-radius: 16px !important;
-    color: #FFFFFF;
+    gap: var(--gap-sm);
+    background-color: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    color: var(--color-text-white);
 }
+
+/* ── Subject Preview (Practice Detail — larger thumbnail) ── */
 .subject {
     padding: 60px;
 }
+
 .main_subject {
     display: flex;
-    background-color: #FF8282;
+    background-color: var(--color-bg-card-dark);
     justify-content: center;
     border-radius: 10px;
-    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: var(--shadow-card);
     padding: 0;
 }
-.thumbnail_side {
+
+/* Override shared thumbnail_side for Practice Detail (larger) */
+.subject .thumbnail_side {
     width: 360px;
     height: 210px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border-radius: 10px;
     background-color: #f5424e;
 }
-.content_side {
-    display: flex;
-    flex-direction: column;
-    font-size: 12px;
-    flex-grow: 1;
+
+/* Override shared content_side for Practice Detail */
+.subject .content_side {
+    font-size: 14px;
     padding: 25px;
     justify-content: space-between;
 }
-.subject_categories_side{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 0;
-}
-#category_side {
+
+.subject_categories_side .category-side-tag {
     background-color: #FF5252;
     border-radius: 11px;
     padding: 6px;
     font-weight: 500;
-    color: #FFFFFF;
+    color: var(--color-text-white);
     font-size: 15px;
 }
+
+/* ── Detail Stats Grid ── */
 .detail_wrapper {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -186,23 +76,28 @@ box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important
     text-align: center;
     column-gap: 30px;
     row-gap: 30px;
-    padding: 40px;
+    padding: var(--gap-lg);
 }
+
 .detail-item {
     background-color: #FF6969;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     justify-content: center;
-    padding: 20px;
+    padding: var(--padding-card);
 }
+
 .detail {
     background-color: #FF4C4C;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
 }
+
 .bottom-button {
     display: flex;
-    padding: 20px;
+    padding: var(--padding-card);
     justify-content: center;
 }
+
+/* ── Scroll List (Chọn đề bài) ── */
 .scroll-list-item {
     width: 350px;
     height: 200px;
@@ -211,71 +106,165 @@ box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important
     justify-content: center;
     flex-shrink: 0;
     border-radius: 10px;
+    transition: border var(--transition-normal);
 }
+
 .scroll-list-wrapper {
     display: grid;
     grid-auto-flow: column;
-    gap: 20px;
-    overflow: overlay;
+    gap: var(--gap-md);
+    overflow: auto;
     border-radius: 10px;
 }
-.newpractice-headder {
+
+.scroll-list-item.selected {
+    border: 8px solid #2196F3;
+}
+
+/* ── New Practice Form ── */
+.newpractice-header {
     display: flex;
     justify-content: space-between;
 }
+
 .input-area {
     background-color: #FF6969;
-    border-radius: 16px;
+    border-radius: var(--radius-md);
     margin-top: 15px;
-    padding:  40px;
-    
+    padding: var(--gap-lg);
 }
-.difficulty-level {
-    display: flex;
-}
+
 .form-group {
     font-weight: 500;
-    color: #FFFFFF;
+    color: var(--color-text-white);
     display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
 }
+
 .form-topic {
     font-weight: 500;
-    color: #FFFFFF;
+    color: var(--color-text-white);
     display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
 }
+
 .difficulty-level {
+    display: flex;
     font-weight: 500;
-    color: #FFFFFF;
+    color: var(--color-text-white);
+    gap: var(--gap-sm);
+    align-items: center;
 }
+
 .input-form {
-    border-radius:10px;
+    border-radius: 10px;
 }
-.scroll-list-item.selected {  
-    border: 8px solid #2196F3; /* Đường viền xanh khi được chọn */
-    transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu mượt mà */
-}
+
 #test-duration {
     width: 250px;
 }
+
 .submit-button {
-    border-radius: 8px;
-    background-color: #F33A3A;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-accent);
     font-weight: 500;
-    color: #FFFFFF;
+    color: var(--color-text-white);
     border: none;
-    padding: 10px;
-    box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19) !important;
+    padding: var(--gap-sm);
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+    transition: filter var(--transition-fast), transform var(--transition-fast);
 }
+
+.submit-button:hover {
+    filter: brightness(0.9);
+    transform: translateY(-2px);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+}
+
 .alertbottom {
-    margin-top: 20px;
+    margin-top: var(--gap-md);
     font-weight: 500;
     font-size: 20px;
-    color: #FFFFF;
+    color: var(--color-text-white);
 }
+
 .Back {
     padding: 0;
-    margin-left: 20px;
+    margin-left: var(--gap-md);
 }
+
 .dropdown-bar {
     align-content: center;
+}
+
+/* ════════════════════════════════════
+   RESPONSIVE — Practice Page
+   ════════════════════════════════════ */
+@media (max-width: 992px) {
+    .subject .thumbnail_side {
+        width: 220px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 767px) {
+    .detail_wrapper {
+        grid-template-columns: 1fr;
+        padding: var(--gap-md);
+        row-gap: var(--gap-md);
+    }
+
+    .subject {
+        padding: var(--gap-md);
+    }
+
+    .subject .thumbnail_side {
+        width: 100%;
+        height: 180px;
+    }
+
+    .subject .content_side {
+        padding: var(--gap-md) var(--gap-sm);
+    }
+
+    .bottom-button {
+        padding: var(--gap-sm);
+    }
+
+    .scroll-list-item {
+        width: 260px;
+        height: 160px;
+    }
+
+    .input-area {
+        padding: var(--gap-md);
+    }
+
+    .form-group,
+    .form-topic,
+    .difficulty-level {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #test-duration {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-button {
+        width: 100%;
+    }
 }

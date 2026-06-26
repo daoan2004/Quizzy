@@ -96,6 +96,8 @@ input[type=radio] {
     box-shadow: 0 4px 2px 0 rgba(0,0,0,0.2), 0 4px 8px 0 rgba(0,0,0,0.19);
     margin-right: 60px;
     margin-left: 60px;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 #register_button_popup_2 {
@@ -113,9 +115,22 @@ input[type=radio] {
     box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 8px 0 rgba(0, 0, 0, 0.19);
     margin-right: 60px;
     margin-left: 60px;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-#package_text {
+#register_button_popup_1:hover,
+#register_button_popup_2:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.95);
+}
+
+#register_button_popup_1:active,
+#register_button_popup_2:active {
+    transform: translateY(0);
+}
+
+.package-text {
     background-color: #A40A0A;
     color: white;
     padding-right: 5px;

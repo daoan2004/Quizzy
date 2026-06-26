@@ -1,25 +1,27 @@
-﻿.modal-content {
+/* ============================================================
+   Popup.css — Modal styles cho Login / Register / ChangePassword
+   ============================================================ */
+
+/* Modal container */
+.modal-content {
     background-color: #FFB5B5;
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 30px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    width: 848px;
     max-width: 100%;
     display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-.formRegister-groupContent, .formRegister-group {
-    margin-bottom: 15px;
+/* Tiêu đề modal */
+.modal-title {
+    font-family: "Ingrid Darling", sans-serif;
+    font-size: 40px;
+    color: rgba(117, 44, 44, 1);
+    text-decoration: none;
+    margin-left: 10px;
 }
-
-    .formRegister-groupContent input {
-        width: 450px;
-        height: 55px;
-        top: -433px;
-        left: 2585px;
-        gap: 0px;
-        border-radius: 16px;
-    }
 
 .modal-titleLeft {
     text-align: center;
@@ -27,6 +29,7 @@
     font-size: 24px;
     font-weight: bold;
 }
+
 .modal-titleRight {
     font-family: "Ingrid Darling", sans-serif;
     text-align: center;
@@ -37,144 +40,150 @@
 }
 
 .modal-titleRightOr {
-    margin-top: 10px; /* Tạo khoảng cách với nút đăng ký */
-    text-align: center; /* Căn giữa nội dung */
-    font-size: 16px; /* Kích thước chữ */
-    color: #6c757d; /* Màu chữ */
-}
-.btn-primary {
-    width: 186px;
-    height: 55px;
-    top: -177px;
-    left: 3124px;
-    gap: 0px;
-    border-radius: 16px;
-    background-color: #3D95A8;
-    border: none;
-}
-.modal-content {
-    background-color: #FFB5B5;
-    border-radius: 10px;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 16px;
+    color: #6c757d;
 }
 
-.modal-title {
-    font-family: "Ingrid Darling", sans-serif;
-    font-size: 40px;
-    color: rgba(117, 44, 44, 1);
-    text-decoration: none;
-    margin-left: 10px;
+/* Form fields */
+.formRegister-groupContent,
+.formRegister-group {
+    margin-bottom: 15px;
+}
+
+.formRegister-groupContent input {
+    width: 100%;
+    height: 45px;
+    border-radius: 16px;
+    border: 1px solid #ccc;
+    padding: 0 12px;
 }
 
 .form-control {
-    width: 450px;
-    height: 55px;
-    top: -392px;
-    left: 1241px;
-    gap: 0px;
+    width: 100%;
+    height: 45px;
     border-radius: 16px;
     margin-bottom: 10px;
 }
 
+/* Buttons */
 .btn-primary {
-    width: 450px;
-    height: 53px;
-    top: -205px;
-    left: 1241px;
-    gap: 0px;
+    width: 100%;
+    height: 45px;
     border-radius: 16px;
     background-color: #FF7777;
     border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
+
+.btn-primary:hover {
+    filter: brightness(0.9);
 }
 
 .btn-secondary {
-    width: 186px;
-    height: 55px;
-    top: -94px;
-    left: 1352px;
-    gap: 0px;
+    width: 100%;
+    height: 45px;
     border-radius: 16px;
     background-color: #3D95A8;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: filter 0.2s ease;
 }
+
+.btn-secondary:hover {
+    filter: brightness(0.9);
+}
+
+/* Layout bên phải (logo Quizly) */
 .right {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
+
 .title {
     color: #B03636;
 }
+
+/* Gender picker */
 #genderContainer {
     display: block;
     margin-top: 10px;
 }
-    #genderContainer .genderOptions {
-        display: flex;
-        gap: 10px;
-        margin-top: -35px;
-    }
-    #genderContainer .title {
-        margin-bottom: 10px;
-    }
+
+#genderContainer .genderOptions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+#genderContainer .title {
+    margin-bottom: 10px;
+}
+
+.genderOptions {
+    display: flex;
+    gap: 10px;
+}
+
 .genderOption {
     display: flex;
     align-items: center;
     border: 1px solid #ccc;
-    padding: 5px 10px;
+    padding: 8px 12px;
     border-radius: 16px;
     cursor: pointer;
     transition: background-color 0.3s, border-color 0.3s;
     background-color: #FFFFFF;
-    width: 209px;
-    height: 55px;
-    top: -100px;
-    left: 2826px;
-    gap: 0px;
+    min-width: 100px;
 }
 
-    .genderOption label {
-        margin: 0;
-    }
+.genderOption label {
+    margin: 0;
+    cursor: pointer;
+}
 
-    .genderOption input[type="radio"] {
-        width: 30px;
-        height: 30px;
-        top: -88px;
-        left: 2756px;
-        padding: 2.5px;
-        gap: 0px;
-        margin-right: 10px;
-    }
+.genderOption input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    cursor: pointer;
+}
 
+.genderOption:hover {
+    border-color: #FF7777;
+    background-color: #FFF0F0;
+}
+
+/* Links */
 .btn-link {
-    color: #007bff; /* màu chữ mặc định */
-    text-decoration: none !important; /* bỏ gạch dưới mặc định */
+    color: #007bff;
+    text-decoration: none !important;
 }
 
-    .btn-link:hover,
-    .btn-link:focus {
-        color: #007bff !important; /* màu chữ khi di chuột đến, không đổi */
-        text-decoration: none !important; /* không gạch dưới khi di chuột đến */
-    }
+.btn-link:hover,
+.btn-link:focus {
+    color: #007bff !important;
+    text-decoration: none !important;
+}
+
+/* Alert */
 .alert {
     margin-top: 5px;
     display: none;
 }
 
-#lable-text {
-    font-family: "Poppins", sans-serif !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    color: #922727 !important;
-    margin-bottom: 5px !important;
-}
-
-.genderOptions {
-    display: flex;
-    gap: 10px; /* khoảng cách giữa các phần tử, bạn có thể thay đổi giá trị này */
-}
-
-.genderOption {
-    display: flex;
-    align-items: center;
+/* Label text */
+.label-text {
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #922727;
+    margin-bottom: 5px;
 }

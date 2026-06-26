@@ -1,4 +1,4 @@
-﻿@model QuizReviewViewModel
+@model QuizReviewViewModel
 
 @{
     ViewData["Title"] = "Quiz Review";
@@ -9,14 +9,7 @@
 <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="~/css/QuizReview.css" />
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Quiz Review</title>
-</head>
-<body>
-    <div class="row" id="content-wrapper">
+    <meta name="viewport" content="width=device-width" />    <div class="row" id="content-wrapper">
         <div class="container">
             <div class="main-wrapper">
                 <div class="quiz_review_header">
@@ -24,14 +17,14 @@
                     <button id="filter-correct" class="btn btn-primary">Show Correct Answers Only</button>
                     <div class="text_style">
                         <p><strong>Title:</strong> @Model.Practice?.title</p>
-                        <p><strong>Taken Date:</strong> @Model.Practice.taken_date</p>
+                        <p><strong>Taken Date:</strong> @Model.Practice?.taken_date</p>
                         <p><strong>Quiz Duration:</strong> @ViewBag.DurationFormatted</p>
                         <p><strong>Time Taken:</strong> @ViewBag.TimeTakenFormatted</p>
-                        <p><strong>Number of Questions:</strong> @Model.Practice.number_quest</p>
-                        <p><strong>Number of Correct Answers:</strong> @Model.Practice.number_correct</p>
-                        <p><strong>Number of Wrong Answers:</strong> @(Model.Practice.number_quest - Model.Practice.number_correct)</p>
-                        <p><strong>Percentage of Correct Answers:</strong> @(((Model.Practice.number_correct / (double)Model.Practice.number_quest) * 100).ToString("F2"))%</p>
-                        <p><strong>Status:</strong> @(Model.Practice.Status ? "Completed" : "Incomplete")</p>              
+                        <p><strong>Number of Questions:</strong> @(Model.Practice?.number_quest ?? 0)</p>
+                        <p><strong>Number of Correct Answers:</strong> @(Model.Practice?.number_correct ?? 0)</p>
+                        <p><strong>Number of Wrong Answers:</strong> @((Model.Practice?.number_quest ?? 0) - (Model.Practice?.number_correct ?? 0))</p>
+                        <p><strong>Percentage of Correct Answers:</strong> @(((Model.Practice?.number_quest ?? 0) > 0 ? ((Model.Practice?.number_correct ?? 0) / (double)(Model.Practice?.number_quest ?? 1)) * 100 : 0).ToString("F2"))%</p>
+                        <p><strong>Status:</strong> @(Model.Practice?.Status == true ? "Completed" : "Incomplete")</p>              
                     </div>
                 </div>
 
@@ -336,5 +329,3 @@
             });
         });
     </script>
-</body>
-</html>

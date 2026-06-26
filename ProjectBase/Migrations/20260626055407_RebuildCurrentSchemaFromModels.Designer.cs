@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectBase.Helpers;
 
@@ -11,9 +12,11 @@ using ProjectBase.Helpers;
 namespace ProjectBase.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260626055407_RebuildCurrentSchemaFromModels")]
+    partial class RebuildCurrentSchemaFromModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,26 +189,6 @@ namespace ProjectBase.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("PracticeLevel");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            Description = "Easy",
-                            title = "Easy"
-                        },
-                        new
-                        {
-                            ID = 2,
-                            Description = "Medium",
-                            title = "Medium"
-                        },
-                        new
-                        {
-                            ID = 3,
-                            Description = "Hard",
-                            title = "Hard"
-                        });
                 });
 
             modelBuilder.Entity("ProjectBase.Models.PracticeModel", b =>
@@ -531,14 +514,6 @@ namespace ProjectBase.Migrations
                     b.HasKey("id");
 
                     b.ToTable("SubjectTopic");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            subjectId = 0L,
-                            title = "General"
-                        });
                 });
 
             modelBuilder.Entity("ProjectBase.Models.Subject_CategoryModel", b =>
@@ -611,38 +586,6 @@ namespace ProjectBase.Migrations
                     b.HasKey("RoleID");
 
                     b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleID = 1L,
-                            RoleName = "Admin"
-                        },
-                        new
-                        {
-                            RoleID = 2L,
-                            RoleName = "Customer"
-                        },
-                        new
-                        {
-                            RoleID = 3L,
-                            RoleName = "Marketing"
-                        },
-                        new
-                        {
-                            RoleID = 4L,
-                            RoleName = "Sale"
-                        },
-                        new
-                        {
-                            RoleID = 5L,
-                            RoleName = "Expert"
-                        },
-                        new
-                        {
-                            RoleID = 6L,
-                            RoleName = "Guest"
-                        });
                 });
 
             modelBuilder.Entity("ProjectBase.Models.DAO.User", b =>

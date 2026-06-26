@@ -1,29 +1,22 @@
-﻿@{
+@{
     ViewData["Title"] = "NewPractice";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>New Practice</title>
     <link rel="stylesheet" href="~/css/Practice.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
-</head>
-<body>
     <div class="row" id="content-grapper">
         <div class="container" style="padding: 25px;">
-            <!--New Practice Headder start-->
-			<div class="newpractice-headder"> 			
+            <!--New Practice header start-->
+			<div class="newpractice-header"> 			
 				<div class="page-name">
 					<h3>New Practice Form</h3>
 			    </div>
 				<div class="simulation-button">
-                    <button class="headder-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">Simulation exam</button>
+                    <button class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">Simulation exam</button>
 				</div>			
 			</div>
-            <!--New Practice Headder end-->
+            <!--New Practice header end-->
             <!--Subject scroll list start-->
             
                 <div class="scroll-list-wrapper">
@@ -86,7 +79,7 @@
                 <div class="bottom-button">
                 <button class="submit-button">Practice</button> 
                 <div class="Back">
-                    <button class="headder-button" onclick="window.history.back()">Back</button>
+                    <button class="header-button" onclick="window.history.back()">Back</button>
                 </div>
                 <div class="alertbottom"></div>
             </div>
@@ -227,6 +220,3 @@
 
             </script>
         }
-
-</body>
-</html>

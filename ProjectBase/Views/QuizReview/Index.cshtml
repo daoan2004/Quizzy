@@ -1,4 +1,4 @@
-﻿@model QuizReviewViewModel
+@model QuizReviewViewModel
 
 @{
     ViewData["Title"] = "Quiz Review";
@@ -9,17 +9,10 @@
 <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="~/css/QuizReview.css" />
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Quiz Review</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="viewport" content="width=device-width" />    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="~/css/QuizReview.css" />
  
-</head>
-<body>
     <div class="row" id="content-wrapper">
         <div class="container">
             <!-- Main content area -->
@@ -48,7 +41,7 @@
 
                                 <p class="text_style">
                                     <strong>@(quiz_review.QuizBank != null ? quiz_review.QuizBank.Title : "N/A")</strong>
-                                    @switch (quiz_review.QuizBank.GroupID)
+                                    @switch (quiz_review.QuizBank?.GroupID)
                                     {
                                         case "1":
                                             <span>(Y/N Question)</span>
@@ -68,6 +61,8 @@
                                     }
                                 </p>
 
+                                @if (quiz_review.QuizBank != null)
+                                {
                                 <div class="question">
                                     @if (@quiz_review.QuizBank.Qcorrect == "A")
                                     {
@@ -237,9 +232,14 @@
                                         </p>
                                     }
                                 </div>
+                                }
+                                else
+                                {
+                                    <p class="text_style">Question data is not available.</p>
+                                }
 
                                 <p class="text_style"><strong>Your Answer:</strong> @quiz_review.QAnswer</p>
-                                <p class="text_style"><strong>Correct Answer:</strong> @quiz_review.QuizBank.Qcorrect</p>
+                                <p class="text_style"><strong>Correct Answer:</strong> @(quiz_review.QuizBank?.Qcorrect ?? "N/A")</p>
                             </div>
                         }
                     }
@@ -281,5 +281,3 @@
             }, 500);
         });
     </script>
-</body>
-</html>

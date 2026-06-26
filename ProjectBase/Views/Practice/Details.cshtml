@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "PracticeDetail";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -8,7 +8,7 @@
     <div class="row" id="content-grapper">
         <div class="Container">
             <!--Practice detail header wrapper start-->
-            <div class="headder-wrapper">
+            <div class="header-wrapper">
                 <div class="flex">
                     <div class="page-name">
                         <h3>Practice Detail</h3>
@@ -17,10 +17,10 @@
                 </div>
                 <div class="flex">
                     <div class="new-practice">
-                    <button class="headder-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'">New Practice</button>
+                    <button class="header-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'">New Practice</button>
                     </div>
                     <div class="simulation-exam ">
-                    <button class="headder-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">Simulation exam</button>
+                    <button class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'">Simulation exam</button>
                     </div>
                 </div>
             </div>
@@ -37,11 +37,11 @@
                         </div>
 						
                         <div class="content_side">
-                        <h5 id="brief_text">@Model.Subject.Description</h5>
+                        <h5 class="brief-text">@Model.Subject.Description</h5>
                             <div class="subject_categories_side">   
                             @foreach (var Subject in Model.Subject.Subject_Category.ToList())
                             {
-                                <span id="category_side">@Subject.Category.title</span>
+                                <span class="category-side">@Subject.Category.title</span>
                             }
                         </div>
                         </div>
@@ -135,10 +135,10 @@
 			</div>
             <div class="bottom-button">            
                 <div class="Back">
-                <button class="headder-button" onclick="window.history.back()">Back</button>
+                <button class="header-button" onclick="window.history.back()">Back</button>
                 </div>
                 <div class="Review-practice">
-                <button class="headder-button" onclick="location.href='@Url.Action("Handle", "Quiz", new { id = Model.ID })'">Review Practice</button>
+                <button class="header-button" onclick="location.href='@Url.Action("Handle", "Quiz", new { id = Model.ID })'">Review Practice</button>
                 </div>       
 			</div>
         </div>
