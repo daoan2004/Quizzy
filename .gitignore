@@ -361,3 +361,30 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Quizzy local run logs
+logs/
+ProjectBase/logs/
+
+# Local environment and machine-specific settings
+.env
+.env.*
+*.local.json
+appsettings.Local.json
+appsettings.*.Local.json
+
+# Playwright / browser automation output
+test-results/
+playwright-report/
+blob-report/
+
+# Editor and OS noise
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
