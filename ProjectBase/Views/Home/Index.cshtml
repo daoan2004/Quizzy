@@ -4,123 +4,124 @@
 }
 @model HomeViewModel
 
-<link rel="stylesheet" href="~/css/IndexStyle.css" />
-<!-- Welcome page -->
+@section Styles {
+    <link rel="stylesheet" href="~/css/IndexStyle.css" asp-append-version="true" />
+}
 
-<div class="container">
-    <div class="homepage-header" data-aos="fade-up">
-        <p class="home-eyebrow"><i class="bi bi-stars"></i> Learn faster with Quizly</p>
-        <h1>The one and only quiz for you</h1>
-        <p>Browse subjects, practice smarter, and review your progress in one smooth place.</p>
-        <a asp-controller="Subjects" asp-action="Index" id="start_button" class="btn py-md-2 px-4">
-            Get Started <i class="bi bi-arrow-right"></i>
-        </a>
-    </div>
-    <div class="homepage-detail">
-        <div class="main-wrapper">
-                <div id="Mainslider" class="carousel slide glass-panel" data-bs-ride="carousel" data-aos="fade-up" data-aos-delay="100">
+<div class="home-page-wrapper">
+    <section class="home-hero">
+        <div class="home-hero-copy">
+            <p class="home-eyebrow"><i class="bi bi-stars"></i> Learn faster with Quizly</p>
+            <h1>The one and only quiz for you</h1>
+            <p>Browse subjects, practice smarter, and review your progress in one smooth place.</p>
+            <div class="home-hero-actions">
+                <a asp-controller="Subjects" asp-action="Index" id="start_button" class="btn">
+                    Get Started <i class="bi bi-arrow-right"></i>
+                </a>
+                <a asp-controller="Blogs" asp-action="Index" class="home-secondary-link">
+                    Read blogs <i class="bi bi-journal-text"></i>
+                </a>
+            </div>
+        </div>
+    </section>
 
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="~/picture/Carousel/OpenSlide.jpg" class="carousel-img" alt="OpentSlide">
-                            <div class="carousel-caption d-none d-lg-block">
-                                <h2>Check out some blog!!!</h2>
-                                <a asp-controller="Blogs" asp-action="Index" class="btn carousel-cta py-md-2 px-4">Get Started</a>
-                            </div>
+    <section class="home-content-grid">
+        <div class="home-main-column">
+            <div id="Mainslider" class="home-slider swiper js-swiper glass-panel" data-loop="false" data-tablet-slides="1" data-desktop-slides="1">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide home-hero-slide">
+                        <div class="home-slide-content">
+                            <span>Featured</span>
+                            <h2>Explore learning stories</h2>
+                            <a asp-controller="Blogs" asp-action="Index" class="home-slide-button">Open blogs <i class="bi bi-arrow-right"></i></a>
                         </div>
-                        @foreach (var item in Model.Sliders)
-                        {
-                            <div class="carousel-item ">
-                                <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID"><img src="/picture/Carousel/@item.image" class="carousel-img" alt="@item.Title"></a>
-                                <div class="carousel-caption d-none d-lg-block">
-                                    <h2>@item.Title</h2>
-                                    <p>
-                                        @item.description
-                                    </p>
-                                    <p>by @(item.User?.fullname ?? "Quizly Team") @item.updatedAt.ToString("dd/MM/yyyy")</p>
-                                </div>
-                            </div>
-                        }
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#Mainslider" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#Mainslider" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-
-                <div class="hot-post glass-panel" data-aos="fade-up">
-                    <h1 id="blogs_text"><i class="bi bi-fire"></i> Hot Posts</h1>
-                    <section class="BlogIndex px-1 py-1 p-md-1">
-                        <div class="container">
-                            @foreach (var item in Model.BlogView)
-                            {
-                                <div class="mb-4" data-aos="fade-up">
-                                    <div class="media d-flex align-items-center glass-card js-tilt-card">
-                                        <img class="mr-3 img-fluid post-thumb blogs-image" src="/picture/Carousel/@item.blog_picture" alt="image">
-                                        <div class="media-body">
-                                            <h2 class="title blog-title-color"><a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">@item.title</a></h2>
-                                            <div class="meta "><span class="date">Published: @item.publishAt.ToString("dd/MM/yyyy")</span></div>
-                                            <div class="intro">@item.description</div>
-                                            <a class="more-link" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">Read more <i class="bi bi-arrow-right"></i></a>
-                                        </div><!--//media-body-->
-                                    </div><!--//media-->
-                                </div>
-                            }
+                    @foreach (var item in Model.Sliders)
+                    {
+                        <div class="swiper-slide home-slider-item">
+                            <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID" class="home-slide-link">
+                                <img src="/picture/Carousel/@item.image" class="home-slide-image" alt="@item.Title" loading="lazy" decoding="async">
+                            </a>
+                            <div class="home-slide-content">
+                                <span>@item.updatedAt.ToString("dd/MM/yyyy")</span>
+                                <h2>@item.Title</h2>
+                                <p>@item.description</p>
+                            </div>
                         </div>
-                    </section>
-                </div> 
-        </div>
-
-
-        <div class="sidebar_LatestPost">
-                <div class="sidebar-box" data-aos="fade-left">
-                    <partial name="_LatestPostPartial" />
-                </div> 
-                <div id="featureSubjectPartial" class="sidebar-box" data-aos="fade-left" data-aos-delay="100">
-                    <partial name="_SubjectFeaturedPartial" />
-                </div>
-                
-        </div>
-    </div>                  
-</div>
-    @section Scripts {
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.latestPost-item').each(function () {
-                    var userId = $(this).find('.post-details').find('.author').data('user-id');
-                    loadLatestPostInfo(userId);
-
-                });
-
-            });
-
-            // gọi yêu cầu AJAX tới BlogApi.cs để thực hiện function GetBlogUser cho lastest post
-            function loadLatestPostInfo(userId) {
-                $.ajax({
-                    url: '/api/BlogApi/GetBlogUser/' + userId,
-                    type: 'GET',
-                    success: function (data) {
-                        if (!data || !data.length) {
-                            return;
-                        }
-                        var user = data[0];
-                        var userHtml = '';
-                        userHtml += '<i class="bi bi-person"></i> '+ user.fullname;
-                        $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html(userHtml);
-
-                    },
-                    error: function (error) {
-                        console.error('Error loading user info:', error);
-                        $('.blog-post').find('#userid-' + userId).html('<span>Error loading user info</span>');
                     }
-                });
+                </div>
+                <div class="swiper-pagination"></div>
+                <button class="swiper-button-prev" type="button" aria-label="Previous slide"></button>
+                <button class="swiper-button-next" type="button" aria-label="Next slide"></button>
+            </div>
+
+            <section class="home-posts glass-panel">
+                <div class="home-section-heading">
+                    <h2><i class="bi bi-fire"></i> Hot Posts</h2>
+                    <a asp-controller="Blogs" asp-action="Index">View all <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="home-post-list">
+                    @foreach (var item in Model.BlogView)
+                    {
+                        <article class="home-post-card glass-card js-tilt-card" data-aos="fade-up">
+                            <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID" class="home-post-image-link">
+                                <img class="home-post-image" src="/picture/Carousel/@item.blog_picture" alt="@item.title" loading="lazy" decoding="async">
+                            </a>
+                            <div class="home-post-body">
+                                <p class="home-post-date">Published: @item.publishAt.ToString("dd/MM/yyyy")</p>
+                                <h3><a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">@item.title</a></h3>
+                                <p>@item.description</p>
+                                <a class="home-more-link" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">
+                                    Read more <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </article>
+                    }
+                </div>
+            </section>
+        </div>
+
+        <aside class="home-sidebar">
+            <div class="sidebar-box" data-aos="fade-left">
+                <partial name="_LatestPostPartial" />
+            </div>
+            <div id="featureSubjectPartial" class="sidebar-box" data-aos="fade-left" data-aos-delay="100">
+                <partial name="_SubjectFeaturedPartial" />
+            </div>
+        </aside>
+    </section>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.latestPost-item').each(function () {
+                var userId = $(this).find('.post-details').find('.author').data('user-id');
+                loadLatestPostInfo(userId);
+            });
+        });
+
+        function loadLatestPostInfo(userId) {
+            if (!userId) {
+                return;
             }
-        </script>      
-    }
 
-        
+            $.ajax({
+                url: '/api/BlogApi/GetBlogUser/' + userId,
+                type: 'GET',
+                success: function (data) {
+                    if (!data || !data.length) {
+                        return;
+                    }
 
+                    var user = data[0];
+                    var userHtml = '<i class="bi bi-person"></i> ' + user.fullname;
+                    $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html(userHtml);
+                },
+                error: function () {
+                    $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html('<i class="bi bi-person"></i> Quizly');
+                }
+            });
+        }
+    </script>
+}

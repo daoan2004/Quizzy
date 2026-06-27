@@ -2,7 +2,9 @@
     ViewData["Title"] = "NewPractice";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-    <link rel="stylesheet" href="~/css/Practice.css">
+@section Styles {
+    <link rel="stylesheet" href="~/css/Practice.css" asp-append-version="true" />
+}
     <div class="row" id="content-grapper">
         <div class="container practice-shell glass-panel" data-aos="fade-up">
             <!--New Practice header start-->
@@ -99,11 +101,11 @@
                                     // Bắt đầu tải mục đầu tiên sau khi lấy được userId
                                     loadSubject(userId);
                                 } else {
-                                    alert('Failed to get user details: ' + response.message);
+                                    $('.scroll-list-wrapper').html('<div class="form-state-message">Failed to load your subjects.</div>');
                                 }
                             },
                             error: function () {
-                                alert('Error retrieving user details.');
+                                $('.scroll-list-wrapper').html('<div class="form-state-message">Error retrieving user details.</div>');
                             }
                         });
                     }
@@ -114,9 +116,13 @@
                             method: 'GET',
                             success: function (response) {
                                 const seenSubjects = new Set();
+                                if (!response || !response.length) {
+                                    $('.scroll-list-wrapper').html('<div class="form-state-message">No registered subjects found.</div>');
+                                    return;
+                                }
                                 response.forEach(function (item) {
                                     if (!seenSubjects.has(item.subjects.title)) {
-                                        $('.scroll-list-wrapper').append('<div class="scroll-list-item glass-card js-tilt-card" data-subject="' + item.subjects.id + '"><div class="title_wrapper_side"><h2 class="subject_title_side">' + item.subjects.title + '</h2></div></div>');
+                                        $('.scroll-list-wrapper').append('<div class="scroll-list-item glass-card" data-subject="' + item.subjects.id + '"><div class="title_wrapper_side"><h2 class="subject_title_side">' + item.subjects.title + '</h2></div></div>');
                                         seenSubjects.add(item.subjects.title);
                                     }
                                 });
@@ -125,7 +131,7 @@
                                 }
                             },
                              error: function () {
-                                        alert('Error retrieving user details.');
+                                        $('.scroll-list-wrapper').html('<div class="form-state-message">Error retrieving subjects.</div>');
                              }
 
                         });
@@ -203,7 +209,8 @@
                                     window.location.href = '/Quiz/Handle?UserID=' + userId + '&PracticeID=' + practiceID + '&IsPractice=' + isPractice;
                                 },
                                 error: function (xhr, status, error) {
-                                    alert("An error occurred: " + error);
+                                    $('.alertbottom').empty();
+                                    $('.alertbottom').append('Could not create practice. Please try again.');
                                 }
                             });
                             

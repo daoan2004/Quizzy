@@ -1,28 +1,29 @@
-<div class="Field3">
-    <h1 class="featured_text">Featured Subjects</h1>
-    <div class="grid-container">
+<div class="home-side-panel Field3">
+    <h1 class="home-side-title featured_text"><i class="bi bi-stars"></i> Featured Subjects</h1>
+    <div class="swiper js-swiper sidebar-swiper" data-loop="true" data-tablet-slides="1" data-desktop-slides="1">
+        <div class="swiper-wrapper">
         @foreach (var subject in (ViewData["FeaturedSubjects"] as List<ProjectBase.Models.SubjectsModel>) ?? new List<ProjectBase.Models.SubjectsModel>())
         {
-            <a asp-controller="Subjects" asp-action="Details" asp-route-id="@subject.ID" class="subject-link">
-                <div class="subject-item-side glass-card js-tilt-card">
-                    <div class="thumbnail_side">
-                        <img src="~/picture/Subject/@subject.thumbnail_color" alt="Thumbnail Image Side" class="thumbnail_image_side">
-                        <div class="title_wrapper_side">
-                            <h2 class="subject_title_side">@subject.title</h2>
-                        </div>
-                    </div>
-                    <div class="content_side">
-                        <p class="brief-text">@subject.brief_info</p>
-                        <div class="subject_categories_side">
+            <div class="swiper-slide">
+                <a asp-controller="Subjects" asp-action="Details" asp-route-id="@subject.ID" class="home-side-card home-side-subject-card subject-link js-tilt-card">
+                    <span class="home-side-image">
+                        <img src="~/picture/Subject/@subject.thumbnail_color" alt="@subject.title" loading="lazy" decoding="async">
+                    </span>
+                    <span class="home-side-card-body">
+                        <span class="home-side-card-title">@subject.title</span>
+                        <span class="home-side-description">@subject.brief_info</span>
+                        <span class="home-side-tags">
                             @foreach (var subjectCategory in subject.Subject_Category)
                             {
-                                <span class="category-side">@subjectCategory.Category.title</span>
+                                <span>@subjectCategory.Category.title</span>
                             }
-                        </div>
-                    </div>
-                </div>
-            </a>
+                        </span>
+                    </span>
+                </a>
+            </div>
         }
+        </div>
+        <div class="swiper-pagination"></div>
     </div>
     <div class="contact-wrapper"><a class="contact" href="https://fpt.edu.vn/">Contact us <i class="bi bi-share"></i></a></div>
 </div>

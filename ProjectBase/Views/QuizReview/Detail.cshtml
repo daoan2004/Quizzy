@@ -5,16 +5,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="~/css/QuizReview.css" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/QuizReview.css" asp-append-version="true" />
+}
 
-    <meta name="viewport" content="width=device-width" />    <div class="row" id="content-wrapper">
-        <div class="container">
+    <div class="row" id="content-wrapper">
+        <div class="container quiz-review-shell">
             <div class="main-wrapper">
-                <div class="quiz_review_header">
-                    <h1 class="text_style">Quiz Review</h1>
-                    <button id="filter-correct" class="btn btn-primary">Show Correct Answers Only</button>
+                <div class="quiz_review_header glass-panel" data-aos="fade-up">
+                    <h1 class="text_style"><i class="bi bi-clipboard-check"></i> Quiz Review</h1>
+                    <button id="filter-correct" class="btn btn-primary"><i class="bi bi-filter-circle"></i> Show Correct Answers Only</button>
                     <div class="text_style">
                         <p><strong>Title:</strong> @Model.Practice?.title</p>
                         <p><strong>Taken Date:</strong> @Model.Practice?.taken_date</p>
@@ -37,7 +37,7 @@
 
                         foreach (var quiz_review in reviews)
                         {
-                            <div id="question-@quiz_review.QuizID" class="quiz_question">
+                            <div id="question-@quiz_review.QuizID" class="quiz_question glass-card" data-aos="fade-up">
                                 <div class="quiz_bank" data-correct="@quiz_review.QuizBank.Qcorrect" data-answer="@quiz_review.QAnswer">
                                     <div class="quiz_title">
                                         <p class="text_style question_number"><strong>Question @index:</strong></p>
@@ -72,26 +72,26 @@
                                             {
                                                 @if (@quiz_review.QAnswer.Contains("A"))
                                                 {
-                                                    <p style="background-color: #00FF47;">
-                                                        <strong>A:</strong> @quiz_review.QuizBank.QA <span><i class="fa-solid fa-check"></i></span>
+                                                    <p class="answer-review is-correct">
+                                                        <strong>A:</strong> @quiz_review.QuizBank.QA <span><i class="bi bi-check-lg"></i></span>
                                                     </p>
                                                 }
                                                 else
                                                 {
-                                                    <p style="background-color: #00FF47;">
+                                                    <p class="answer-review is-correct">
                                                         <strong>A:</strong> @quiz_review.QuizBank.QA
                                                     </p>
                                                 }
                                             }
                                             else if (@quiz_review.QAnswer.Contains("A"))
                                             {
-                                                <p style="background-color: #ff2323;">
-                                                    <strong>A:</strong> @quiz_review.QuizBank.QA <span><i class="fa-solid fa-x"></i></span>
+                                                <p class="answer-review is-wrong">
+                                                    <strong>A:</strong> @quiz_review.QuizBank.QA <span><i class="bi bi-x-lg"></i></span>
                                                 </p>
                                             }
                                             else
                                             {
-                                                <p>
+                                                <p class="answer-review">
                                                     <strong>A:</strong> @quiz_review.QuizBank.QA
                                                 </p>
                                             }
@@ -103,26 +103,26 @@
                                             {
                                                 @if (@quiz_review.QAnswer.Contains("B"))
                                                 {
-                                                    <p style="background-color: #00FF47;">
-                                                        <strong>B:</strong> @quiz_review.QuizBank.QB <span><i class="fa-solid fa-check"></i></span>
+                                                    <p class="answer-review is-correct">
+                                                        <strong>B:</strong> @quiz_review.QuizBank.QB <span><i class="bi bi-check-lg"></i></span>
                                                     </p>
                                                 }
                                                 else
                                                 {
-                                                    <p style="background-color: #00FF47;">
+                                                    <p class="answer-review is-correct">
                                                         <strong>B:</strong> @quiz_review.QuizBank.QB
                                                     </p>
                                                 }
                                             }
                                             else if (@quiz_review.QAnswer.Contains("B"))
                                             {
-                                                <p style="background-color: #ff2323;">
-                                                    <strong>B:</strong> @quiz_review.QuizBank.QB <span><i class="fa-solid fa-x"></i></span>
+                                                <p class="answer-review is-wrong">
+                                                    <strong>B:</strong> @quiz_review.QuizBank.QB <span><i class="bi bi-x-lg"></i></span>
                                                 </p>
                                             }
                                             else
                                             {
-                                                <p>
+                                                <p class="answer-review">
                                                     <strong>B:</strong> @quiz_review.QuizBank.QB
                                                 </p>
                                             }
@@ -134,26 +134,26 @@
                                             {
                                                 @if (@quiz_review.QAnswer.Contains("C"))
                                                 {
-                                                    <p style="background-color: #00FF47;">
-                                                        <strong>C:</strong> @quiz_review.QuizBank.QC <span><i class="fa-solid fa-check"></i></span>
+                                                    <p class="answer-review is-correct">
+                                                        <strong>C:</strong> @quiz_review.QuizBank.QC <span><i class="bi bi-check-lg"></i></span>
                                                     </p>
                                                 }
                                                 else
                                                 {
-                                                    <p style="background-color: #00FF47;">
+                                                    <p class="answer-review is-correct">
                                                         <strong>C:</strong> @quiz_review.QuizBank.QC
                                                     </p>
                                                 }
                                             }
                                             else if (@quiz_review.QAnswer.Contains("C"))
                                             {
-                                                <p style="background-color: #ff2323;">
-                                                    <strong>C:</strong> @quiz_review.QuizBank.QC <span><i class="fa-solid fa-x"></i></span>
+                                                <p class="answer-review is-wrong">
+                                                    <strong>C:</strong> @quiz_review.QuizBank.QC <span><i class="bi bi-x-lg"></i></span>
                                                 </p>
                                             }
                                             else
                                             {
-                                                <p>
+                                                <p class="answer-review">
                                                     <strong>C:</strong> @quiz_review.QuizBank.QC
                                                 </p>
                                             }
@@ -165,26 +165,26 @@
                                             {
                                                 @if (@quiz_review.QAnswer.Contains("D"))
                                                 {
-                                                    <p style="background-color: #00FF47;">
-                                                        <strong>D:</strong> @quiz_review.QuizBank.QD <span><i class="fa-solid fa-check"></i></span>
+                                                    <p class="answer-review is-correct">
+                                                        <strong>D:</strong> @quiz_review.QuizBank.QD <span><i class="bi bi-check-lg"></i></span>
                                                     </p>
                                                 }
                                                 else
                                                 {
-                                                    <p style="background-color: #00FF47;">
+                                                    <p class="answer-review is-correct">
                                                         <strong>D:</strong> @quiz_review.QuizBank.QD
                                                     </p>
                                                 }
                                             }
                                             else if (@quiz_review.QAnswer.Contains("D"))
                                             {
-                                                <p style="background-color: #ff2323;">
-                                                    <strong>D:</strong> @quiz_review.QuizBank.QD <span><i class="fa-solid fa-x"></i></span>
+                                                <p class="answer-review is-wrong">
+                                                    <strong>D:</strong> @quiz_review.QuizBank.QD <span><i class="bi bi-x-lg"></i></span>
                                                 </p>
                                             }
                                             else
                                             {
-                                                <p>
+                                                <p class="answer-review">
                                                     <strong>D:</strong> @quiz_review.QuizBank.QD
                                                 </p>
                                             }
@@ -196,26 +196,26 @@
                                             {
                                                 @if (@quiz_review.QAnswer.Contains("E"))
                                                 {
-                                                    <p style="background-color: #00FF47;">
-                                                        <strong>E:</strong> @quiz_review.QuizBank.QE <span><i class="fa-solid fa-check"></i></span>
+                                                    <p class="answer-review is-correct">
+                                                        <strong>E:</strong> @quiz_review.QuizBank.QE <span><i class="bi bi-check-lg"></i></span>
                                                     </p>
                                                 }
                                                 else
                                                 {
-                                                    <p style="background-color: #00FF47;">
+                                                    <p class="answer-review is-correct">
                                                         <strong>E:</strong> @quiz_review.QuizBank.QE
                                                     </p>
                                                 }
                                             }
                                             else if (@quiz_review.QAnswer.Contains("E"))
                                             {
-                                                <p style="background-color: #ff2323;">
-                                                    <strong>E:</strong> @quiz_review.QuizBank.QE <span><i class="fa-solid fa-x"></i></span>
+                                                <p class="answer-review is-wrong">
+                                                    <strong>E:</strong> @quiz_review.QuizBank.QE <span><i class="bi bi-x-lg"></i></span>
                                                 </p>
                                             }
                                             else
                                             {
-                                                <p>
+                                                <p class="answer-review">
                                                     <strong>E:</strong> @quiz_review.QuizBank.QE
                                                 </p>
                                             }
@@ -227,26 +227,26 @@
                                             {
                                                 @if (@quiz_review.QAnswer.Contains("F"))
                                                 {
-                                                    <p style="background-color: #00FF47;">
-                                                        <strong>F:</strong> @quiz_review.QuizBank.QF <span><i class="fa-solid fa-check"></i></span>
+                                                    <p class="answer-review is-correct">
+                                                        <strong>F:</strong> @quiz_review.QuizBank.QF <span><i class="bi bi-check-lg"></i></span>
                                                     </p>
                                                 }
                                                 else
                                                 {
-                                                    <p style="background-color: #00FF47;">
+                                                    <p class="answer-review is-correct">
                                                         <strong>F:</strong> @quiz_review.QuizBank.QF
                                                     </p>
                                                 }
                                             }
                                             else if (@quiz_review.QAnswer.Contains("F"))
                                             {
-                                                <p style="background-color: #ff2323;">
-                                                    <strong>F:</strong> @quiz_review.QuizBank.QF <span><i class="fa-solid fa-x"></i></span>
+                                                <p class="answer-review is-wrong">
+                                                    <strong>F:</strong> @quiz_review.QuizBank.QF <span><i class="bi bi-x-lg"></i></span>
                                                 </p>
                                             }
                                             else
                                             {
-                                                <p>
+                                                <p class="answer-review">
                                                     <strong>F:</strong> @quiz_review.QuizBank.QF
                                                 </p>
                                             }
@@ -265,7 +265,7 @@
             </div>
 
             <div class="sidebar-container">
-                <div class="sidebar-wrapper">
+                <div class="sidebar-wrapper glass-panel" data-aos="fade-left">
                     <h1><strong>Quiz Navigation</strong></h1>
                     <ul class="sidebar-menu">
                         @if (Model.QuizReviews != null)
@@ -286,46 +286,54 @@
                     </ul>
                 </div>
             </div>
+        </div>
+    </div>
 
     <script>
-        $(document).ready(function () {
-            // Smooth scrolling for sidebar buttons
-            $('.sidebar-button').on('click', function (e) {
-                e.preventDefault();
-                var target = $(this).data('target');
-                $('html, body').animate({
-                    scrollTop: $(target).offset().top
-                }, 500);
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.sidebar-button').forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const target = document.querySelector(button.dataset.target);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
             });
 
-            // Filter button functionality
-            let filterState = 0; // 0 = show all, 1 = show correct, 2 = show incorrect
+            let filterState = 0;
+            const filterButton = document.getElementById('filter-correct');
 
-            $('#filter-correct').on('click', function () {
-                filterState = (filterState + 1) % 3; // Cycle through states
+            if (!filterButton) {
+                return;
+            }
 
-                $('.quiz_question').each(function () {
-                    var quizReview = $(this);
-                    var correctAnswers = quizReview.find('.quiz_bank').data('correct').trim();
-                    var userAnswers = quizReview.find('.quiz_bank').data('answer').trim();
+            filterButton.addEventListener('click', function () {
+                filterState = (filterState + 1) % 3;
+
+                document.querySelectorAll('.quiz_question').forEach(function (quizReview) {
+                    const quizBank = quizReview.querySelector('.quiz_bank');
+                    const correctAnswers = (quizBank?.dataset.correct || '').trim();
+                    const userAnswers = (quizBank?.dataset.answer || '').trim();
 
                     if (filterState === 0) {
-                        quizReview.show(); // Show all
+                        quizReview.hidden = false;
                     } else if (filterState === 1) {
-                        quizReview.toggle(correctAnswers === userAnswers); // Show correct
+                        quizReview.hidden = correctAnswers !== userAnswers;
                     } else if (filterState === 2) {
-                        quizReview.toggle(correctAnswers !== userAnswers); // Show incorrect
+                        quizReview.hidden = correctAnswers === userAnswers;
                     }
                 });
 
-                // Update button text based on filter state
                 if (filterState === 0) {
-                    $(this).text('Show Correct Answers Only');
+                    filterButton.innerHTML = '<i class="bi bi-filter-circle"></i> Show Correct Answers Only';
                 } else if (filterState === 1) {
-                    $(this).text('Show Incorrect Answers Only');
+                    filterButton.innerHTML = '<i class="bi bi-filter-circle"></i> Show Incorrect Answers Only';
                 } else {
-                    $(this).text('Show All Answers');
+                    filterButton.innerHTML = '<i class="bi bi-filter-circle"></i> Show All Answers';
                 }
             });
         });
     </script>
+
+

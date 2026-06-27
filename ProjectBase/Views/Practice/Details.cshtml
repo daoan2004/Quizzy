@@ -3,7 +3,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @model PracticeModel
-	<link rel="stylesheet" href="~/css/Practice.css">
+@section Styles {
+    <link rel="stylesheet" href="~/css/Practice.css" asp-append-version="true" />
+}
     <div class="row" id="content-grapper">
         <div class="Container practice-shell glass-panel" data-aos="fade-up">
             <!--Practice detail header wrapper start-->

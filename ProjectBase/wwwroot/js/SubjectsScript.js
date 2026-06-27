@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const numPages = Math.ceil(posts.length / postsPerPage);
         posts.forEach((post, index) => {
             if (index >= startIndex && index < endIndex) {
-                post.style.display = 'flex';
+                post.style.display = '';
             } else {
                 post.style.display = 'none';
             }

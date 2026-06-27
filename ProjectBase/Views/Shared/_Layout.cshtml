@@ -5,20 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="@(ViewData["MetaDescription"] ?? "Quizly helps learners browse subjects, read learning posts, practice quizzes, and review progress.")" />
     <title>@ViewData["Title"] - Quizly</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="~/css/variables.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="false" />
-    <link rel="stylesheet" href="~/css/header-footer.css" />
-    <link rel="stylesheet" href="~/css/shared.css" />
-    <link rel="stylesheet" href="~/css/Popup.css" />
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/lib/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="~/css/variables.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/header-footer.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/shared.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Popup.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body id="bootstrap-overrides">
@@ -60,8 +55,8 @@
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <div class="action" id="userMenu">
-                            <button class="profile" type="button" aria-label="Open user menu">
-                                <i class="fa-solid fa-user"></i>
+                            <button class="profile" type="button" aria-label="Open user menu" aria-expanded="false" aria-haspopup="true">
+                                <i class="bi bi-person"></i>
                             </button>
                             <div class="menu">
                                 <ul>
@@ -112,26 +107,39 @@
     </div>
 
     <footer class="footer">
-        <div class="footer-logo">
-            <a asp-area="" asp-controller="Home" asp-action="Index" class="logo">Quizly</a>
-        </div>
-        <nav class="footer-navbar">
-            <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-            <a asp-area="" asp-controller="Blogs" asp-action="Index">Blogs</a>
-            <a asp-area="" asp-controller="Subjects" asp-action="Index">Subjects</a>
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">About us</a>
-        </nav>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="footer-logo logo">Quizly</a>
+                <p>Browse subjects, practice with focus, and keep your learning progress visible.</p>
+            </div>
 
+            <nav class="footer-column" aria-label="Footer navigation">
+                <h2>Explore</h2>
+                <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-area="" asp-controller="Blogs" asp-action="Index">Blogs</a>
+                <a asp-area="" asp-controller="Subjects" asp-action="Index">Subjects</a>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">About us</a>
+            </nav>
+
+            <nav class="footer-column" aria-label="Learning navigation">
+                <h2>Learn</h2>
+                <a asp-area="" asp-controller="Practice" asp-action="Index">Practice list</a>
+                <a asp-area="" asp-controller="SimulationExam" asp-action="Index">Simulation exam</a>
+                <a asp-area="" asp-controller="MyRegistrations" asp-action="Index">My registrations</a>
+                <a href="https://fpt.edu.vn/">Contact us</a>
+            </nav>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; @DateTime.Now.Year Quizly</span>
+            <span>Built for steady study sessions.</span>
+        </div>
     </footer>
 
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+    <script src="~/lib/swiper/swiper-bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await Html.PartialAsync("~/Views/Shared/Login.cshtml")
     @await Html.PartialAsync("~/Views/Shared/Register.cshtml", new RegisterModel())

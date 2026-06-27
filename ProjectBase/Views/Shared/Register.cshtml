@@ -3,7 +3,7 @@
     <div class="container">
         <div class="modal fade" tabindex="-1" id="registerModal" data-keyboard="false" data-backdrop="static">
             <div class="modal-dialog modal-lg">
-                <div class="modal-content">
+                <div class="modal-content auth-modal">
                     <div id="registerSuccessMessage" class="alert alert-success" style="display:none;">
                         Registration successful. Please check email to verify your account!
                     </div>
@@ -16,7 +16,7 @@
                             <div class="row">
                                 
                                 <div class="col-md-8">
-                                    <div class="modal-titleLeft">Register</div>
+                                    <div class="modal-titleLeft"><i class="bi bi-person-plus"></i> Register</div>
                                     <div class="formRegister-groupContent">
                                         <input asp-for="fullname" type="text" placeholder="Enter fullname" id="inputFullName" />
                                     </div>
@@ -50,11 +50,11 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 right">
-                                        <div class="modal-titleRight">Quizly</div>
+                                        <div class="modal-titleRight"><i class="bi bi-stars"></i> Quizly</div>
                                         <div class="form-group">
-                                        <button type="submit" class="btn btn-secondary btn-register" id="registerModelBtn">Register</button>
-                                        <div class="modal-titleRightOr">or has Account</div>
-                                        <button type="button" class="btn btn-secondary btn-login" id="loginBtnRegister">Login</button>
+                                        <button type="submit" class="btn btn-secondary btn-register" id="registerModelBtn"><i class="bi bi-check2-circle"></i> Register</button>
+                                        <div class="modal-titleRightOr">Already have an account?</div>
+                                        <button type="button" class="btn btn-secondary btn-login" id="loginBtnRegister"><i class="bi bi-box-arrow-in-right"></i> Login</button>
                                         </div>
                                 </div>
                             </div>
@@ -152,7 +152,7 @@
 
                             // Đóng modal đăng ký (sử dụng Bootstrap)
                             setTimeout(function () {
-                                $('#registerModal').modal('hide');
+                                window.QuizlyUi?.hideModal('#registerModal');
                                 // Xóa thông tin trong các trường nhập liệu
                                 $('#registerForm')[0].reset();
                             }, 2000); // 2000ms = 2s
@@ -184,9 +184,9 @@
 
             $('#loginBtnRegister').click(function () {
                 // Hiện modal đăng nhập
-                $('#loginModal').modal('show');
+                window.QuizlyUi?.showModal('#loginModal');
                 // Hiển thị modal đăng ký
-                $('#registerModal').modal('hide');
+                window.QuizlyUi?.hideModal('#registerModal');
             });
         });
     </script>

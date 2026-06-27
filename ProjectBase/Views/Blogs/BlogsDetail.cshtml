@@ -9,8 +9,10 @@
     var authorName = Model.BlogUser?.fullname ?? "Quizly Team";
 }
 
-<link rel="stylesheet" href="~/css/Blogs.css">
-    <div class="row" id="content-grapper">
+@section Styles {
+    <link rel="stylesheet" href="~/css/Blogs.css" asp-append-version="true" />
+}
+    <section class="blog-page blog-detail-page" id="content-grapper">
         <div class="container">
             <!--Blogdetail show start(field1)-->
             <div class="main-wrapper glass-panel" data-aos="fade-up">
@@ -58,14 +60,14 @@
                 <!--lastest post show end(field 3)-->
             </div>
         </div>
-	</div>
-    <script src="/js/BlogsScript.js"></script>
+	</section>
     <!--AJAX for showing blog category-->
     @section Scripts {
+        <script src="/js/BlogsScript.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
-                $('.latestPost-item').each(function () {
-                    var userId = $(this).find('.post-details').find('.author').data('user-id');
+                $('.home-side-post-card').each(function () {
+                    var userId = $(this).find('.author').data('user-id');
                     loadLatestPostInfo(userId);
 
                 });
@@ -86,12 +88,11 @@
                         var user = data[0];
                         var userHtml = '';
                         userHtml += '<i class="bi bi-person"></i> ' + user.fullname;
-                        $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html(userHtml);
+                        $('.author-user-' + userId).html(userHtml);
 
                     },
                     error: function (error) {
-                        console.error('Error loading user info:', error);
-                        $('.blog-post').find('#userid-' + userId).html('<span>Error loading user info</span>');
+                        $('.author-user-' + userId).html('<i class="bi bi-person"></i> Quizly');
                     }
                 });
             }

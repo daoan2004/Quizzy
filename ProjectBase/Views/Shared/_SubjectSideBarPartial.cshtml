@@ -1,20 +1,17 @@
-<div class="Field2">
-    <!--searchbar start-->
-    <form id="subjectSidebarSearchForm" asp-controller="Subjects" asp-action="ShowSearchResults" method="post">
-        <input type="text" id="subjectSidebarSearchInput" name="searchPhrase" placeholder="Search Subjects here">
+<div class="Field2 subject-sidebar-panel">
+    <form id="subjectSidebarSearchForm" class="subject-search-form" asp-controller="Subjects" asp-action="ShowSearchResults" method="post">
+        <i class="bi bi-search"></i>
+        <input type="text" id="subjectSidebarSearchInput" name="searchPhrase" placeholder="Search subjects">
+        <button type="submit" aria-label="Search subjects"><i class="bi bi-arrow-right"></i></button>
     </form>
-    <!--searchbar end-->
-    <h1>Categories</h1>
-    <!--category show start-->
+
+    <h1><i class="bi bi-grid-1x2-fill"></i> Categories</h1>
     <div class="categories">
         @foreach (var category in (ViewData["Categories"] as List<ProjectBase.Models.CategoryModel>) ?? new List<ProjectBase.Models.CategoryModel>())
         {
             <div class="category_tags">
                 <a asp-controller="Subjects" asp-action="SearchByTags" asp-route-tags="@category.title" class="category_buttons">@category.title</a>
-                </div>
+            </div>
         }
     </div>
-
-   @*  <div class="show-allBtn"><button class="show-all">Show all</button> </div> *@
-    <!--category show end-->
 </div>

@@ -4,27 +4,27 @@
 <div class="container">
     <div class="modal fade" tabindex="-1" id="loginModal" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
+            <div class="modal-content auth-modal">
                 <div id="loginErrorMessage" class="alert alert-danger" style="display:none;">
                     Invalid email or password. Please try again.
                 </div>
-                    <div class="modal-title text-center w-100">Quizly</div>
+                <div class="modal-title text-center w-100"><i class="bi bi-stars"></i> Quizly</div>
                 <div class="modal-body">
                     <form id="loginForm" asp-action="Login" asp-controller="Account">
                         <div class="form-group d-flex justify-content-center">
-                            <input class="form-control" type="text" placeholder="Input your email here" id="inputUserNameLogin" />
+                            <input class="form-control" type="email" placeholder="Email address" id="inputUserNameLogin" autocomplete="email" />
                         </div>
                         <div class="form-group d-flex justify-content-center">
-                            <input class="form-control" type="password" placeholder="Password" id="inputPasswordLogin" />
+                            <input class="form-control" type="password" placeholder="Password" id="inputPasswordLogin" autocomplete="current-password" />
                         </div>
                         <div class="form-group text-center">
-                            <button type="submit" class="btn btn-primary btn-login mb-2" id="loginModelBtn">Login</button>
+                            <button type="submit" class="btn btn-primary btn-login mb-2" id="loginModelBtn"><i class="bi bi-box-arrow-in-right"></i> Login</button>
                         </div>
                         <div class="form-group text-center">
                             <a href="/Account/ResetPasswordRequest" class="btn btn-link">Reset Password</a>
                         </div>
                         <div class="form-group text-center">
-                            <button type="button" class="btn btn-secondary" id="registerBtnLogin">Register</button>
+                            <button type="button" class="btn btn-secondary" id="registerBtnLogin"><i class="bi bi-person-plus"></i> Register</button>
                         </div>
                     </form>
                 </div>
@@ -75,8 +75,8 @@
         });
 
         $('#registerBtnLogin').click(function () {
-            $('#loginModal').modal('hide');
-            $('#registerModal').modal('show');
+            window.QuizlyUi?.hideModal('#loginModal');
+            window.QuizlyUi?.showModal('#registerModal');
         });
     });
 </script>

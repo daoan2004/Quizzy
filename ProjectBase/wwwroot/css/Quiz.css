@@ -3,34 +3,60 @@
    ============================================================ */
 
 body {
-    background-color: var(--color-bg);
     font-family: var(--font-main);
 }
 
 /* ── Main Container ── */
 #content-grapper {
-    background-color: #FC7878;
+    margin: 40px auto 30px;
+}
+
+.quiz-shell {
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-card);
 }
 
 .main-detail {
     flex: 3;
-    background-color: #FFB1B1;
-    box-shadow: var(--shadow-card);
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-highlight);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border-radius: var(--radius-md);
-    padding: 0;
+    padding: var(--padding-card);
 }
 
 .top-detail {
     font-weight: 500;
     color: var(--color-text-dark);
+    padding: var(--padding-card);
+    margin-bottom: var(--gap-md);
+    background: rgba(255, 255, 255, 0.58);
+    border: var(--glass-border);
+    box-shadow: var(--glass-highlight);
+}
+
+.Practice-Title {
+    font-weight: 800;
+    margin-bottom: var(--gap-sm);
 }
 
 .Practice_Detail {
     display: flex;
     padding: 0;
     gap: var(--gap-md);
+    flex-wrap: wrap;
+}
+
+.Practice_Detail h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: var(--color-accent-soft);
+    font-size: 15px;
+    font-weight: 800;
 }
 
 /* ── Question Item ── */
@@ -38,13 +64,17 @@ body {
     display: flex;
     font-weight: 500;
     font-size: 18px;
+    gap: var(--gap-md);
 }
 
 /* ── Progress Section ── */
 .Practice-Progress {
     flex: 3;
-    background-color: #FFB1B1;
-    box-shadow: var(--shadow-card);
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-highlight);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border-radius: var(--radius-md);
     padding: 15px;
     margin-top: 15px;
@@ -53,11 +83,29 @@ body {
 /* ── Sidebar Question Navigator ── */
 .quiz-side {
     width: 200px;
-    border-right: 2px solid black;
+    border-right: var(--glass-border);
+    padding-right: var(--gap-md);
 }
 
 .quiz-answer {
     font-size: 16px;
+    display: grid;
+    gap: var(--gap-sm);
+}
+
+.quiz-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.quiz-title {
+    padding: var(--gap-md);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.62);
+    border: var(--glass-border);
+    font-weight: 800;
+    color: var(--color-text-dark);
+    margin-bottom: var(--gap-md);
 }
 
 .status {
@@ -78,20 +126,20 @@ body {
     line-height: 30px;
     text-align: center;
     margin: 5px;
-    border: 1px solid #000;
+    border: var(--glass-border);
     text-decoration: none;
-    color: #000;
+    color: var(--color-text-dark);
     padding: 0;
     font-weight: 500;
     font-size: 20px;
-    background-color: #FF6161;
+    background: rgba(255, 255, 255, 0.66);
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: filter var(--transition-fast), transform var(--transition-fast);
 }
 
 .question-button:hover {
-    filter: brightness(0.9);
+    filter: brightness(1.02);
     transform: scale(1.05);
 }
 
@@ -111,70 +159,72 @@ body {
 /* ── Timer ── */
 .timer {
     color: var(--color-text-dark);
-    font-weight: 500;
-    font-size: 30px;
+    font-weight: 800;
+    font-size: 26px;
 }
 
 /* ── Navigation ── */
 .quiz-navigation h3 {
     color: var(--color-text-dark);
-    font-weight: 500;
-    font-size: 30px;
+    font-weight: 800;
+    font-size: 24px;
 }
 
 .prev-button {
-    background-color: var(--color-bg-card-dark);
-    border-radius: var(--radius-md);
-    color: var(--color-text-white);
-    border: none;
+    background: rgba(255, 255, 255, 0.68);
+    border-radius: 999px;
+    border: var(--glass-border);
+    color: var(--color-text-dark);
+    font-weight: 800;
+    padding: 8px 14px;
     cursor: pointer;
-    transition: filter var(--transition-fast);
+    transition: filter var(--transition-fast), transform var(--transition-fast);
 }
 
-.prev-button:hover { filter: brightness(0.9); }
+.prev-button:hover { filter: brightness(1.03); transform: translateY(-1px); }
 
 .next-button,
 .mark-button,
-.finish-attempt {
-    background-color: #16E17F;
-    border-radius: var(--radius-md);
+.finish-attempt,
+.unmark-button {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
+    border-radius: 999px;
     color: var(--color-text-white);
     border: none;
+    font-weight: 800;
+    padding: 8px 14px;
     cursor: pointer;
-    transition: filter var(--transition-fast);
+    transition: filter var(--transition-fast), transform var(--transition-fast);
 }
 
 .next-button:hover,
 .mark-button:hover,
-.finish-attempt:hover { filter: brightness(0.9); }
+.finish-attempt:hover,
+.unmark-button:hover {
+    filter: brightness(1.04);
+    transform: translateY(-1px);
+}
 
 .finish-attempt {
-    width: 14%;
+    width: auto;
 }
 
 .unmark-button {
-    background-color: var(--color-bg-card-dark);
-    border-radius: var(--radius-md);
-    color: var(--color-text-white);
-    border: none;
-    cursor: pointer;
-    transition: filter var(--transition-fast);
+    background: linear-gradient(135deg, var(--color-warning), var(--color-accent));
 }
-
-.unmark-button:hover { filter: brightness(0.9); }
 
 /* ── Progress Bar ── */
 .P-bar p {
     color: var(--color-text-dark);
-    font-weight: 500;
-    font-size: 30px;
+    font-weight: 800;
+    font-size: 24px;
     padding: 0;
     margin-bottom: 0;
 }
 
 #progress-bar-container {
     width: 100%;
-    background-color: #e0e0e0;
+    background-color: rgba(255, 255, 255, 0.7);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -182,7 +232,7 @@ body {
 #progress-bar {
     width: 5%;
     height: 8px;
-    background: linear-gradient(90deg, #FF8181, #FF4444);
+    background: linear-gradient(90deg, var(--color-accent), var(--color-cyan), var(--color-mint));
     border-radius: 10px;
     transition: width 0.4s ease;
 }
@@ -201,10 +251,61 @@ body {
 }
 
 .popup-content {
-    background-color: white;
+    background: var(--glass-bg-strong);
+    border: var(--glass-border);
+    box-shadow: var(--shadow-modal), var(--glass-highlight);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     padding: var(--padding-card);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     text-align: center;
+}
+
+.answer-label {
+    color: var(--color-text-muted);
+    font-weight: 800;
+    margin-bottom: var(--gap-sm);
+}
+
+.answer-form,
+.answer-checkbox {
+    display: grid;
+    gap: var(--gap-sm);
+}
+
+.answer-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.64);
+    border: var(--glass-border);
+    color: var(--color-text-dark);
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.answer-option:hover {
+    transform: translateY(-1px);
+    border-color: rgba(56, 189, 248, 0.35);
+    box-shadow: var(--glass-highlight);
+}
+
+.answer-option span {
+    font-weight: 800;
+    color: var(--color-accent-hover);
+}
+
+.quiz-answer textarea {
+    width: 100%;
+    border: var(--glass-border);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.72);
+    padding: var(--gap-sm);
+    color: var(--color-text-dark);
+    outline: none;
 }
 
 /* ════════════════════════════════════
@@ -218,13 +319,17 @@ body {
     .quiz-side {
         width: 100%;
         border-right: none;
-        border-bottom: 2px solid black;
+        border-bottom: var(--glass-border);
         padding-bottom: var(--gap-sm);
         margin-bottom: var(--gap-sm);
     }
 
     .quest-img {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quiz-item {
+        flex-direction: column;
     }
 }
 

@@ -1,93 +1,84 @@
 @model IEnumerable<ProjectBase.Models.SubjectsModel>
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Subject Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/SubjectDetail.css" />
-<link rel="stylesheet" href="~/css/SubjectRegister.css" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/SubjectDetail.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/SubjectRegister.css" asp-append-version="true" />
+}
 
-<div class="row" id="content-wrapper">
-    <div class="container">
-
-        <div class="main_wrapper_detail glass-panel" data-aos="fade-up">
-        @foreach (var subject in Model)
-        {
-                <div class="subject_item_detail glass-card">
-                    <div class="thumbnail_detail">
-                        <img src="~/picture/Subject/@subject.thumbnail_color" alt="Thumbnail Image" class="thumbnail_image">
-                        <div class="title_wrapper">
-                            <h2 class="subject_title">@subject.title</h2>
-                            <i class="subject-status-icon bi bi-patch-check-fill"></i>
+<section class="subject-detail-page" id="content-wrapper">
+    <div class="subject-detail-shell">
+        <main class="subject-detail-main glass-panel" data-aos="fade-up">
+            @foreach (var subject in Model)
+            {
+                <article class="subject-detail-card glass-card">
+                    <header class="subject-detail-hero">
+                        <img src="~/picture/Subject/@subject.thumbnail_color" alt="@subject.title" loading="lazy" decoding="async">
+                        <div class="subject-detail-hero-content">
+                            <span><i class="bi bi-patch-check-fill"></i> Available Subject</span>
+                            <h1>@subject.title</h1>
                         </div>
-                    </div>
-                    <div class="content">
-                        <div class="subject_categories">
+                    </header>
+
+                    <div class="subject-detail-body">
+                        <div class="subject_categories subject-detail-tags">
                             @foreach (var subjectCategory in subject.Subject_Category)
                             {
                                 <span>@subjectCategory.Category.title</span>
                             }
                         </div>
 
-                        <div class="brief_text_detail">
-                        <p class="brief-text">@subject.brief_info</p>
-                        </div>
+                        <p class="brief-text subject-detail-brief">@subject.brief_info</p>
 
-                        <div class="text_descrip">
-                        Subject Description:
-                        </div>
-
-                        <div class="descrip_text">
-                       <p>@subject.Description</p>
-                       </div>
+                        <section class="subject-description-card">
+                            <h2><i class="bi bi-journal-text"></i> Subject Description</h2>
+                            <p>@subject.Description</p>
+                        </section>
 
                         @foreach (var pricePackage in subject.Price_package.Where(pp => pp.PackageType == 1))
                         {
-                            <div class="package_container">
-                            <div class="package_wapper">
-                                <div class="price-text">
-                                    @pricePackage.PackageType Months Price Package For Only:
-                                    <div class="price_wrapper">
-                                        <span class="list-price">@pricePackage.ListPrice USD</span> <span class="sale-price">@pricePackage.SalePrice USD</span>
+                            <section class="subject-detail-package">
+                                <div>
+                                    <span class="subject-package-label">
+                                        @(pricePackage.PackageType == 1 ? "1 Month" : pricePackage.PackageType + " Months") package
+                                    </span>
+                                    <div class="subject-package-price">
+                                        <span class="list-price">@pricePackage.ListPrice USD</span>
+                                        <span class="sale-price">@pricePackage.SalePrice USD</span>
                                     </div>
                                 </div>
-                                    <a class="register_button register-button" data-subject-id="@subject.ID" href="#">
-                                        Register Now <i class="bi bi-arrow-right"></i>
-                                    </a>
-                            </div>
-                            </div>
+
+                                <a class="register_button register-button" data-subject-id="@subject.ID" href="#">
+                                    Register Now <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </section>
                         }
                     </div>
-                
-            </div>
-        }    
-          <div id="back_button">
-            <a asp-action="Index" asp-controller="Subjects">
-                <i class="bi bi-arrow-left"></i> Back
-            </a>
-            </div>
+                </article>
+            }
 
-        </div>
-        
+            <div id="back_button">
+                <a asp-action="Index" asp-controller="Subjects">
+                    <i class="bi bi-arrow-left"></i> Back to Subjects
+                </a>
+            </div>
+        </main>
 
-        <!-- Sidebar area -->
-        <div class="sidebar-container">
-            <div class="sidebar_subject_category">
-                <div class="sidebar-box" data-aos="fade-left">
-                    <partial name="_SubjectSideBarPartial" />
-                </div>
+        <aside class="subject-detail-sidebar">
+            <div class="sidebar-box subject-detail-sidebar-box" data-aos="fade-left">
+                <partial name="_SubjectSideBarPartial" />
             </div>
 
-            <div class="sidebar_subject_featured">
-                <div class="sidebar-box" data-aos="fade-left" data-aos-delay="100">
-                    <partial name="_SubjectFeaturedPartial" />
-                </div>
+            <div class="sidebar-box subject-detail-sidebar-box" data-aos="fade-left" data-aos-delay="100">
+                <partial name="_SubjectFeaturedPartial" />
             </div>
-        </div>
-
+        </aside>
     </div>
-</div>
+</section>
 
 <div class="modal fade" id="subjectPopup" tabindex="-1" role="dialog" aria-labelledby="subjectPopupLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -101,25 +92,24 @@
 
 <input type="hidden" name="userId" value="" />
 
-<script>
-    $(document).ready(function () {
-        function GetUserDetails() {
-            $.ajax({
-                url: '/Account/GetUserDetails',
-                method: 'GET',
-                success: function (response) {
-                    if (response.success) {
-                        var userId = response.userDetails.userID;
-                        $('input[name="userId"]').val(userId);
-
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function GetUserDetails() {
+                $.ajax({
+                    url: '/Account/GetUserDetails',
+                    method: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            var userId = response.userDetails.userID;
+                            $('input[name="userId"]').val(userId);
+                        }
                     }
-                }
-            });
-        }
-        GetUserDetails();
-    });
-
-</script>
-
-<script src="~/js/SubjectsScript.js"></script>
-<script src="~/js/Register.js"></script>
+                });
+            }
+            GetUserDetails();
+        });
+    </script>
+    <script src="~/js/SubjectsScript.js"></script>
+    <script src="~/js/Register.js"></script>
+}

@@ -4,7 +4,6 @@
    ============================================================ */
 
 body {
-    background-color: var(--color-bg);
     font-family: var(--font-main);
     overflow-x: hidden;
 }
@@ -20,9 +19,12 @@ body {
 .mainContainer {
     grid-auto-rows: auto;
     gap: var(--gap-sm);
-    background-color: var(--color-bg-light);
+    background: var(--glass-bg);
+    border: var(--glass-border);
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--glass-shadow), var(--glass-highlight);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     padding: var(--padding-card);
 }
 
@@ -39,12 +41,63 @@ body {
 
 #mainContent {
     display: flex;
+    gap: var(--gap-md);
+}
+
+.my-registrations-shell {
+    align-items: flex-start;
+}
+
+.page-name h3 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--color-text-dark);
+}
+
+.page-name h3 i {
+    color: var(--color-accent);
+}
+
+.Table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: var(--glass-border);
+}
+
+.Table-wrapper table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+}
+
+.Table-wrapper thead tr {
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.Table-wrapper th {
+    color: var(--color-text-dark);
+    font-weight: 800;
+    padding: 14px 12px;
+    border-bottom: var(--glass-border);
+}
+
+.Table-wrapper td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.42);
 }
 
 /* ── Table row overrides (MyRegistrations — light row color) ── */
 .Table-wrapper tr {
-    background-color: #FFCCCC;
-    color: #A12525;
+    background: rgba(255, 255, 255, 0.42);
+    color: var(--color-text-dark);
+}
+
+.Table-wrapper tbody tr:hover {
+    background: rgba(255, 255, 255, 0.68);
 }
 
 /* ── Button Container ── */
@@ -54,14 +107,16 @@ body {
 
 .button-container {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .bttn {
-    padding: 5px var(--gap-sm);
-    margin: 5px;
-    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    margin: 0;
+    border-radius: 999px;
     cursor: pointer;
     border: none;
     color: var(--color-text-white);
@@ -81,7 +136,7 @@ body {
 
 .btn-new-practice    { background-color: #5585FF; }
 .btn-simulation-exam { background-color: #3BCBC2; }
-.btn-details         { background-color: #FF7373; }
+.btn-details         { background-color: var(--color-indigo); }
 .btn-pay             { background-color: var(--color-success-dark); }
 .btn-cancel          { background-color: var(--color-accent); }
 .btn-yes             { background-color: var(--color-success-dark); }
@@ -96,31 +151,49 @@ body {
 #myModal,
 #payModal {
     display: none;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(15, 23, 42, 0.34);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
-.modal-content {
+.confirm-modal-content {
     justify-content: center;
-    background-color: #fefefe;
+    align-items: center;
+    background: var(--glass-bg-strong);
+    border: var(--glass-border);
     text-align: center;
     margin: auto;
     padding: var(--padding-card);
-    border: 1px solid #888;
-    width: 80%;
-    border-radius: var(--radius-sm);
+    width: min(92%, 420px);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-modal), var(--glass-highlight);
+}
+
+.confirm-modal-content i {
+    color: var(--color-accent);
+    font-size: 36px;
+}
+
+.confirm-modal-content p {
+    margin: 8px 0 12px;
+    color: var(--color-text-dark);
+    font-weight: 700;
 }
 
 /* ── Toast Notification ── */
 #notification {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(92%, 520px);
     padding: 15px;
     text-align: center;
-    z-index: 1000;
+    z-index: 1200;
     font-size: 16px;
     font-family: var(--font-main);
+    border-radius: var(--radius-md);
+    box-shadow: var(--glass-shadow);
 }
 
 #notification.success {
@@ -131,4 +204,28 @@ body {
 #notification.error {
     background-color: #f44336;
     color: var(--color-text-white);
+}
+
+@media (max-width: 992px) {
+    #mainContent {
+        flex-direction: column;
+    }
+
+    .sidebar-container {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    #content-wrapper {
+        margin-top: 24px;
+    }
+
+    .mainContainer {
+        padding: 16px;
+    }
+
+    .page-name h3 {
+        font-size: 23px;
+    }
 }

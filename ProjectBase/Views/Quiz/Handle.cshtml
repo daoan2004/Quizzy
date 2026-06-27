@@ -3,29 +3,29 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @model ProjectBase.Models.PracticeModel
-    <link rel="stylesheet" href="~/css/Quiz.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Quiz.css" asp-append-version="true" />
+}
     <div class="row" id="content-grapper">
-        <div class="container">
-            <div class="top-detail">
-                <h3 class="Practice-Title">@ViewData["SubjectTitle"] - @ViewData["QuizTitle"]</h3>
+        <div class="container quiz-shell glass-panel" data-aos="fade-up">
+            <div class="top-detail glass-card">
+                <h3 class="Practice-Title"><i class="bi bi-lightning-charge"></i> @ViewData["SubjectTitle"] - @ViewData["QuizTitle"]</h3>
                 <div class="Practice_Detail">
-                    <h3>Type: @ViewData["Type"]</h3>
-                    <h3>Question: @ViewData["Number_quiz"]</h3>
-                    <h3>Difficulty: @ViewData["Level"]</h3>
+                    <h3><i class="bi bi-ui-checks"></i> Type: @ViewData["Type"]</h3>
+                    <h3><i class="bi bi-question-circle"></i> Question: @ViewData["Number_quiz"]</h3>
+                    <h3><i class="bi bi-bar-chart"></i> Difficulty: @ViewData["Level"]</h3>
                 </div>            
 			</div>
             <div class="main-wrapper">
-                <div class="main-detail">
+                <div class="main-detail glass-panel" data-aos="fade-up" data-aos-delay="100">
                     <div class="quiz-item">
                         <div class="quiz-side">
                             <p class="question-index">Question No 1</p>
                             <p class="status">status</p>
                             <p class="ismark">mark</p>
                             <div class="navigation-button">
-                                <button class="prev-button">Previous</button>
-                                <button class="next-button">Next</button>
+                                <button class="prev-button"><i class="bi bi-arrow-left"></i> Previous</button>
+                                <button class="next-button">Next <i class="bi bi-arrow-right"></i></button>
                             </div>
                         </div>
                         <div class="quiz-main">
@@ -39,23 +39,23 @@
                     </div>
                     
                 </div>
-                <div class="Practice-Progress">
+                <div class="Practice-Progress glass-panel" data-aos="fade-left" data-aos-delay="150">
                     <div class="timer">
                        
                     </div>
                     <div class="P-bar">
-                        <p>Progress bar: </p><br/>
+                        <p><i class="bi bi-activity"></i> Progress</p><br/>
                         <div id="progress-bar-container">
                             <div id="progress-bar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
 
                     </div>
                     <div class="quiz-navigation">
-                        <h3>Quiz navigation:</h3>
+                        <h3><i class="bi bi-grid-3x3-gap"></i> Quiz navigation</h3>
                         <div class="quiz-number" id="quiz-number">
 
                         </div>
-                        <button  class="finish-attempt">Finish attempt ...</button>
+                        <button  class="finish-attempt"><i class="bi bi-check-circle"></i> Finish attempt</button>
                     </div>
                    
 
@@ -72,7 +72,6 @@
     </div>
     </div>
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         function startTimer(duration, display) {
 var timer = duration, hours, minutes, seconds;
@@ -123,7 +122,6 @@ var timer = duration, hours, minutes, seconds;
                         // Bạn có thể thêm mã để xử lý sau khi hoàn thành bài kiểm tra, ví dụ: chuyển hướng đến trang kết quả
                     },
                     error: function(xhr, status, error) {
-                        console.error("Error finishing quiz: ", status, error);
                         alert('Error finishing quiz.');
                     }
                 });
@@ -213,7 +211,6 @@ var timer = duration, hours, minutes, seconds;
                 url: '/api/QuizApi/loadQuestion/'+questionId, // Endpoint của bạn để lấy danh sách câu hỏi
                 method: 'GET',      
                 success: function(response) {
-                    console.log("API response: ", response); // Debug: Kiểm tra dữ liệu trả về
                     $.ajax({
                         url: '/api/QuizApi/getQuestionsList',
                         method: 'GET',
@@ -251,29 +248,29 @@ var timer = duration, hours, minutes, seconds;
                    }
                     $('.quiz-title').html(response.quizBank.title);
                     $('.question-index').html('Question No.'+ currentQuestionIndex);
-                    var mark = response.isMark == 1 ? '<button class="unmark-button">Unmark</button>' : '<button class="mark-button">Mark</button>';
+                        var mark = response.isMark == 1 ? '<button class="unmark-button"><i class="bi bi-bookmark-x"></i> Unmark</button>' : '<button class="mark-button"><i class="bi bi-bookmark"></i> Mark</button>';
                         $('.ismark').html(mark);
                     var quizanswer = '';
                     if (response.quizBank.groupID == "1" || response.quizBank.groupID == "2") {
                         var selectedAnswer = response.qAnswer || "";
-                        quizanswer += 'Choose One: </br><form class="answer-form">';
+                        quizanswer += '<div class="answer-label">Choose one</div><form class="answer-form">';
                         if (response.quizBank.qa && response.quizBank.qa.trim() !== '') {
-                            quizanswer += '<label><input type="radio" name="answer" value="A" ' + (selectedAnswer == "A" ? ' checked' : '') + '> a. ' + response.quizBank.qa + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="radio" name="answer" value="A" ' + (selectedAnswer == "A" ? ' checked' : '') + '> <span>A.</span> ' + response.quizBank.qa + '</label>';
                         }
                         if (response.quizBank.qb && response.quizBank.qb.trim() !== '') {
-                            quizanswer += '<label><input type="radio" name="answer" value="B" ' + (selectedAnswer == "B" ? ' checked' : '') + '> b. ' + response.quizBank.qb + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="radio" name="answer" value="B" ' + (selectedAnswer == "B" ? ' checked' : '') + '> <span>B.</span> ' + response.quizBank.qb + '</label>';
                         }
                         if (response.quizBank.qc && response.quizBank.qc.trim() !== '') {
-                            quizanswer += '<label><input type="radio" name="answer" value="C" ' + (selectedAnswer == "C" ? ' checked' : '') + '> c. ' + response.quizBank.qc + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="radio" name="answer" value="C" ' + (selectedAnswer == "C" ? ' checked' : '') + '> <span>C.</span> ' + response.quizBank.qc + '</label>';
                         }
                         if (response.quizBank.qd && response.quizBank.qd.trim() !== '') {
-                            quizanswer += '<label><input type="radio" name="answer" value="D" ' + (selectedAnswer == "D" ? ' checked' : '') + '> d. ' + response.quizBank.qd + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="radio" name="answer" value="D" ' + (selectedAnswer == "D" ? ' checked' : '') + '> <span>D.</span> ' + response.quizBank.qd + '</label>';
                         }
                         if (response.quizBank.qe && response.quizBank.qe.trim() !== '') {
-                            quizanswer += '<label><input type="radio" name="answer" value="E" ' + (selectedAnswer == "E" ? ' checked' : '') + '> e. ' + response.quizBank.qe + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="radio" name="answer" value="E" ' + (selectedAnswer == "E" ? ' checked' : '') + '> <span>E.</span> ' + response.quizBank.qe + '</label>';
                         }
                         if (response.quizBank.qf && response.quizBank.qf.trim() !== '') {
-                            quizanswer += '<label><input type="radio" name="answer" value="F" ' + (selectedAnswer == "F" ? ' checked' : '') + '> f. ' + response.quizBank.qf + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="radio" name="answer" value="F" ' + (selectedAnswer == "F" ? ' checked' : '') + '> <span>F.</span> ' + response.quizBank.qf + '</label>';
                         }
                         
                         quizanswer += '</form>';
@@ -292,30 +289,30 @@ var timer = duration, hours, minutes, seconds;
                                 $(this).prop('checked', true);
                             }
                         });
-                        quizanswer += 'Choose '+length+' in answer: </br><form class="answer-checkbox">';
+                        quizanswer += '<div class="answer-label">Choose '+length+' answers</div><form class="answer-checkbox">';
                         if (response.quizBank.qa && response.quizBank.qa.trim() !== '') {
-                            quizanswer += '<label><input type="checkbox" name="answer" value="A"> a. ' + response.quizBank.qa + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="checkbox" name="answer" value="A"> <span>A.</span> ' + response.quizBank.qa + '</label>';
                         }
                         if (response.quizBank.qb && response.quizBank.qb.trim() !== '') {
-                            quizanswer += '<label><input type="checkbox" name="answer" value="B"> b. ' + response.quizBank.qb + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="checkbox" name="answer" value="B"> <span>B.</span> ' + response.quizBank.qb + '</label>';
                         }
                         if (response.quizBank.qc && response.quizBank.qc.trim() !== '') {
-                            quizanswer += '<label><input type="checkbox" name="answer" value="C"> c. ' + response.quizBank.qc + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="checkbox" name="answer" value="C"> <span>C.</span> ' + response.quizBank.qc + '</label>';
                         }
                         if (response.quizBank.qd && response.quizBank.qd.trim() !== '') {
-                            quizanswer += '<label><input type="checkbox" name="answer" value="D"> d. ' + response.quizBank.qd + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="checkbox" name="answer" value="D"> <span>D.</span> ' + response.quizBank.qd + '</label>';
                         }
                         if (response.quizBank.qe && response.quizBank.qe.trim() !== '') {
-                            quizanswer += '<label><input type="checkbox" name="answer" value="E"> e. ' + response.quizBank.qe + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="checkbox" name="answer" value="E"> <span>E.</span> ' + response.quizBank.qe + '</label>';
                         }
                         if (response.quizBank.qf && response.quizBank.qf.trim() !== '') {
-                            quizanswer += '<label><input type="checkbox" name="answer" value="F"> f. ' + response.quizBank.qf + '</label><br>';
+                            quizanswer += '<label class="answer-option"><input type="checkbox" name="answer" value="F"> <span>F.</span> ' + response.quizBank.qf + '</label>';
                         }
                         
                         quizanswer += '</form>';
                     }
                     else if (response.quizBank.groupID == "4") {
-                        quizanswer += 'Input Answer Here: </br>';
+                        quizanswer += '<div class="answer-label">Input answer here</div>';
                         var selectedAnswer = response.qAnswer || "";
                         quizanswer += '<textarea name="answer" rows="4" cols="50" >'+selectedAnswer+'</textarea>';
                     }
@@ -354,7 +351,6 @@ var timer = duration, hours, minutes, seconds;
                     });
                 },
                 error: function(xhr, status, error) {
-                    console.error("Error loading questions list: ", status, error); // Debug: In lỗi ra console
                     alert('Error loading questions list.');
                 }
             });
@@ -378,13 +374,10 @@ var timer = duration, hours, minutes, seconds;
                 PracticeID: @Model.ID
             },
             success: function(response) {
-                console.log("Answer submitted successfully");
-                
                 // Call the function to update progress bar with the new status
                 loadQuestion(currentQuestionID); // Reload the questions list to update progress bar
             },
             error: function(xhr, status, error) {
-                console.error("Error submitting answer: ", status, error);
                 alert('Error submitting answer.');
             }
             });

@@ -4,26 +4,24 @@
     ViewData["Title"] = "MyRegistrations";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="~/css/SubjectDetail.css" />
-    <link rel="stylesheet" href="~/css/SubjectRegister.css" />
-    <link rel="stylesheet" href="~/css/MyRegistrations.css">
-    <link rel="stylesheet" href="~/css/Sider.css">
+@section Styles {
+    <link rel="stylesheet" href="~/css/SubjectDetail.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/SubjectRegister.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/MyRegistrations.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Sider.css" asp-append-version="true" />
+}
     <div class="row" id="content-wrapper">
-        <div class="container" id="mainContent">
-            <div class="mainContainer">
+        <div class="container my-registrations-shell" id="mainContent">
+            <div class="mainContainer glass-panel">
                 <div id="notification" style="display: none;"></div>
-                <!-- Main content area -->
                 <div class="header-wrapper">
                     <div class="flex">
                         <div class="page-name">
-                            <h3>My Registrations</h3>
+                            <h3><i class="bi bi-journal-check"></i> My Registrations</h3>
                         </div>
                     </div>
                 </div>
 
-                <!-- Practice list Table wrapper -->
                 <div class="Table-wrapper">
                     <table>
                         <thead class="thead">
@@ -63,7 +61,8 @@
 
     <!-- Modal xác nhận hủy đăng ký -->
     <div id="myModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content confirm-modal-content">
+            <i class="bi bi-exclamation-circle"></i>
             <p>Are you sure you want to unenroll from this course?</p>
             <div class="btnConfirm">
                 <button id="confirmCancel" class="bttn btn-yes">Yes</button>
@@ -74,7 +73,8 @@
 
     <!-- Modal xác nhận thanh toán -->
     <div id="payModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content confirm-modal-content">
+            <i class="bi bi-credit-card"></i>
             <p>Are you sure you want to pay for this package?</p>
             <div class="btnConfirm">
                 <button id="confirmPay" class="bttn btn-yes">Yes</button>
@@ -95,10 +95,8 @@
 
 
 
-    <script src="~/js/SubjectsScript.js"></script>
-
     @section Scripts {
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="~/js/SubjectsScript.js" asp-append-version="true"></script>
         <script type="text/javascript">
             var userId; 
             $(document).ready(function () {
@@ -130,10 +128,8 @@
                         url: '/Account/GetUserDetails',
                         method: 'GET',
                         success: function (response) {
-                            console.log(response);
                             if (response.success) {
                                 userId = response.userDetails.userID;
-                                console.log("UserID:", userId); // Ghi log để kiểm tra giá trị userID
                                 // Bắt đầu tải tất cả các bản ghi sau khi lấy được userId
                                 GetAllRegistrations(userId);
                             } else {
@@ -153,7 +149,6 @@
                         type: 'GET',
                         data: { subjectId: subjectId, statusId: statusId },
                         success: function (response) {
-                            console.log("All Registrations:", response);
                             allRegistrations = response;
                             DisplayRegistrations(1);
                             SetupPagination();
@@ -315,13 +310,8 @@
 
                         $('.btn-Edit').on('click', function (e) {
                             e.preventDefault(); // Ngăn chặn hành động mặc định của form
-                            console.log("Edit button clicked!"); // Ghi log hành động này vào console
 
                             var subjectId = $(this).data('subject-id'); // Lấy ID từ cột đầu tiên trong cùng hàng
-                        
-
-                            console.log(subjectId);
-                            console.log(userId);
                            
                             // Gọi AJAX để lấy thông tin chi tiết cần chỉnh sửa
                             $.ajax({
@@ -330,11 +320,10 @@
                                 data: { subjectId: subjectId, userId: userId }, // Gửi ID như là dữ liệu
                                 success: function (data) {
                                     $('#subjectPopupContent').html(data); // Đặt nội dung trả về vào trong modal
-                                    $('#subjectPopup').modal('show'); // Hiển thị modal
+                                    window.QuizlyUi?.showModal('#subjectPopup');
                                 },
                                 error: function (xhr, status, error) {
-                                    console.error('AJAX Error:', status, error); // Log lỗi vào console
-                                    alert('Error loading registration details. See console for details.'); // Hiển thị thông báo lỗi
+                                    alert('Error loading registration details.'); // Hiển thị thông báo lỗi
                                 }
                             });
                         });
@@ -374,7 +363,6 @@
                         var selectedSubject = $('#subjectFilter').val();
                         var selectedStatus = $('#levelStatus').val();
                         // Bạn có thể gọi hàm để lấy dữ liệu dựa trên các lựa chọn này
-                        console.log("Selected Subject: " + selectedSubject + ", Selected Status: " + selectedStatus);
                         // Thực hiện hành động cập nhật UI hoặc truy vấn dữ liệu mới tại đây
                     });
                 });
@@ -391,7 +379,7 @@
                             });
                         },
                         error: function () {
-                            console.error('Error loading subjects.');
+                            showNotification('Error loading subjects.', false);
                         }
                     });
 
@@ -406,7 +394,7 @@
                             });
                         },
                         error: function () {
-                            console.error('Error loading statuses.');
+                            showNotification('Error loading statuses.', false);
                         }
                     });
                 }

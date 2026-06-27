@@ -36,7 +36,13 @@ namespace ProjectBase.Controllers
                 Practice = practice
             };
 
-            return View(model);
+            if (practice != null)
+            {
+                ViewBag.DurationFormatted = FormatTime(practice.duration);
+                ViewBag.TimeTakenFormatted = FormatTime(practice.time_taken);
+            }
+
+            return View("Detail", model);
         }
 
         public async Task<IActionResult> Detail(long? id)

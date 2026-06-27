@@ -1,25 +1,27 @@
-<div class="latestPost-wrapper">
-    <h1>Latest Posts</h1>
-    <div class="grid-container">
+<div class="home-side-panel latestPost-wrapper">
+    <h1 class="home-side-title"><i class="bi bi-clock-history"></i> Latest Posts</h1>
+    <div class="swiper js-swiper sidebar-swiper" data-loop="true" data-tablet-slides="1" data-desktop-slides="1">
+        <div class="swiper-wrapper">
     @foreach (var item in Model.LatestPosts)
     {
-        <div class="latestPost-item glass-card js-tilt-card">
-            
-            <div class="post-details">
-                <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID" style="text-decoration: none; color: inherit;">@item.title</a>
-                <div>
-                    <span class="author author-user-@item.userID" data-user-id="@item.userID"><i class="bi bi-person"></i></span> <br/>
-                    <span class="date"><i class="bi bi-calendar3"></i> @item.updatedAt.ToString("yyyy-MM-dd")</span>
+        <div class="swiper-slide">
+            <article class="home-side-card home-side-post-card js-tilt-card">
+                <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID" class="home-side-image">
+                    <img src="~/picture/Carousel/@item.blog_picture" alt="@item.title" loading="lazy" decoding="async">
+                </a>
+                <div class="home-side-card-body">
+                    <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID" class="home-side-card-title">@item.title</a>
+                    <div class="home-side-meta">
+                        <span class="author author-user-@item.userID" data-user-id="@item.userID"><i class="bi bi-person"></i></span>
+                        <span><i class="bi bi-calendar3"></i> @item.updatedAt.ToString("yyyy-MM-dd")</span>
+                    </div>
                 </div>
-				
-            </div>  
-            <div class="latestPost-thumbnail">
-            <img src="~/picture/Carousel/@item.blog_picture" alt="@item.title">
-            </div>
+            </article>
         </div>
     }
-		
-	</div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
     <div class="contact-wrapper"><a class="contact" href="https://fpt.edu.vn/">Contact us <i class="bi bi-share"></i></a></div>
 </div>
 

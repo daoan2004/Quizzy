@@ -1,4 +1,4 @@
-﻿<div class="Category-wrapper">
+<div class="Category-wrapper">
 	<!--searchbar start-->
 	<form class="search" asp-controller="Blogs" asp-action="ShowSearchResults" method="post">
 		<input type="text" id="blogSearchInput" name="searchPhrase" placeholder="Search blog posts here">
@@ -10,8 +10,10 @@
     <div class="categories">
         @foreach (var item in Model.Category)
         {
-            <div class="category">@item.title </div>
-        }
+            <div class="category_tags">
+                <a asp-controller="Blogs" asp-action="Index" asp-route-category="@item.title" class="category_buttons">@item.title</a>
+            </div>
+		}
 	</div>
     @* <div class="show-allBtn"><button class="show-all">Show all</button> </div> *@
 

@@ -3,7 +3,6 @@
    ============================================================ */
 
 body {
-    background-color: var(--color-bg);
     font-family: var(--font-main);
 }
 
@@ -11,9 +10,14 @@ body {
     margin: 40px auto 30px;
 }
 
-.container {
+.quiz-review-shell {
     display: flex;
     gap: var(--gap-md);
+}
+
+.quiz-review-shell {
+    background: transparent;
+    box-shadow: none;
 }
 
 .mainContainer {
@@ -33,40 +37,48 @@ body {
 
 /* ── Question Header Card ── */
 .quiz_review_header {
-    background-color: #ff7979;
+    background: var(--glass-bg);
+    border: var(--glass-border);
     padding: var(--padding-card);
-    box-shadow: var(--shadow-card);
-    border-radius: var(--radius-sm);
+    box-shadow: var(--glass-shadow), var(--glass-highlight);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: var(--radius-md);
 }
 
 /* ── Individual Question ── */
 .quiz_question {
-    background-color: rgb(255, 173, 173);
+    background: rgba(255, 255, 255, 0.62);
+    border: var(--glass-border);
+    box-shadow: var(--glass-highlight);
     padding: var(--padding-card);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
 }
 
 .quiz_review_question {
-    background-color: #ff7979;
+    background: var(--glass-bg);
+    border: var(--glass-border);
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
     padding: var(--padding-card);
-    box-shadow: var(--shadow-card);
-    border-radius: var(--radius-sm);
+    box-shadow: var(--glass-shadow), var(--glass-highlight);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: var(--radius-md);
 }
 
 .quiz_title {
     font-size: 20px;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     margin-bottom: 25px;
-    border: solid;
-    border-color: #7d0e0e;
+    border: var(--glass-border);
+    background: rgba(255, 255, 255, 0.64);
     padding: var(--gap-sm);
 }
 
 .text_style {
-    color: #840000;
+    color: var(--color-text-dark);
 }
 
 .question_number {
@@ -74,7 +86,7 @@ body {
 }
 
 h2 {
-    color: #840000;
+    color: var(--color-text-dark);
     padding-bottom: var(--gap-sm);
 }
 
@@ -86,10 +98,13 @@ h2 {
 .sidebar-wrapper {
     display: flex;
     flex-direction: column;
-    background-color: #ff7979;
+    background: var(--glass-bg);
+    border: var(--glass-border);
     padding: var(--padding-card);
-    box-shadow: var(--shadow-card);
-    border-radius: var(--radius-sm);
+    box-shadow: var(--glass-shadow), var(--glass-highlight);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: var(--radius-md);
     align-items: center;
     position: sticky;
     top: var(--gap-md);
@@ -113,24 +128,65 @@ h2 {
     display: block;
     padding: var(--gap-sm);
     margin: 4px;
-    background-color: #007bff;
-    color: var(--color-text-white);
-    border: none;
+    background: rgba(255, 255, 255, 0.66);
+    border: var(--glass-border);
+    color: var(--color-text-dark);
+    font-weight: 800;
     cursor: pointer;
     text-align: center;
     border-radius: var(--radius-xs);
-    transition: background-color var(--transition-fast);
+    transition: background-color var(--transition-fast), transform var(--transition-fast), color var(--transition-fast);
 }
 
 .sidebar-button:hover {
-    background-color: #0056b3;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
+    color: var(--color-text-white);
+    transform: translateY(-1px);
+}
+
+.question p,
+.answer-review {
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.54);
+    border: var(--glass-border);
+}
+
+.answer-review.is-correct {
+    background: rgba(34, 197, 94, 0.18);
+    border-color: rgba(34, 197, 94, 0.38);
+    color: #14532d;
+}
+
+.answer-review.is-wrong {
+    background: rgba(239, 68, 68, 0.16);
+    border-color: rgba(239, 68, 68, 0.34);
+    color: #7f1d1d;
+}
+
+.answer-review i {
+    font-size: 18px;
+    margin-left: 8px;
+}
+
+.quiz_question[hidden] {
+    display: none !important;
+}
+
+#filter-correct {
+    border-radius: 999px;
+    border: 0;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
+    color: var(--color-text-white);
+    font-weight: 800;
+    padding: 9px 16px;
 }
 
 /* ════════════════════════════════════
    RESPONSIVE — QuizReview Page
    ════════════════════════════════════ */
 @media (max-width: 992px) {
-    .container {
+    .quiz-review-shell {
         flex-direction: column;
     }
 

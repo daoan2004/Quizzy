@@ -1,166 +1,153 @@
 @{
-    ViewData["Title"] = "BlogsList";
+    ViewData["Title"] = "Blogs";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @model BlogsViewModel
 
-<link rel="stylesheet" href="~/css/Blogs.css">
-    
-    <div class="row" id="content-grapper">
-        <div class="container">
-            <!--Bloglist show start(field 1)-->
-            <div class="main-wrapper glass-panel" data-aos="fade-up">
-                <div class="bloglist-item">
-                @foreach (var item in Model.BlogList)
-            {
-            <div class="blog-post glass-card js-tilt-card" data-aos="fade-up">
-                <div class="thumbnail">
-                    <img src="~/picture/Carousel/@item.blog_picture" alt="@item.title">
-			    </div>
-                <div class="blog-content">
-                    <h5><a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">@item.title</a></h5>
-                    <div class="meta-info blog-user-meta blog-user-@item.userID" data-user-id="@item.userID">
-                        <!--js will add user meta info here-->
-                    </div>
-                        <div class="meta-info">
-                            <span><i class="bi bi-clock"></i> @item.publishAt.ToString("dd/MM/yyyy")</span>
-                        </div>
-                    <p>@item.description</p>
-                    <div class="read-more">
-                            <div class="readmore-link">
-                                <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">
+@section Styles {
+    <link rel="stylesheet" href="~/css/Blogs.css" asp-append-version="true" />
+}
+
+<section class="blog-page" id="content-grapper">
+    <div class="blog-shell">
+        <header class="blog-hero glass-panel" data-aos="fade-up">
+            <div>
+                <span class="blog-eyebrow"><i class="bi bi-journal-text"></i> Quizly Blog</span>
+                <h1>Study notes, quiz tips, and learning updates</h1>
+                <p>Read practical posts from the Quizly team and browse topics that help you prepare with more focus.</p>
+            </div>
+        </header>
+
+        <div class="blog-layout">
+            <main class="blog-main glass-panel" data-aos="fade-up">
+                <div class="blog-section-heading">
+                    <h2>Latest Articles</h2>
+                    <span>@Model.BlogList.Count() posts</span>
+                </div>
+
+                <div class="blog-list">
+                    @foreach (var item in Model.BlogList)
+                    {
+                        <article class="blog-card glass-card js-tilt-card" data-aos="fade-up">
+                            <a class="blog-card-image" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">
+                                <img src="~/picture/Carousel/@item.blog_picture" alt="@item.title" loading="lazy" decoding="async">
+                            </a>
+
+                            <div class="blog-card-body">
+                                <div class="blog-card-meta blog-user-meta blog-user-@item.userID" data-user-id="@item.userID"></div>
+
+                                <h3>
+                                    <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">@item.title</a>
+                                </h3>
+
+                                <p>@item.description</p>
+
+                                <div class="blog-card-footer">
+                                    <span class="blog-date"><i class="bi bi-clock"></i> @item.publishAt.ToString("dd/MM/yyyy")</span>
+                                    <div id="blog-category-@item.ID" class="blog-category"></div>
+                                </div>
+
+                                <a class="blog-read-more" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">
                                     Read more <i class="bi bi-arrow-right"></i>
                                 </a>
-						    </div>
-                            <div id="blog-category-@item.ID" class="blog-category">
-                                <!--js will add category hêr-->
-                            </div>                           
-                    </div>
-                </div>
-            </div>
-            }
-				</div>
-                <div class="pagination-container">
-                    <ul class="pagination">
-                    
-                    </ul>
+                            </div>
+                        </article>
+                    }
                 </div>
 
-        </div>
-            <!--Bloglist end (field1)-->
-            <div class="sidebar-container">
-            <!--Category show and search bar(field2)-->
-            <div class="sidebar_blog_category">
-                <div class="sidebar-box" data-aos="fade-left">
+                <div class="pagination-container">
+                    <ul class="pagination"></ul>
+                </div>
+            </main>
+
+            <aside class="blog-sidebar">
+                <div class="sidebar-box blog-sidebar-box" data-aos="fade-left">
                     <partial name="_CategorySideBarPartial" />
-				</div>
-		    </div>
-            <!--Category show and search bar end(field2)-->
-            <!--lastest post show start(field 3)-->
-            <div class="sidebar_LatestPost">
-                <div class="sidebar-box" data-aos="fade-left" data-aos-delay="100">
+                </div>
+
+                <div class="sidebar-box blog-sidebar-box" data-aos="fade-left" data-aos-delay="100">
                     <partial name="_LatestPostPartial" />
                 </div>
-			</div>
-            <!--lastest post show end(field 3)-->
-			</div>
-			
-		</div>
+            </aside>
+        </div>
     </div>
-    <script src="/js/BlogsScript.js"></script>
-    <!--AJAX for showing blog category-->
-    @section Scripts {
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.blog-post').each(function () {
-                    var blogId = $(this).find('.blog-category').attr('id').split('-')[2];
-                    var userId = $(this).find('.blog-user-meta').data('user-id');                                
-                    loadUserInfo(userId);
-                    loadCategories(blogId);
-                });
-                $('.latestPost-item').each(function () {
-                    var userId = $(this).find('.post-details').find('.author').data('user-id');
-                    loadLatestPostInfo(userId);
+</section>
 
-                });
-                
+@section Scripts {
+    <script src="/js/BlogsScript.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.blog-card').each(function () {
+                var blogId = $(this).find('.blog-category').attr('id').split('-')[2];
+                var userId = $(this).find('.blog-user-meta').data('user-id');
+                loadUserInfo(userId);
+                loadCategories(blogId);
             });
 
+            $('.home-side-post-card').each(function () {
+                var userId = $(this).find('.author').data('user-id');
+                loadLatestPostInfo(userId);
+            });
+        });
 
-            // gọi yêu cầu AJAX tới BlogApi.cs để thực hiện function GetBlogCategory
-            function loadCategories(blogId) {
-                $.ajax({
-                    url: '/api/BlogApi/GetBlogCategory/' + blogId,
-                    type: 'GET',
-                    success: function (data) {
-                        var categoriesHtml = '';
-                        data.forEach(function (category) {
-                            categoriesHtml += '<span class="category">' + category.title + '</span> ';
-                        });
-                        $('#blog-category-' + blogId).html(categoriesHtml);
-                    },
-                    error: function (error) {
-                        console.error('Error loading categories:', error);
-                        $('#blog-category-' + blogId).html('<span>Error loading categories</span>');
-                    }
-                });
-            }
-            // gọi yêu cầu AJAX tới BlogApi.cs để thực hiện function GetBlogUser cho bloglist
-            function loadUserInfo(userId) {
-                $.ajax({
-                    url: '/api/BlogApi/GetBlogUser/' + userId,
-                    type: 'GET',
-                    success: function (data) {
-                        if (!data || !data.length) {
-                            return;
-                        }
-                        var user = data[0]; 
-                        var userHtml = '';
-                        userHtml += '<span><i class="bi bi-person"></i> By <a href="#">'+user.fullname+'</a></span>' +
-                            '<span><i class="bi bi-tag-fill"></i> Blogs</span>';
-                        $('.blog-post').find('.blog-user-' + userId).html(userHtml);
-    
-                    },
-                    error: function (error) {
-                        console.error('Error loading user info:', error);
-                        $('.blog-post').find('.blog-user-' + userId).html('<span>Error loading user info</span>');
-                    }
-                });
-            }
-            
-            // gọi yêu cầu AJAX tới BlogApi.cs để thực hiện function GetBlogUser cho lastest post
-            function loadLatestPostInfo(userId) {
-                $.ajax({
-                    url: '/api/BlogApi/GetBlogUser/' + userId,
-                    type: 'GET',
-                    success: function (data) {
-                        if (!data || !data.length) {
-                            return;
-                        }
-                        var user = data[0];
-                        var userHtml = '';
-                        userHtml += '<i class="bi bi-person"></i> ' + user.fullname;
-                        $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html(userHtml);
+        function loadCategories(blogId) {
+            $.ajax({
+                url: '/api/BlogApi/GetBlogCategory/' + blogId,
+                type: 'GET',
+                success: function (data) {
+                    var categoriesHtml = '';
+                    data.forEach(function (category) {
+                        categoriesHtml += '<span>' + category.title + '</span> ';
+                    });
+                    $('#blog-category-' + blogId).html(categoriesHtml);
+                },
+                error: function () {
+                    $('#blog-category-' + blogId).html('');
+                }
+            });
+        }
 
-                    },
-                    error: function (error) {
-                        console.error('Error loading user info:', error);
-                        $('.blog-post').find('#userid-' + userId).html('<span>Error loading user info</span>');
+        function loadUserInfo(userId) {
+            $.ajax({
+                url: '/api/BlogApi/GetBlogUser/' + userId,
+                type: 'GET',
+                success: function (data) {
+                    if (!data || !data.length) {
+                        return;
                     }
-                });
-            }
-        </script>
-        <script>
-            var containers = document.getElementsByClassName('blog-category');
-            for (var i = 0; i < containers.length; i++) {
-                containers[i].addEventListener('wheel', function (event) {
-                    if (event.deltaY > 0) {
-                        this.scrollLeft += 30; // Cuộn phải khi cuộn xuống
-                    } else {
-                        this.scrollLeft -= 30; // Cuộn trái khi cuộn lên
+                    var user = data[0];
+                    var userHtml = '<span><i class="bi bi-person"></i> By <a href="#">' + user.fullname + '</a></span>' +
+                        '<span><i class="bi bi-tag-fill"></i> Blogs</span>';
+                    $('.blog-user-' + userId).html(userHtml);
+                },
+                error: function () {
+                    $('.blog-user-' + userId).html('<span><i class="bi bi-person"></i> By Quizly</span>');
+                }
+            });
+        }
+
+        function loadLatestPostInfo(userId) {
+            $.ajax({
+                url: '/api/BlogApi/GetBlogUser/' + userId,
+                type: 'GET',
+                success: function (data) {
+                    if (!data || !data.length) {
+                        return;
                     }
-                    event.preventDefault(); // Ngăn chặn hành vi cuộn dọc mặc định
-                });
-            }
-        </script>
-    }
+                    var user = data[0];
+                    $('.author-user-' + userId).html('<i class="bi bi-person"></i> ' + user.fullname);
+                },
+                error: function () {
+                    $('.author-user-' + userId).html('<i class="bi bi-person"></i> Quizly');
+                }
+            });
+        }
+
+        document.querySelectorAll('.blog-category').forEach(function (container) {
+            container.addEventListener('wheel', function (event) {
+                this.scrollLeft += event.deltaY > 0 ? 30 : -30;
+                event.preventDefault();
+            });
+        });
+    </script>
+}

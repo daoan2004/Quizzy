@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: #FFA8A8 !important;
+    background: var(--color-bg) !important;
 }
 
 .action {

@@ -14,8 +14,6 @@ body {
 }
 
 /* ── Container ── */
-.container,
-.Container,
 .practice-shell {
     background: var(--glass-bg);
     border: var(--glass-border);
@@ -148,6 +146,7 @@ body {
 
 /* ── Scroll List (Chọn đề bài) ── */
 .scroll-list-item {
+    position: relative;
     width: 350px;
     height: 200px;
     display: flex;
@@ -176,6 +175,23 @@ body {
     transform: translateY(-3px);
 }
 
+.scroll-list-item.selected::after {
+    content: "\F26A";
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-cyan), var(--color-mint));
+    color: var(--color-text-dark);
+    font-family: bootstrap-icons;
+    font-size: 18px;
+    box-shadow: var(--shadow-soft);
+}
+
 /* ── New Practice Form ── */
 .newpractice-header {
     display: flex;
@@ -191,12 +207,23 @@ body {
     padding: var(--gap-lg);
 }
 
+.input-area .inputform,
+.input-area select {
+    min-width: min(100%, 280px);
+}
+
 .form-group {
     font-weight: 500;
     color: var(--color-text-dark);
     display: flex;
     gap: var(--gap-sm);
     align-items: center;
+}
+
+.form-group label,
+.form-topic label,
+.difficulty-level > label {
+    min-width: 150px;
 }
 
 .form-topic {
@@ -335,6 +362,13 @@ body {
     .difficulty-level {
         flex-direction: column;
         align-items: flex-start;
+        width: 100%;
+    }
+
+    .input-area .inputform,
+    .input-area select {
+        width: 100%;
+        min-width: 0;
     }
 
     #test-duration {
@@ -343,7 +377,7 @@ body {
 }
 
 @media (max-width: 480px) {
-    .header-wrapper {
+    .practice-shell .header-wrapper {
         flex-direction: column;
         align-items: flex-start;
     }

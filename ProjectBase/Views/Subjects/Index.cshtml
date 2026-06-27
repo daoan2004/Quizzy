@@ -4,84 +4,95 @@
     ViewData["Title"] = "Subjects";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link rel="stylesheet" href="~/css/Subjects.css" />
-<link rel="stylesheet" href="~/css/SubjectRegister.css" />
 
-<div class="row" id="content-wrapper">
-    <div class="container">
-        <!-- Main content area -->
-        <div class="main-wrapper glass-panel" data-aos="fade-up">
-            @foreach (var subject in Model)
-            {
-                <div class="subject-item glass-card js-tilt-card" data-aos="fade-up">
-                    <a asp-controller="Subjects" asp-action="Details" asp-route-id="@subject.ID" class="subject-link">
-                        <div class="thumbnail">
-                            <img src="~/picture/Subject/@subject.thumbnail_color" alt="Thumbnail Image" class="thumbnail_image">
-                            <div class="title_wrapper">
-                                <h2 class="subject_title">@subject.title</h2>
-                                <i class="subject-status-icon bi bi-patch-check-fill"></i>
-                            </div>
-                        </div>
-                        <div class="content">
-                            <div class="subject_categories">
-                                @foreach (var subjectCategory in subject.Subject_Category)
-                                {
-                                    <span>@subjectCategory.Category.title</span>
-                                }
-                            </div>
-                            <p class="brief-text">@subject.brief_info</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Subjects.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/SubjectRegister.css" asp-append-version="true" />
+}
 
-                            @foreach (var pricePackage in subject.Price_package.Where(pp => pp.PackageType == 1))
-                            {
-                                <div class="package_wrapper">
-                                    <div class="price-text">
-                                        @pricePackage.PackageType Months Price Package For Only:
-                                        <div class="price_wrapper">
-                                            <span class="list-price">@pricePackage.ListPrice USD</span> <span class="sale-price">@pricePackage.SalePrice USD</span>
-                                        </div>
-                                    </div>
-
-                                    <a class="register_button register-button" data-subject-id="@subject.ID" href="#">
-                                        Register Now <i class="bi bi-arrow-right"></i>
-                                    </a>
-                                    <input type="hidden" name="userId" value="" />
-                                </div>
-                            }
-                        </div>
-                    </a>
-                </div>
-            }
-
-            <!-- Placeholder, will be displayed when the number of subjects in a page is odd -->
-            <div class="subject-item placeholder" style="display:none;"></div>
-
-            <!-- Pagination -->
-            <div id="pagination_wrapper">
-                <ul class="pagination"></ul>
+<section class="subjects-page" id="content-wrapper">
+    <div class="subjects-shell">
+        <header class="subjects-hero glass-panel" data-aos="fade-up">
+            <div>
+                <span class="subjects-eyebrow"><i class="bi bi-grid-1x2-fill"></i> Quizly Subjects</span>
+                <h1>Choose a subject and start practicing smarter</h1>
+                <p>Browse focused learning paths, compare categories, and register for the package that fits your study plan.</p>
             </div>
-        </div>
+        </header>
 
-        <!-- Sidebar area -->
-        <div class="sidebar-container">
-            <div class="sidebar_subject_category">
-                <div class="sidebar-box" data-aos="fade-left">
+        <div class="subjects-layout">
+            <main class="subjects-main glass-panel" data-aos="fade-up">
+                <div class="subjects-section-heading">
+                    <h2>Available Subjects</h2>
+                    <span>@Model.Count() subjects</span>
+                </div>
+
+                <div class="subjects-list">
+                    @foreach (var subject in Model)
+                    {
+                        <article class="subject-item subjects-card glass-card js-tilt-card" data-aos="fade-up">
+                            <a asp-controller="Subjects" asp-action="Details" asp-route-id="@subject.ID" class="subjects-card-link">
+                                <span class="subjects-card-image">
+                                    <img src="~/picture/Subject/@subject.thumbnail_color" alt="@subject.title" loading="lazy" decoding="async">
+                                    <span class="subjects-card-badge">
+                                        <i class="bi bi-patch-check-fill"></i> Available
+                                    </span>
+                                </span>
+
+                                <span class="subjects-card-body">
+                                    <span class="subject_categories subjects-tags">
+                                        @foreach (var subjectCategory in subject.Subject_Category)
+                                        {
+                                            <span>@subjectCategory.Category.title</span>
+                                        }
+                                    </span>
+
+                                    <span class="subjects-card-title">@subject.title</span>
+                                    <span class="subjects-card-description">@subject.brief_info</span>
+
+                                    @foreach (var pricePackage in subject.Price_package.Where(pp => pp.PackageType == 1))
+                                    {
+                                        <span class="subjects-package">
+                                            <span class="subjects-price-copy">
+                                                @(pricePackage.PackageType == 1 ? "1 Month" : pricePackage.PackageType + " Months") package
+                                            </span>
+                                            <span class="subjects-price-row">
+                                                <span class="list-price">@pricePackage.ListPrice USD</span>
+                                                <span class="sale-price">@pricePackage.SalePrice USD</span>
+                                            </span>
+                                        </span>
+
+                                        <span class="register_button register-button subjects-register" data-subject-id="@subject.ID">
+                                            Register Now <i class="bi bi-arrow-right"></i>
+                                        </span>
+                                        <input type="hidden" name="userId" value="" />
+                                    }
+                                </span>
+                            </a>
+                        </article>
+                    }
+
+                    <div class="subject-item placeholder subjects-card-placeholder" style="display:none;"></div>
+                </div>
+
+                <div id="pagination_wrapper">
+                    <ul class="pagination"></ul>
+                </div>
+            </main>
+
+            <aside class="subjects-sidebar">
+                <div class="sidebar-box subjects-sidebar-box" data-aos="fade-left">
                     <partial name="_SubjectSideBarPartial" />
                 </div>
-            </div>
 
-            <div class="sidebar_subject_featured">
-                <div class="sidebar-box" data-aos="fade-left" data-aos-delay="100">
+                <div class="sidebar-box subjects-sidebar-box" data-aos="fade-left" data-aos-delay="100">
                     <partial name="_SubjectFeaturedPartial" />
                 </div>
-            </div>
+            </aside>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Hidden input to store userId -->
-
-
-<!-- Popup area -->
 <div class="modal fade" id="subjectPopup" tabindex="-1" role="dialog" aria-labelledby="subjectPopupLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div id="popup_register" class="modal-content">
@@ -92,27 +103,24 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {
-        function GetUserDetails() {
-            $.ajax({
-                url: '/Account/GetUserDetails',
-                method: 'GET',
-                success: function (response) {
-                    if (response.success) {
-                        var userId = response.userDetails.userID;
-                        $('input[name="userId"]').val(userId);
-                   
-                }            
-                }
-            });
-        }
-        GetUserDetails();
-    });
-
-</script>
-
-
-<script src="~/js/SubjectsScript.js"></script>
-<script src="~/js/Register.js"></script>
-
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function GetUserDetails() {
+                $.ajax({
+                    url: '/Account/GetUserDetails',
+                    method: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            var userId = response.userDetails.userID;
+                            $('input[name="userId"]').val(userId);
+                        }
+                    }
+                });
+            }
+            GetUserDetails();
+        });
+    </script>
+    <script src="~/js/SubjectsScript.js"></script>
+    <script src="~/js/Register.js"></script>
+}

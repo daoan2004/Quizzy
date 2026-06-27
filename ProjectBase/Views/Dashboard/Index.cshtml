@@ -4,21 +4,15 @@
     var newSubjects = ViewData["NewSubjects"];
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>PracticeList</title>
-    <link rel="stylesheet" href="~/css/Dashboard.css">
-    <script src="https://kit.fontawesome.com/0e77a7e145.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Dashboard.css" asp-append-version="true" />
+}
+
     <div id="content-wrapper">
         <div class="container" id="mainContent">
-            <div class="mainContainer">
+            <div class="mainContainer glass-panel">
                 <div class="header-wrapper">
-                    <div class="page-name"><h3>Dashboard</h3></div>
+                    <div class="page-name"><h3><i class="bi bi-speedometer2"></i> Dashboard</h3></div>
                     <div class="date-controls">
                         <label for="startDate">Start Date:</label>
                         <input type="date" id="startDate" value="">
@@ -116,6 +110,8 @@
         </div>
     </div>
 
+@section Scripts {
+    <script src="~/lib/chart.js/chart.umd.js"></script>
     <script>
         let allRegistrations = [];
 
@@ -155,7 +151,10 @@
                     });
                 })
                 .catch(error => {
-                    console.error('Failed to load revenue data:', error);
+                    const revenueCanvas = document.getElementById('revenuePieChart');
+                    if (revenueCanvas) {
+                        revenueCanvas.insertAdjacentHTML('afterend', '<p class="dashboard-error">Failed to load revenue data.</p>');
+                    }
                 });
         }
 
@@ -178,17 +177,13 @@
                 document.getElementById('newlyRegistered').textContent = data.newlyRegistered;
                 document.getElementById('newlyBought').textContent = data.newlyBought;
             } catch (error) {
-                console.error('Error fetching customer statistics:', error.message);
                 document.getElementById('newlyRegistered').textContent = 'Failed to load';
                 document.getElementById('newlyBought').textContent = 'Failed to load';
             }
         }
 
         async function updateChart(startDate, endDate) {
-            console.log("Received startDate:", startDate, "Received endDate:", endDate);
-
             if (!startDate || !endDate || isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                console.error("Invalid date objects provided:", startDate, endDate);
                 alert("Invalid dates selected. Please select a valid date range.");
                 return;
             }
@@ -197,11 +192,6 @@
                 fetchData(`/api/dashboardapi/order-count?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`),
                 fetchData(`/api/dashboardapi/registration-count?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
             ]);
-            console.log("Order Data:", orderData);
-            console.log("Registration Data:", registrationData);
-
-           
-
             // Process data to fill in missing dates
             const labels = [];
             const orderCounts = [];
@@ -265,8 +255,6 @@
                 }
                 const data = await response.json();
 
-                console.log("Fetched data:", data);
-
                 const result = data.map(item => ({
                     date: item.date.substring(0, 10),
                     count: item.count
@@ -274,16 +262,13 @@
 
                 return result;
             } catch (error) {
-                console.error("Failed to fetch data:", error);
-                return null;
+                return [];
             }
         }
 
         function setupDateInputsAndChart() {
             let startDateInput = document.getElementById('startDate');
             let endDateInput = document.getElementById('endDate');
-            console.log(startDateInput.value);
-
             if (!startDateInput.value) {
                 let today = new Date();
                 startDateInput.valueAsDate = new Date(today.setDate(today.getDate() - 7));
@@ -322,7 +307,9 @@
                     updateRegistrations(data);
                     updatePieChart(data);
                 })
-                .catch(error => console.error('Failed to load registrations', error));
+                .catch(function () {
+                    document.getElementById('registrationList').innerHTML = '<div class="registration-item">Failed to load registrations.</div>';
+                });
         }
 
         function filterRegistrations(status) {
@@ -410,7 +397,10 @@
                             select.appendChild(option);
                         });
                     })
-                    .catch(error => console.error('Failed to load subjects', error));
+                    .catch(function () {
+                        const select = document.getElementById('subjectSelect');
+                        select.innerHTML = '<option value="">Failed to load subjects</option>';
+                    });
             }
 
             function fetchTotalRevenue() {
@@ -423,13 +413,11 @@
                         document.getElementById('totalRevenue').textContent = `${data.totalRevenue} USD`;
                     })
                     .catch(error => {
-                        console.error('Error:', error);
                         document.getElementById('totalRevenue').textContent = 'Failed to load';
                     });
             }
 
             window.fetchRevenueBySubject = function (subjectId) {
-                console.log(subjectId);
                 if (!subjectId) return;
                 fetch(`/api/dashboardapi/RevenuesBySubject?subjectId=${subjectId}`)
 
@@ -438,7 +426,6 @@
                         document.getElementById('subjectRevenueResult').innerHTML = `Revenue for Subject: ${data.totalRevenue} USD`;
                     })
                     .catch(error => {
-                        console.error('Failed to load revenue by subject', error);
                         document.getElementById('subjectRevenueResult').innerHTML = 'Failed to load data.';
                     });
             }
@@ -451,6 +438,4 @@
             fetchAndDrawRevenueChart(); // Call this function on page load
         });
     </script>
-
-</body>
-</html>
+}
