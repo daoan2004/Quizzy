@@ -1,93 +1,146 @@
-# Summer2024-SWP391.SE1823-G5
+# Quizzy
 
+Quizzy is a personal ASP.NET Core MVC project for online quiz practice, subject registration, learning packages, quiz attempts, review history, and basic business dashboards.
 
+The project was originally built from an academic learning context and has been reorganized as a personal portfolio project to continue improving the product, backend design, UI, and deployment readiness.
 
-## Getting started
+## Features
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- User registration, email verification, login, logout, password change, and password reset.
+- User profile management with avatar upload.
+- Subject browsing, searching, category/tag filtering, and subject detail pages.
+- Learning package registration by subject.
+- Registration management with submitted, paid/registered, and cancelled states.
+- Practice creation based on subject, level, question group, and number of questions.
+- Quiz attempt flow with question loading, answer submission, scoring, and finish state.
+- Quiz review page with submitted answers and correct answers.
+- Blog listing, blog detail pages, categories, and latest posts.
+- Simulation exam data model and basic exam listing flow.
+- Dashboard APIs for registrations, revenue, customer stats, order counts, and subject revenue.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Tech Stack
 
-## Add your files
+- ASP.NET Core MVC (.NET 8)
+- Entity Framework Core 8
+- SQL Server
+- Dapper
+- Razor Views
+- Bootstrap
+- jQuery
+- Chart.js
+- Swiper
+- Selenium/WebDriver packages for browser-based verification
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Project Structure
 
+```text
+Quizzy/
++-- ProjectBase/
+|   +-- Controllers/        # MVC controllers and JSON API controllers
+|   +-- Helpers/            # EF Core DbContext and helper classes
+|   +-- Migrations/         # Entity Framework migrations and seed data
+|   +-- Models/             # Entity models and view models
+|   +-- Views/              # Razor views
+|   +-- wwwroot/            # Static assets: CSS, JS, images, libraries
+|   +-- Program.cs          # Application startup and middleware
+|   +-- ProjectBase.csproj  # ASP.NET Core project file
++-- SWP391.sln              # Visual Studio solution
++-- README.md
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/tuanvm2-SWP391/summer2024-swp391.se1823-g5.git
-git branch -M main
-git push -uf origin main
+
+## Requirements
+
+- .NET SDK 8.0 or later
+- SQL Server / SQL Server Express / Local SQL Server instance
+- Visual Studio 2022 or another editor that supports .NET projects
+
+## Configuration
+
+The default connection string is defined in `ProjectBase/appsettings.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "ConnectedDb": "Server=localhost;Database=SWP391;Trusted_Connection=True;TrustServerCertificate=True;"
+  }
+}
 ```
 
-## Integrate with your tools
+Update the connection string if your SQL Server instance uses another server name, SQL login, or database name.
 
-- [ ] [Set up project integrations](https://gitlab.com/tuanvm2-SWP391/summer2024-swp391.se1823-g5/-/settings/integrations)
+For local-only secrets such as SMTP credentials, prefer environment variables, user secrets, or an untracked local configuration file instead of committing credentials to source control.
 
-## Collaborate with your team
+## Database Setup
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+From the repository root:
 
-## Test and Deploy
+```powershell
+dotnet restore .\ProjectBase\ProjectBase.csproj
+dotnet ef database update --project .\ProjectBase\ProjectBase.csproj
+```
 
-Use the built-in continuous integration in GitLab.
+If `dotnet ef` is not installed:
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```powershell
+dotnet tool install --global dotnet-ef
+```
 
-***
+## Run Locally
 
-# Editing this README
+From the repository root:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+```powershell
+dotnet run --project .\ProjectBase\ProjectBase.csproj --launch-profile http
+```
 
-## Suggestions for a good README
+The default local URL is:
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```text
+http://localhost:5152
+```
 
-## Name
-Choose a self-explaining name for your project.
+You can also run the solution from Visual Studio by selecting the `ProjectBase` startup project.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## Main Backend Flows
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### Account Flow
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+```text
+Register -> email verification -> login -> authenticated session -> profile/password actions
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+The account module is handled mainly by `AccountController`.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### Subject Registration Flow
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+```text
+Browse subject -> select package -> submit registration -> pay/activate registration -> access practice
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Subject and package registration are handled mainly by `Subjects`, `SubjectRegister`, and `MyRegistrationsApiController`.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+### Practice And Quiz Flow
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```text
+Create practice -> generate QuizHandle rows from QuizBank -> answer questions -> finish attempt -> review result
+```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Practice and quiz attempts are handled mainly by `PracticeApiController`, `QuizController`, `QuizApiController`, and `QuizReview`.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+### Dashboard Flow
 
-## License
-For open source projects, say how it is licensed.
+```text
+Registrations + packages + users -> revenue/customer/order statistics
+```
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Dashboard data is served by `DashboardApiController`.
+
+## Build
+
+```powershell
+dotnet build .\ProjectBase\ProjectBase.csproj
+```
+
+## Status
+
+This is a personal learning and portfolio project. It is functional locally and is being refined toward cleaner architecture, safer backend logic, and better deployment readiness.
