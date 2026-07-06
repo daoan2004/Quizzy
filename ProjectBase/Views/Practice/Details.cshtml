@@ -6,8 +6,8 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/Practice.css" asp-append-version="true" />
 }
-    <div class="row" id="content-grapper">
-        <div class="Container practice-shell glass-panel" data-aos="fade-up">
+    <section class="practice-page practice-detail-page" id="content-grapper">
+        <div class="practice-shell glass-panel" data-aos="fade-up">
             <!--Practice detail header wrapper start-->
             <div class="header-wrapper">
                 <div class="flex">
@@ -30,14 +30,14 @@
             <!--Main Subject wrapper start-->
         <div class="subject">
                 <div class="main_subject glass-card">
-                        <div class="thumbnail_side">
+                        <div class="practice-subject-media">
                          
-                        <div class="title_wrapper_side">
-                                <h2 class="subject_title_side">@Model.Subject.title</h2>
+                        <div class="practice-subject-title">
+                                <h2>@Model.Subject.title</h2>
                             </div>
                         </div>
 						
-                        <div class="content_side">
+                        <div class="practice-subject-content">
                         <h5 class="brief-text">@Model.Subject.Description</h5>
                             <div class="subject_categories_side">   
                             @foreach (var Subject in Model.Subject.Subject_Category.ToList())
@@ -143,4 +143,4 @@
                 </div>       
 			</div>
         </div>
-    </div>
+    </section>

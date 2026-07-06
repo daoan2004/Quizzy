@@ -6,8 +6,8 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/Quiz.css" asp-append-version="true" />
 }
-    <div class="row" id="content-grapper">
-        <div class="container quiz-shell glass-panel" data-aos="fade-up">
+    <section class="quiz-page" id="content-grapper">
+        <div class="quiz-shell glass-panel" data-aos="fade-up">
             <div class="top-detail glass-card">
                 <h3 class="Practice-Title"><i class="bi bi-lightning-charge"></i> @ViewData["SubjectTitle"] - @ViewData["QuizTitle"]</h3>
                 <div class="Practice_Detail">
@@ -16,7 +16,7 @@
                     <h3><i class="bi bi-bar-chart"></i> Difficulty: @ViewData["Level"]</h3>
                 </div>            
 			</div>
-            <div class="main-wrapper">
+            <div class="quiz-workspace">
                 <div class="main-detail glass-panel" data-aos="fade-up" data-aos-delay="100">
                     <div class="quiz-item">
                         <div class="quiz-side">
@@ -69,7 +69,7 @@
             <button id="confirm-yes">Yes</button>
             <button id="confirm-no">No</button>
         </div>
-    </div>
+    </section>
     </div>
 @section Scripts {
     <script type="text/javascript">

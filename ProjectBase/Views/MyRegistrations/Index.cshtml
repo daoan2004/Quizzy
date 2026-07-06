@@ -8,10 +8,9 @@
     <link rel="stylesheet" href="~/css/SubjectDetail.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/SubjectRegister.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/MyRegistrations.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/Sider.css" asp-append-version="true" />
 }
-    <div class="row" id="content-wrapper">
-        <div class="container my-registrations-shell" id="mainContent">
+    <section class="registrations-page" id="content-wrapper">
+        <div class="my-registrations-shell" id="mainContent">
             <div class="mainContainer glass-panel">
                 <div id="notification" style="display: none;"></div>
                 <div class="header-wrapper">
@@ -22,25 +21,51 @@
                     </div>
                 </div>
 
-                <div class="Table-wrapper">
-                    <table>
-                        <thead class="thead">
-                            <tr>
-                                <th>Id</th>
-                                <th>Subject</th>
-                                <th>Register time</th>
-                                <th>Package</th>
-                                <th>Total Cost</th>
-                                <th>Status</th>
-                                <th>Valid from</th>
-                                <th>Valid to</th>
-                            </tr>
-                        </thead>
-                        <tbody id="myRegistrationsList">
-                        </tbody>
-                    </table>
-                    <div id="pagination">
+                <div class="registrations-hero">
+                    <div>
+                        <span class="registrations-eyebrow">Learning dashboard</span>
+                        <h1>My learning packages</h1>
+                        <p>Track active packages, pending payments, and jump back into practice without hunting through a wide table.</p>
                     </div>
+                    <div class="registrations-summary" aria-label="Registration summary">
+                        <div>
+                            <strong id="summaryTotal">0</strong>
+                            <span>Total</span>
+                        </div>
+                        <div>
+                            <strong id="summaryActive">0</strong>
+                            <span>Active</span>
+                        </div>
+                        <div>
+                            <strong id="summaryPending">0</strong>
+                            <span>Pending</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="registrations-toolbar">
+                    <label class="registrations-filter">
+                        <span>Subject</span>
+                        <select id="subjectFilter">
+                            <option value="">All subjects</option>
+                        </select>
+                    </label>
+                    <label class="registrations-filter">
+                        <span>Status</span>
+                        <select id="levelStatus">
+                            <option value="">All statuses</option>
+                            <option value="Registrated">Registrated</option>
+                            <option value="Submitted">Submitted</option>
+                        </select>
+                    </label>
+                    <button type="button" id="applyRegistrationFilters" class="bttn btn-filter">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                </div>
+
+                <div class="registrations-list-shell">
+                    <div id="myRegistrationsList" class="registrations-list" aria-live="polite"></div>
+                    <div id="pagination" class="registrations-pagination"></div>
                 </div>
             </div>
             <!-- Sidebar area -->
@@ -57,7 +82,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Modal xác nhận hủy đăng ký -->
     <div id="myModal" class="modal">
@@ -122,6 +147,23 @@
                     }, 2000);
                 }
 
+                function showLoginRequiredState(message) {
+                    allRegistrations = [];
+                    $('#summaryTotal, #summaryActive, #summaryPending').text('0');
+                    $('#pagination').empty();
+                    $('#myRegistrationsList').html(
+                        '<div class="registrations-empty login-required-state">' +
+                        '<i class="bi bi-person-lock"></i>' +
+                        '<strong>Login required</strong>' +
+                        '<span>' + (message || 'Please login to view your registered packages.') + '</span>' +
+                        '<div class="login-required-actions">' +
+                        '<button type="button" class="bttn btn-login-required" id="myRegistrationsLoginBtn"><i class="bi bi-box-arrow-in-right"></i> Login</button>' +
+                        '<span>Test account: customer@quizzy.local / Customer@123</span>' +
+                        '</div>' +
+                        '</div>'
+                    );
+                }
+
                 // Hàm để lấy userId từ API
                 function GetUserDetails() {
                     $.ajax({
@@ -133,17 +175,22 @@
                                 // Bắt đầu tải tất cả các bản ghi sau khi lấy được userId
                                 GetAllRegistrations(userId);
                             } else {
-                                showNotification('Failed to get user details: ' + response.message, false);
+                                showLoginRequiredState(response.message);
                             }
                         },
                         error: function () {
-                            showNotification('Error retrieving user details.', false);
+                            showLoginRequiredState('Cannot load user details right now.');
                         }
                     });
                 }
 
                 // Hàm để lấy tất cả các bản ghi từ API
                 function GetAllRegistrations(userId, subjectId = null, statusId = null) {
+                    if (!userId) {
+                        showLoginRequiredState();
+                        return;
+                    }
+
                     $.ajax({
                         url: '/api/MyRegistrationsApi/GetAllRegistrations/' + userId,
                         type: 'GET',
@@ -214,29 +261,36 @@
                             var subjectTitle = item.subjectTitle ? item.subjectTitle : 'N/A';
                             var totalCost = item.totalCost ? item.totalCost : 'N/A';
                             var buttonsHtml = '';
+                            var statusClass = item.status === 'Registrated' ? 'is-active' : 'is-pending';
 
                             if (item.status === 'Registrated') {
-                                buttonsHtml = '<button class="bttn btn-new-practice" onclick="window.location.href=\'/Practice/NewPractice\'">New Practice</button>' +
-                                    '<button class="bttn btn-simulation-exam" onclick="window.location.href=\'/SimulationExam\'">Simulation Exam</button>' +
-                                    '<button class="bttn btn-details">Details</button>';
+                                buttonsHtml = '<button class="bttn btn-new-practice" onclick="window.location.href=\'/Practice/NewPractice\'"><i class="bi bi-plus-circle"></i> New Practice</button>' +
+                                    '<button class="bttn btn-simulation-exam" onclick="window.location.href=\'/SimulationExam\'"><i class="bi bi-clipboard2-check"></i> Simulation Exam</button>' +
+                                    '<button class="bttn btn-details"><i class="bi bi-info-circle"></i> Details</button>';
                             } else if (item.status === 'Submitted') {
-                                buttonsHtml = '<button class="bttn btn-pay" data-registration-id="' + item.id + '">Pay package</button>' +
-                                    '<button class="bttn btn-Edit" data-subject-id="' + subId + '">Edit package</button>' +
-                                    '<button class="bttn btn-cancel" data-registration-id="' + item.id + '">Cancel Registration</button>';
+                                buttonsHtml = '<button class="bttn btn-pay" data-registration-id="' + item.id + '"><i class="bi bi-credit-card"></i> Pay package</button>' +
+                                    '<button class="bttn btn-Edit" data-subject-id="' + subId + '"><i class="bi bi-pencil-square"></i> Edit package</button>' +
+                                    '<button class="bttn btn-cancel" data-registration-id="' + item.id + '"><i class="bi bi-x-circle"></i> Cancel</button>';
                             }
                             $('#myRegistrationsList').append(
-                                '<tr><td>' + item.id + '</td>' +
-                                '<td>' + subjectTitle + '</td>' +
-                                '<td>' + registerDate + '</td>' +
-                                '<td>' + packageType + '</td>' +
-                                '<td>' + totalCost + '</td>' +
-                                '<td>' + item.status + '</td>' +
-                                '<td>' + validFrom + '</td>' +
-                                '<td>' + validTo + '</td>' +
-                                '</tr>' +
-                                '<tr class="button-row"><td class="btnControl" colspan="8">' +
+                                '<article class="registration-card">' +
+                                '<div class="registration-card-main">' +
+                                '<div class="registration-icon"><i class="bi bi-mortarboard"></i></div>' +
+                                '<div class="registration-title-block">' +
+                                '<span class="registration-id">Registration #' + item.id + '</span>' +
+                                '<h2>' + subjectTitle + '</h2>' +
+                                '</div>' +
+                                '<span class="registration-status ' + statusClass + '">' + item.status + '</span>' +
+                                '</div>' +
+                                '<div class="registration-meta-grid">' +
+                                '<div><span>Register time</span><strong>' + registerDate + '</strong></div>' +
+                                '<div><span>Package</span><strong>' + packageType + '</strong></div>' +
+                                '<div><span>Total Cost</span><strong>' + totalCost + ' USD</strong></div>' +
+                                '<div><span>Valid from</span><strong>' + validFrom + '</strong></div>' +
+                                '<div><span>Valid to</span><strong>' + validTo + '</strong></div>' +
+                                '</div>' +
                                 '<div class="button-container">' + buttonsHtml + '</div>' +
-                                '</td></tr>'
+                                '</article>'
                             );
                         });
 
@@ -328,7 +382,7 @@
                             });
                         });
                     } else {
-                        $('#myRegistrationsList').append('<tr><td colspan="8">No registrations found</td></tr>');
+                        $('#myRegistrationsList').append('<div class="registrations-empty"><i class="bi bi-inbox"></i><strong>No registrations found</strong><span>Try another filter or register a subject first.</span></div>');
                     }
                 }
 
@@ -336,6 +390,12 @@
                 function SetupPagination() {
                     $('#pagination').empty();
                     var totalPages = Math.ceil(allRegistrations.length / pageSize);
+                    var activeCount = allRegistrations.filter(function (item) { return item.status === 'Registrated'; }).length;
+                    var pendingCount = allRegistrations.filter(function (item) { return item.status === 'Submitted'; }).length;
+
+                    $('#summaryTotal').text(allRegistrations.length);
+                    $('#summaryActive').text(activeCount);
+                    $('#summaryPending').text(pendingCount);
 
                     for (var i = 1; i <= totalPages; i++) {
                         if (i === 1) {
@@ -345,7 +405,7 @@
                         }
                     }
 
-                    $('#pagination').on('click', 'a', function (e) {
+                    $('#pagination').off('click').on('click', 'a', function (e) {
                         e.preventDefault();
                         var page = $(this).data('page');
                         DisplayRegistrations(page);
@@ -356,14 +416,36 @@
 
                 // Gọi hàm GetUserDetails để khởi tạo userId và tải tất cả các bản ghi
                 GetUserDetails();
+
+                $(document).on('click', '#myRegistrationsLoginBtn', function () {
+                    if (window.QuizlyUi?.showModal) {
+                        window.QuizlyUi.showModal('#loginModal');
+                    } else {
+                        $('#loginModal').modal?.('show');
+                    }
+                });
+
                 $(document).ready(function () {
                     loadFilters();
                     // Khi người dùng thay đổi lựa chọn
                     $('#subjectFilter, #levelStatus').change(function () {
-                        var selectedSubject = $('#subjectFilter').val();
-                        var selectedStatus = $('#levelStatus').val();
-                        // Bạn có thể gọi hàm để lấy dữ liệu dựa trên các lựa chọn này
-                        // Thực hiện hành động cập nhật UI hoặc truy vấn dữ liệu mới tại đây
+                        if (!userId) {
+                            showLoginRequiredState();
+                            return;
+                        }
+                        var selectedSubject = $('#subjectFilter').val() || null;
+                        var selectedStatus = $('#levelStatus').val() || null;
+                        GetAllRegistrations(userId, selectedSubject, selectedStatus);
+                    });
+
+                    $('#applyRegistrationFilters').click(function () {
+                        if (!userId) {
+                            showLoginRequiredState();
+                            return;
+                        }
+                        var selectedSubject = $('#subjectFilter').val() || null;
+                        var selectedStatus = $('#levelStatus').val() || null;
+                        GetAllRegistrations(userId, selectedSubject, selectedStatus);
                     });
                 });
 
@@ -375,7 +457,7 @@
                         success: function (subjects) {
                             var subjectSelect = $('#subjectFilter');
                             subjects.forEach(function (subject) {
-                                subjectSelect.append($('<option></option>').attr('value', subject.ID).text(subject.title));
+                                subjectSelect.append($('<option></option>').attr('value', subject.id || subject.ID).text(subject.title));
                             });
                         },
                         error: function () {
@@ -389,7 +471,11 @@
                         type: 'GET',
                         success: function (statuses) {
                             var statusSelect = $('#levelStatus');
+                            statusSelect.find('option:not(:first)').remove();
                             statuses.forEach(function (status) {
+                                if (status === 'Registered') {
+                                    status = 'Registrated';
+                                }
                                 statusSelect.append($('<option></option>').attr('value', status).text(status));
                             });
                         },

@@ -95,8 +95,8 @@
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.latestPost-item').each(function () {
-                var userId = $(this).find('.post-details').find('.author').data('user-id');
+            $('.home-side-post-card').each(function () {
+                var userId = $(this).find('.author').data('user-id');
                 loadLatestPostInfo(userId);
             });
         });
@@ -116,10 +116,10 @@
 
                     var user = data[0];
                     var userHtml = '<i class="bi bi-person"></i> ' + user.fullname;
-                    $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html(userHtml);
+                    $('.author-user-' + userId).html(userHtml);
                 },
                 error: function () {
-                    $('.latestPost-item').find('.post-details').find('.author-user-' + userId).html('<i class="bi bi-person"></i> Quizly');
+                    $('.author-user-' + userId).html('<i class="bi bi-person"></i> Quizly');
                 }
             });
         }

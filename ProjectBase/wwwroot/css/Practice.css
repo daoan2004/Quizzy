@@ -386,3 +386,170 @@ body {
         width: 100%;
     }
 }
+
+/* Redesigned page shells */
+.practice-page {
+    width: min(1180px, calc(100% - 32px));
+    margin: 32px auto 48px;
+}
+
+.practice-page .practice-shell {
+    display: grid;
+    gap: 20px;
+    padding: clamp(18px, 3vw, 30px);
+}
+
+.practice-page .header-wrapper,
+.practice-page .newpractice-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 0;
+}
+
+.practice-page .flex {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.practice-page .page-name h3 {
+    margin: 0;
+    color: var(--color-text-dark);
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 900;
+}
+
+.practice-page .header-button,
+.practice-page .submit-button,
+.practice-page .details-button,
+.practice-page .search-bar button {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 999px;
+    color: var(--color-text-white);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
+    box-shadow: 0 14px 28px rgba(255, 79, 123, 0.18);
+    font-weight: 900;
+}
+
+.practice-page .Table-wrapper,
+.practice-page .input-area,
+.practice-page .practice_detail {
+    overflow-x: auto;
+    padding: clamp(16px, 2.5vw, 24px);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.86);
+    box-shadow: var(--glass-highlight);
+}
+
+.practice-page .Table-wrapper table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.practice-page .Table-wrapper th,
+.practice-page .Table-wrapper td {
+    padding: 14px 12px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.practice-page .Table-wrapper th {
+    color: var(--color-text-dark);
+    font-weight: 900;
+}
+
+.practice-page #pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.practice-page #pagination a,
+.practice-page #pagination span {
+    min-width: 36px;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: var(--color-text-dark);
+    background: rgba(255, 255, 255, 0.72);
+    border: var(--glass-border);
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.practice-page #pagination span {
+    color: var(--color-text-white);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
+}
+
+.practice-detail-page .subject {
+    padding: 0;
+    display: grid;
+    gap: 20px;
+}
+
+.practice-detail-page .main_subject {
+    display: grid;
+    grid-template-columns: minmax(220px, 34%) minmax(0, 1fr);
+    overflow: hidden;
+    border-radius: 18px;
+}
+
+.practice-subject-media {
+    min-height: 220px;
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 79, 123, 0.24), rgba(56, 189, 248, 0.2));
+}
+
+.practice-subject-title {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 18px;
+    color: var(--color-text-white);
+    background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.66));
+}
+
+.practice-subject-title h2,
+.practice-scroll-title h2 {
+    margin: 0;
+    color: inherit;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.practice-subject-content {
+    display: grid;
+    gap: 14px;
+    padding: 22px;
+}
+
+.practice-scroll-title {
+    padding: 18px;
+    color: var(--color-text-white);
+    text-align: center;
+}
+
+@media (max-width: 767px) {
+    .practice-page {
+        width: min(100% - 20px, 1180px);
+    }
+
+    .practice-detail-page .main_subject {
+        grid-template-columns: 1fr;
+    }
+}

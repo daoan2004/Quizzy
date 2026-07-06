@@ -366,6 +366,15 @@ FodyWeavers.xsd
 logs/
 ProjectBase/logs/
 
+# Local verification/publish output
+verify-build/
+
+# Local helper scripts and notes
+start-quizzy.ps1
+stop-quizzy.ps1
+backend-business-flow-review.md
+ProjectBase/glassmorphism-redesign-checklist.md
+
 # Local environment and machine-specific settings
 .env
 .env.*

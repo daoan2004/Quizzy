@@ -5,8 +5,8 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/Practice.css" asp-append-version="true" />
 }
-    <div class="row" id="content-grapper">
-        <div class="container practice-shell glass-panel" data-aos="fade-up">
+    <section class="practice-page new-practice-page" id="content-grapper">
+        <div class="practice-shell glass-panel" data-aos="fade-up">
             <!--New Practice header start-->
 			<div class="newpractice-header"> 			
 				<div class="page-name">
@@ -86,7 +86,7 @@
             <!--Input infomation end-->
         </div>
     </div>
-    </div>
+    </section>
 
         @section Scripts {
             <script type="text/javascript">
@@ -122,7 +122,7 @@
                                 }
                                 response.forEach(function (item) {
                                     if (!seenSubjects.has(item.subjects.title)) {
-                                        $('.scroll-list-wrapper').append('<div class="scroll-list-item glass-card" data-subject="' + item.subjects.id + '"><div class="title_wrapper_side"><h2 class="subject_title_side">' + item.subjects.title + '</h2></div></div>');
+                                        $('.scroll-list-wrapper').append('<div class="scroll-list-item glass-card" data-subject="' + item.subjects.id + '"><div class="practice-scroll-title"><h2>' + item.subjects.title + '</h2></div></div>');
                                         seenSubjects.add(item.subjects.title);
                                     }
                                 });
