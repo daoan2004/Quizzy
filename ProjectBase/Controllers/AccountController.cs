@@ -17,10 +17,16 @@ namespace ProjectBase.Controllers
     {
         private readonly IConfiguration _config;
         private readonly DataContext _context;
-        public AccountController(IConfiguration config, DataContext context)
+        private readonly IEmailSender _emailSender;
+
+        public AccountController(
+            IConfiguration config,
+            DataContext context,
+            IEmailSender emailSender)
         {
             _config = config;
             _context = context;
+            _emailSender = emailSender;
         }
 
         [HttpGet]
@@ -100,7 +106,10 @@ namespace ProjectBase.Controllers
                     _context.Users.Add(newUser.toUser());
                     await _context.SaveChangesAsync();
                     // Gửi email xác minhz`
-                    await EmailHelper.SendVerifyLink(newUser.email, token);
+                    await _emailSender.SendVerificationLinkAsync(
+                        newUser.email,
+                        token,
+                        HttpContext.RequestAborted);
                     return Json(new { success = true });
                 }
                 catch (Exception ex)
@@ -305,9 +314,12 @@ namespace ProjectBase.Controllers
 
                 await _context.SaveChangesAsync();
 
-                await EmailHelper.SendResetPasswordLink(model.email, token);
+                await _emailSender.SendPasswordResetLinkAsync(
+                    model.email,
+                    token,
+                    HttpContext.RequestAborted);
 
-                return Json(new { success = true, message = "Password reset email sent.", token = token });
+                return Json(new { success = true, message = "Password reset email sent." });
 
             }
             return Json(new { success = false, message = "Invalid request." });
@@ -517,4 +529,3 @@ namespace ProjectBase.Controllers
         }
     }
 }
-  

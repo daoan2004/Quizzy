@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using ProjectBase.Helpers;
+using ProjectBase.Services;
 
 namespace ProjectBase.Tests;
 
@@ -22,6 +23,11 @@ public sealed class QuizzyWebApplicationFactory : WebApplicationFactory<Program>
 
             services.AddDbContext<DataContext>(options =>
                 options.UseInMemoryDatabase(_databaseName));
+
+            services.RemoveAll<IEmailSender>();
+            services.AddSingleton<FakeEmailSender>();
+            services.AddSingleton<IEmailSender>(provider =>
+                provider.GetRequiredService<FakeEmailSender>());
 
             using var scope = services.BuildServiceProvider().CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<DataContext>();

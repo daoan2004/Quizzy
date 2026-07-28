@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectBase.Helpers;
 using ProjectBase.Models;
+using ProjectBase.Services;
 using System;
 
 namespace ProjectBase
@@ -39,6 +40,10 @@ namespace ProjectBase
 
             // Add services to the container 
             services.AddControllersWithViews();
+            services.AddOptions<EmailOptions>()
+                .Bind(configuration.GetSection(EmailOptions.SectionName));
+            services.AddSingleton<IAccountLinkBuilder, AccountLinkBuilder>();
+            services.AddScoped<IEmailSender, SmtpEmailSender>();
 
             // Add authentication services
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
