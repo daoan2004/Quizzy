@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectBase.Helpers;
 using ProjectBase.Models;
+using ProjectBase.Models.DAO;
 using ProjectBase.Services;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
@@ -18,15 +19,18 @@ namespace ProjectBase.Controllers
         private readonly IConfiguration _config;
         private readonly DataContext _context;
         private readonly IEmailSender _emailSender;
+        private readonly IPasswordService _passwordService;
 
         public AccountController(
             IConfiguration config,
             DataContext context,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IPasswordService passwordService)
         {
             _config = config;
             _context = context;
             _emailSender = emailSender;
+            _passwordService = passwordService;
         }
 
         [HttpGet]
@@ -91,19 +95,20 @@ namespace ProjectBase.Controllers
                     string token = Guid.NewGuid().ToString();
 
                     // Thêm đối tượng User vào cơ sở dữ liệu
-                    var newUser = new RegisterModel
+                    var newUser = new User
                     {
                         fullname = model.fullname,
                         Phone = model.Phone,
-                        password = EncryptionHelper.GetMd5Hash(model.password),
+                        password = string.Empty,
                         email = model.email,
-                        gender = model.gender ? true : false,
+                        gender = model.gender,
                         verificationToken = token,
                         status = 0,
                         RoleID = 2,
                     };
+                    newUser.password = _passwordService.HashPassword(newUser, model.password);
 
-                    _context.Users.Add(newUser.toUser());
+                    _context.Users.Add(newUser);
                     await _context.SaveChangesAsync();
                     // Gửi email xác minhz`
                     await _emailSender.SendVerificationLinkAsync(
@@ -195,18 +200,27 @@ namespace ProjectBase.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            string hashedPassword = EncryptionHelper.GetMd5Hash(model.password);
-            // Tìm kiếm một người dùng trong cơ sở dữ liệu với email và mật khẩu mã hóa
             var user = await _context.Users
                 .Include(u => u.Role) // Bao gồm thông tin vai trò của người dùng
-                .FirstOrDefaultAsync(u => u.email == model.email && u.password == hashedPassword);
+                .FirstOrDefaultAsync(u => u.email == model.email);
 
-            // Kiểm tra xem người dùng với thông tin đăng nhập đã cung cấp có tồn tại không
             if (user != null)
             {
+                var passwordCheck = _passwordService.VerifyPassword(user, model.password);
+                if (!passwordCheck.Succeeded)
+                {
+                    return Json(new { success = false, message = "Invalid email or password." });
+                }
+
                 if (user.status == 0)
                 {
                     return Json(new { success = false, message = "Your account is not activated yet. You need check your gmail and verify account." });
+                }
+
+                if (passwordCheck.NeedsRehash)
+                {
+                    user.password = _passwordService.HashPassword(user, model.password);
+                    await _context.SaveChangesAsync();
                 }
                 // Nếu người dùng tồn tại và tài khoản đã được kích hoạt, tạo claims cho người dùng
                 var claims = new List<Claim>
@@ -251,14 +265,13 @@ namespace ProjectBase.Controllers
                     return Json(new { success = false, message = "User not found." });
                 }
 
-                string currentHashedPassword = EncryptionHelper.GetMd5Hash(model.CurrentPassword);
-                if (user.password != currentHashedPassword)
+                var currentPasswordCheck = _passwordService.VerifyPassword(user, model.CurrentPassword);
+                if (!currentPasswordCheck.Succeeded)
                 {
                     return Json(new { success = false, message = "Current password is incorrect." });
                 }
-                // Kiểm tra xem new password có trùng current password không
-                string newHashedPassword = EncryptionHelper.GetMd5Hash(model.NewPassword);
-                if (user.password == newHashedPassword)
+
+                if (_passwordService.VerifyPassword(user, model.NewPassword).Succeeded)
                 {
                     return Json(new { success = false, message = "New password must be different from current password." });
                 }
@@ -274,7 +287,7 @@ namespace ProjectBase.Controllers
                 }
 
                 // Nếu trùng khớp, tiến hành cập nhật mật khẩu mới
-                user.password = EncryptionHelper.GetMd5Hash(model.NewPassword);
+                user.password = _passwordService.HashPassword(user, model.NewPassword);
                 _context.Update(user);
                 await _context.SaveChangesAsync();
 
@@ -368,7 +381,7 @@ namespace ProjectBase.Controllers
                 return Json(new { success = false, message = "Token expired." });
             }
 
-            user.password = EncryptionHelper.GetMd5Hash(model.NewPassword); // Ensure you have this method implemented
+            user.password = _passwordService.HashPassword(user, model.NewPassword);
             user.PasswordResetToken = null;
             user.PasswordResetTokenExpires = null;
             await _context.SaveChangesAsync();

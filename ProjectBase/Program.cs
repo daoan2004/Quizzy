@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration; // Thêm namespace này
 using Microsoft.Extensions.DependencyInjection;
@@ -44,6 +45,8 @@ namespace ProjectBase
                 .Bind(configuration.GetSection(EmailOptions.SectionName));
             services.AddSingleton<IAccountLinkBuilder, AccountLinkBuilder>();
             services.AddScoped<IEmailSender, SmtpEmailSender>();
+            services.AddScoped<IPasswordHasher<ProjectBase.Models.DAO.User>, PasswordHasher<ProjectBase.Models.DAO.User>>();
+            services.AddScoped<IPasswordService, PasswordService>();
 
             // Add authentication services
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
