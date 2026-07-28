@@ -15,8 +15,13 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.btn:focus-visible,
+.btn-link.nav-link:focus-visible,
+.form-control:focus-visible,
+.form-check-input:focus-visible {
+  outline: 2px solid var(--color-text-white);
+  outline-offset: 3px;
+  box-shadow: none;
 }
 
 html {
@@ -37,6 +42,8 @@ body {
   background: var(--app-bg-gradient);
   background-attachment: fixed;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .page-wrapper,
@@ -62,10 +69,10 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
-  background-size: 44px 44px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.42), transparent 76%);
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.64), transparent 72%);
 }
 
 h1,
@@ -76,8 +83,9 @@ h5,
 h6 {
   font-family: var(--font-heading);
   color: var(--color-text-dark);
-  letter-spacing: 0;
+  letter-spacing: -0.025em;
   line-height: var(--line-heading);
+  text-wrap: balance;
 }
 
 h1 {
@@ -101,12 +109,48 @@ button {
   line-height: var(--line-body);
 }
 
+button,
+input,
+select,
+textarea,
+.nav-link {
+  letter-spacing: -0.01em;
+}
+
 a {
-  color: var(--color-accent-hover);
+  color: var(--color-text-dark);
+  text-decoration-color: var(--color-border-hover);
+  text-underline-offset: 0.18em;
+  transition:
+    color var(--transition-fast),
+    text-decoration-color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-text-white);
+  text-decoration-color: currentColor;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  color-scheme: dark;
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-text-white);
+  outline-offset: 3px;
 }
 
 ::selection {
-  color: var(--color-text-white);
+  color: var(--color-text-inverse);
   background: var(--color-accent);
 }
 

@@ -11,29 +11,76 @@
 <div class="home-page-wrapper">
     <section class="home-hero">
         <div class="home-hero-copy">
-            <p class="home-eyebrow"><i class="bi bi-stars"></i> Learn faster with Quizly</p>
-            <h1>The one and only quiz for you</h1>
-            <p>Browse subjects, practice smarter, and review your progress in one smooth place.</p>
+            <p class="home-eyebrow"><span></span> Built for focused learning</p>
+            <h1>Learn with clarity.<br><span>Practice with purpose.</span></h1>
+            <p class="home-hero-lead">Explore structured subjects, test your knowledge and turn every result into measurable progress.</p>
             <div class="home-hero-actions">
                 <a asp-controller="Subjects" asp-action="Index" id="start_button" class="btn">
-                    Get Started <i class="bi bi-arrow-right"></i>
+                    Start learning <i class="bi bi-arrow-up-right"></i>
                 </a>
-                <a asp-controller="Blogs" asp-action="Index" class="home-secondary-link">
-                    Read blogs <i class="bi bi-journal-text"></i>
+                <a asp-controller="Practice" asp-action="Index" class="home-secondary-link">
+                    View practices
                 </a>
+            </div>
+            <div class="home-trust-row" aria-label="Quizly benefits">
+                <span><i class="bi bi-check2"></i> Structured subjects</span>
+                <span><i class="bi bi-check2"></i> Focused quizzes</span>
+                <span><i class="bi bi-check2"></i> Clear review</span>
+            </div>
+        </div>
+
+        <div class="home-system-card" aria-label="How Quizly works">
+            <div class="system-card-header">
+                <span>Learning system</span>
+                <span class="system-status"><i></i> Ready</span>
+            </div>
+            <div class="system-flow">
+                <article>
+                    <span class="system-index">01</span>
+                    <div>
+                        <h2>Choose a subject</h2>
+                        <p>Start with the knowledge you want to master.</p>
+                    </div>
+                    <i class="bi bi-arrow-right"></i>
+                </article>
+                <article>
+                    <span class="system-index">02</span>
+                    <div>
+                        <h2>Practice with focus</h2>
+                        <p>Work through quizzes at the right difficulty.</p>
+                    </div>
+                    <i class="bi bi-arrow-right"></i>
+                </article>
+                <article>
+                    <span class="system-index">03</span>
+                    <div>
+                        <h2>Review and improve</h2>
+                        <p>Understand every result and keep moving.</p>
+                    </div>
+                    <i class="bi bi-check2"></i>
+                </article>
             </div>
         </div>
     </section>
 
     <section class="home-content-grid">
         <div class="home-main-column">
-            <div id="Mainslider" class="home-slider swiper js-swiper glass-panel" data-loop="false" data-tablet-slides="1" data-desktop-slides="1">
+            <div class="home-section-heading home-featured-heading">
+                <div>
+                    <p>Featured</p>
+                    <h2>Ideas worth exploring</h2>
+                </div>
+                <a asp-controller="Blogs" asp-action="Index">All articles <i class="bi bi-arrow-right"></i></a>
+            </div>
+
+            <div id="Mainslider" class="home-slider swiper js-swiper" data-loop="false" data-tablet-slides="1" data-desktop-slides="1">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide home-hero-slide">
                         <div class="home-slide-content">
-                            <span>Featured</span>
-                            <h2>Explore learning stories</h2>
-                            <a asp-controller="Blogs" asp-action="Index" class="home-slide-button">Open blogs <i class="bi bi-arrow-right"></i></a>
+                            <span class="home-slide-kicker">Quizly Journal</span>
+                            <h2>Better learning starts with better questions.</h2>
+                            <p>Discover practical ideas for building stronger study habits.</p>
+                            <a asp-controller="Blogs" asp-action="Index" class="home-slide-button">Explore the journal <i class="bi bi-arrow-up-right"></i></a>
                         </div>
                     </div>
                     @foreach (var item in Model.Sliders)
@@ -43,9 +90,12 @@
                                 <img src="/picture/Carousel/@item.image" class="home-slide-image" alt="@item.Title" loading="lazy" decoding="async">
                             </a>
                             <div class="home-slide-content">
-                                <span>@item.updatedAt.ToString("dd/MM/yyyy")</span>
+                                <span class="home-slide-kicker">@item.updatedAt.ToString("dd MMM yyyy")</span>
                                 <h2>@item.Title</h2>
                                 <p>@item.description</p>
+                                <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID" class="home-slide-button">
+                                    Read article <i class="bi bi-arrow-up-right"></i>
+                                </a>
                             </div>
                         </div>
                     }
@@ -55,24 +105,27 @@
                 <button class="swiper-button-next" type="button" aria-label="Next slide"></button>
             </div>
 
-            <section class="home-posts glass-panel">
+            <section class="home-posts">
                 <div class="home-section-heading">
-                    <h2><i class="bi bi-fire"></i> Hot Posts</h2>
+                    <div>
+                        <p>Latest insights</p>
+                        <h2>Keep your thinking sharp</h2>
+                    </div>
                     <a asp-controller="Blogs" asp-action="Index">View all <i class="bi bi-arrow-right"></i></a>
                 </div>
                 <div class="home-post-list">
                     @foreach (var item in Model.BlogView)
                     {
-                        <article class="home-post-card glass-card js-tilt-card" data-aos="fade-up">
+                        <article class="home-post-card" data-aos="fade-up">
                             <a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID" class="home-post-image-link">
                                 <img class="home-post-image" src="/picture/Carousel/@item.blog_picture" alt="@item.title" loading="lazy" decoding="async">
                             </a>
                             <div class="home-post-body">
-                                <p class="home-post-date">Published: @item.publishAt.ToString("dd/MM/yyyy")</p>
+                                <p class="home-post-date">@item.publishAt.ToString("dd MMM yyyy")</p>
                                 <h3><a asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">@item.title</a></h3>
                                 <p>@item.description</p>
                                 <a class="home-more-link" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">
-                                    Read more <i class="bi bi-arrow-right"></i>
+                                    Read article <i class="bi bi-arrow-up-right"></i>
                                 </a>
                             </div>
                         </article>
@@ -82,9 +135,11 @@
         </div>
 
         <aside class="home-sidebar">
+            <div class="home-sidebar-label"><span>Fresh</span> Latest posts</div>
             <div class="sidebar-box" data-aos="fade-left">
                 <partial name="_LatestPostPartial" />
             </div>
+            <div class="home-sidebar-label"><span>Popular</span> Featured subjects</div>
             <div id="featureSubjectPartial" class="sidebar-box" data-aos="fade-left" data-aos-delay="100">
                 <partial name="_SubjectFeaturedPartial" />
             </div>

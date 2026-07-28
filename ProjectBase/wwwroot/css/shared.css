@@ -29,9 +29,9 @@
 }
 
 .glass-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-hover), var(--glass-highlight);
-    border-color: rgba(255, 255, 255, 0.86);
+    border-color: var(--color-border-hover);
 }
 
 .glass-button {
@@ -63,17 +63,15 @@
 }
 
 .gradient-text {
-    color: transparent;
-    background: linear-gradient(135deg, var(--color-accent), var(--color-cyan), var(--color-indigo));
-    -webkit-background-clip: text;
-    background-clip: text;
+    color: var(--color-text-dark);
+    background: none;
 }
 
 .form-state-message {
     min-width: min(100%, 360px);
     padding: 18px 20px;
     border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.72);
+    background: var(--color-bg-card);
     border: var(--glass-border);
     box-shadow: var(--glass-highlight);
     color: var(--color-text-muted);
@@ -81,7 +79,7 @@
 }
 
 :where(a, button, input, select, textarea):focus-visible {
-    outline: 3px solid rgba(56, 189, 248, 0.45);
+    outline: 2px solid var(--color-text-white);
     outline-offset: 3px;
 }
 
@@ -115,7 +113,7 @@
 .subject-item-side {
     display: flex;
     align-items: stretch;
-    background: rgba(255, 255, 255, 0.62);
+    background: var(--color-bg-card);
     border: var(--glass-border);
     justify-content: center;
     border-radius: var(--radius-md);
@@ -127,7 +125,7 @@
 .subject-item-side:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-hover), var(--glass-highlight);
-    border-color: rgba(255, 255, 255, 0.9);
+    border-color: var(--color-border-hover);
 }
 
 .thumbnail_side {
@@ -138,7 +136,7 @@
     justify-content: center;
     flex-shrink: 0;
     border-radius: var(--radius-sm);
-    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
+    background: var(--color-bg-hover);
     overflow: hidden;
 }
 
@@ -270,7 +268,7 @@
 .post-details .author,
 .post-details .date {
     font-size: 12px;
-    color: #FFD2D2;
+    color: var(--color-text-muted);
 }
 
 /* ──────────────────────────────────────────
@@ -347,7 +345,7 @@
     text-decoration: none;
     padding: 9px 14px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.58);
+    background: var(--color-bg-card);
     border: var(--glass-border);
     box-shadow: var(--glass-highlight);
     transition: transform var(--transition-fast), filter var(--transition-fast);
@@ -384,7 +382,7 @@
 
 .category_tags {
     font-size: 15px;
-    background: rgba(255, 255, 255, 0.58);
+    background: var(--color-bg-card);
     text-align: center;
     border: var(--glass-border);
     padding: 0;
@@ -428,7 +426,7 @@
     gap: 8px;
     padding: 8px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.62);
+    background: var(--color-bg-card);
     border: var(--glass-border);
     box-shadow: var(--glass-highlight);
 }
@@ -460,9 +458,9 @@
     place-items: center;
     border: 0;
     border-radius: 50%;
-    color: var(--color-text-white);
-    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
-    box-shadow: 0 10px 20px rgba(255, 79, 123, 0.22);
+    color: var(--color-text-inverse);
+    background: var(--color-accent);
+    box-shadow: none;
     transition: transform var(--transition-fast), filter var(--transition-fast);
 }
 
@@ -505,7 +503,7 @@
     font-size: 16px;
     padding: 6px 12px;
     outline: none;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border);
     border-radius: 5px;
     width: calc(100% - 20px);
     margin: var(--gap-sm);
@@ -513,11 +511,11 @@
 }
 
 .search input::placeholder {
-    color: #999;
+    color: var(--color-text-muted);
 }
 
 .search input:focus {
-    border-color: #555;
+    border-color: var(--color-border-hover);
 }
 
 .search-icon {
@@ -525,7 +523,7 @@
     right: 24px;
     top: 21%;
     transform: translateY(-50%);
-    color: #ff5f6d;
+    color: var(--color-text-muted);
 }
 
 /* ──────────────────────────────────────────
@@ -578,13 +576,14 @@
 }
 
 .Table-wrapper thead {
-    background-color: #FF5555;
+    background-color: var(--color-bg-hover);
     text-align: center;
     box-shadow: var(--shadow-card);
 }
 
 .Table-wrapper tr {
-    background-color: #FF5555;
+    background-color: var(--color-bg-card-dark);
+    border: 1px solid var(--color-border);
     box-shadow: var(--shadow-card);
 }
 
@@ -628,8 +627,8 @@ td:nth-child(n+3) {
     border-radius: var(--radius-sm);
     background-color: var(--color-accent);
     font-weight: 500;
-    color: var(--color-text-white);
-    border: none;
+    color: var(--color-text-inverse);
+    border: 1px solid var(--color-accent);
     padding: var(--gap-sm);
     box-shadow: var(--shadow-card);
     cursor: pointer;
@@ -648,7 +647,8 @@ td:nth-child(n+3) {
 
 .details-button {
     font-weight: 500;
-    background-color: var(--color-success);
+    color: var(--color-text-inverse);
+    background-color: var(--color-accent);
     border-radius: var(--radius-sm);
     border: none;
     padding: 5px var(--gap-sm);
@@ -981,9 +981,9 @@ td:nth-child(n+3) {
     display: inline-grid;
     place-items: center;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.62);
+    background: var(--color-bg-hover);
     border: var(--glass-border);
-    box-shadow: var(--glass-highlight), 0 18px 36px rgba(15, 23, 42, 0.12);
+    box-shadow: var(--glass-highlight), var(--shadow-card);
 }
 
 .account-status-icon i {
@@ -1043,7 +1043,7 @@ td:nth-child(n+3) {
     padding: 8px 14px;
     border-radius: 999px;
     color: var(--color-accent-hover);
-    background: rgba(255, 255, 255, 0.66);
+    background: var(--color-bg-card);
     border: var(--glass-border);
     font-weight: 900;
 }
@@ -1071,7 +1071,7 @@ td:nth-child(n+3) {
 
 .info-page-card {
     padding: var(--padding-card);
-    background: rgba(255, 255, 255, 0.6);
+    background: var(--color-bg-card);
     border: var(--glass-border);
 }
 
@@ -1081,9 +1081,9 @@ td:nth-child(n+3) {
     display: inline-grid;
     place-items: center;
     border-radius: 50%;
-    color: var(--color-text-white);
-    background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
-    box-shadow: 0 14px 28px rgba(255, 79, 123, 0.2);
+    color: var(--color-text-inverse);
+    background: var(--color-accent);
+    box-shadow: none;
     font-size: 22px;
 }
 

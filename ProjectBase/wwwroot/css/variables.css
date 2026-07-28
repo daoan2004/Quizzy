@@ -1,52 +1,65 @@
 /* ============================================================
-   variables.css — Design Tokens cho toàn bộ Quizly
-   Import file này ĐẦU TIÊN trong _Layout.cshtml
+   Quizly monochrome design tokens
+   Keep legacy aliases until every page has been migrated.
    ============================================================ */
 
 :root {
-    /* ── Màu nền (Background) ── */
-    --color-bg:           #FFF7FB;   /* nền trang chính */
-    --color-bg-light:     rgba(255, 255, 255, 0.68);
-    --color-bg-card:      rgba(255, 255, 255, 0.58);
-    --color-bg-card-dark: rgba(255, 111, 145, 0.72);
-    --color-bg-card-mid:  rgba(255, 214, 226, 0.76);
-    --color-bg-hover:     rgba(255, 255, 255, 0.82);
+    color-scheme: dark;
+
+    /* Surfaces */
+    --color-bg: #080808;
+    --color-bg-light: #0f0f0f;
+    --color-bg-card: #141414;
+    --color-bg-card-dark: #1a1a1a;
+    --color-bg-card-mid: #171717;
+    --color-bg-hover: #1d1d1d;
+    --color-surface-raised: #202020;
+    --color-overlay: rgba(0, 0, 0, 0.76);
     --app-bg-gradient:
-        radial-gradient(circle at top left, rgba(255, 111, 145, 0.22), transparent 32%),
-        radial-gradient(circle at top right, rgba(56, 189, 248, 0.18), transparent 30%),
-        linear-gradient(135deg, #fff7fb 0%, #eef9ff 48%, #f7fff8 100%);
+        radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.07), transparent 38%),
+        linear-gradient(180deg, #0b0b0b 0%, #080808 54%, #060606 100%);
 
-    /* ── Màu chữ (Text) ── */
-    --color-text-dark:    #172033;   /* tiêu đề, text đậm */
-    --color-text-mid:     #334155;   /* logo, link */
-    --color-text-light:   #475569;   /* nav links */
-    --color-text-muted:   #64748B;   /* brief text, meta */
-    --color-text-body:    #243043;   /* body text trong blog detail */
-    --color-text-white:   #FFFFFF;
+    /* Text */
+    --color-text-dark: #fafafa;
+    --color-text-mid: #d4d4d4;
+    --color-text-light: #a3a3a3;
+    --color-text-muted: #858585;
+    --color-text-body: #d4d4d4;
+    --color-text-white: #ffffff;
+    --color-text-inverse: #080808;
 
-    /* ── Màu accent / trạng thái ── */
-    --color-accent:       #FF4F7B;   /* primary action button */
-    --color-accent-dark:  #BE123C;   /* price badge */
-    --color-accent-hover: #E11D48;   /* pagination hover */
-    --color-accent-soft:  rgba(255, 79, 123, 0.14);
-    --color-cyan:         #38BDF8;
-    --color-mint:         #34D399;
-    --color-indigo:       #6366F1;
-    --color-success:      #34D399;   /* nút details/mark */
-    --color-success-dark: #059669;   /* pay/yes button */
-    --color-warning:      #F59E0B;
-    --color-danger:       #EF4444;
-    --color-lime:         #D9F99D;   /* register button */
-    --color-lime-text:    #166534;
-    --color-info:         #0EA5E9;   /* secondary button */
-    --color-strikethrough: #ff0000;  /* list price gạch */
+    /* Borders */
+    --color-border: #292929;
+    --color-border-strong: #404040;
+    --color-border-hover: #5c5c5c;
+
+    /* Monochrome actions */
+    --color-accent: #fafafa;
+    --color-accent-dark: #d4d4d4;
+    --color-accent-hover: #ffffff;
+    --color-accent-soft: rgba(255, 255, 255, 0.09);
+
+    /* Semantic states: only use when meaning is required */
+    --color-success: #4ade80;
+    --color-success-dark: #22c55e;
+    --color-warning: #fbbf24;
+    --color-danger: #f87171;
+    --color-info: #d4d4d4;
+    --color-strikethrough: #f87171;
+
+    /* Legacy aliases, intentionally monochrome */
+    --color-cyan: #d4d4d4;
+    --color-mint: #e5e5e5;
+    --color-indigo: #a3a3a3;
+    --color-lime: #fafafa;
+    --color-lime-text: #080808;
 
     /* ── Border Radius ── */
     --radius-xs:  6px;
     --radius-sm:  8px;
-    --radius-md:  16px;
-    --radius-lg:  20px;
-    --radius-xl:  28px;
+    --radius-md:  12px;
+    --radius-lg:  14px;
+    --radius-xl:  16px;
     --radius-full:50%;
 
     /* ── Spacing ── */
@@ -65,24 +78,24 @@
     --padding-card: clamp(16px, 2vw, 24px);
 
     /* ── Box Shadow ── */
-    --shadow-soft:   0 12px 32px rgba(15, 23, 42, 0.08);
-    --shadow-card:   0 18px 45px rgba(15, 23, 42, 0.10);
-    --shadow-hover:  0 24px 60px rgba(15, 23, 42, 0.16);
-    --shadow-inward: inset 0 0 18px rgba(255, 255, 255, 0.32);
-    --shadow-modal:  0 24px 80px rgba(15, 23, 42, 0.22);
+    --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.24);
+    --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.28);
+    --shadow-hover: 0 18px 44px rgba(0, 0, 0, 0.38);
+    --shadow-inward: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    --shadow-modal: 0 28px 80px rgba(0, 0, 0, 0.64);
 
-    /* ── Glassmorphism ── */
-    --glass-bg: rgba(255, 255, 255, 0.62);
-    --glass-bg-strong: rgba(255, 255, 255, 0.78);
-    --glass-border: 1px solid rgba(255, 255, 255, 0.68);
-    --glass-blur: 22px;
-    --glass-shadow: 0 22px 70px rgba(15, 23, 42, 0.12);
-    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    /* Compatibility values for existing glass component classes */
+    --glass-bg: rgba(20, 20, 20, 0.94);
+    --glass-bg-strong: rgba(26, 26, 26, 0.97);
+    --glass-border: 1px solid var(--color-border);
+    --glass-blur: 10px;
+    --glass-shadow: var(--shadow-card);
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
     /* ── Typography ── */
-    --font-main: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    --font-heading: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
-    --font-logo: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+    --font-main: "Manrope", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+    --font-heading: "Space Grotesk", "Manrope", "Segoe UI Variable", system-ui, sans-serif;
+    --font-logo: "Space Grotesk", "Manrope", "Segoe UI Variable", system-ui, sans-serif;
     --text-xs: 0.78rem;
     --text-sm: 0.875rem;
     --text-base: 1rem;
@@ -96,7 +109,7 @@
     --line-body: 1.65;
 
     /* ── Transition ── */
-    --transition-fast:   0.15s ease;
-    --transition-normal: 0.2s ease;
-    --transition-slow:   0.3s ease;
+    --transition-fast: 150ms ease;
+    --transition-normal: 180ms ease;
+    --transition-slow: 240ms ease;
 }

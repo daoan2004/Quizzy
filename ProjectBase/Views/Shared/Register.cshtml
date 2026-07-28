@@ -4,6 +4,9 @@
         <div class="modal fade" tabindex="-1" id="registerModal" data-keyboard="false" data-backdrop="static">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content auth-modal">
+                    <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close registration dialog">
+                        <i class="bi bi-x-lg" aria-hidden="true"></i>
+                    </button>
                     <div id="registerSuccessMessage" class="alert alert-success" style="display:none;">
                         Registration successful. Please check email to verify your account!
                     </div>
@@ -18,19 +21,19 @@
                                 <div class="col-md-8">
                                     <div class="modal-titleLeft"><i class="bi bi-person-plus"></i> Register</div>
                                     <div class="formRegister-groupContent">
-                                        <input asp-for="fullname" type="text" placeholder="Enter fullname" id="inputFullName" />
+                                        <input asp-for="fullname" type="text" placeholder="Enter fullname" id="inputFullName" aria-label="Full name" />
                                     </div>
                                     <div class="formRegister-groupContent">
-                                        <input asp-for="Phone" type="text" placeholder="Phone number" id="inputPhoneNumber" />
+                                        <input asp-for="Phone" type="text" placeholder="Phone number" id="inputPhoneNumber" aria-label="Phone number" />
                                     </div>
                                     <div class="formRegister-groupContent">
-                                        <input asp-for="email" type="email" placeholder="Email" id="inputEmail" />
+                                        <input asp-for="email" type="email" placeholder="Email" id="inputEmail" aria-label="Email address" />
                                     </div>
                                     <div class="formRegister-groupContent">
-                                        <input asp-for="password" type="password" placeholder="Password" id="inputPasswordRegister" />
+                                        <input asp-for="password" type="password" placeholder="Password" id="inputPasswordRegister" aria-label="Password" />
                                     </div>
                                     <div class="formRegister-groupContent">
-                                        <input asp-for="ConfirmPassword" type="password" placeholder="Confirm Password" id="inputConfirmPassword" />
+                                        <input asp-for="ConfirmPassword" type="password" placeholder="Confirm Password" id="inputConfirmPassword" aria-label="Confirm password" />
                                     </div>
                                     <div class="formRegister-group" id="genderContainer">
                                         <div class="title">

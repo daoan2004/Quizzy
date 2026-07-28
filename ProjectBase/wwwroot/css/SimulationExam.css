@@ -25,3 +25,19 @@ body {
     -webkit-backdrop-filter: blur(var(--glass-blur));
     padding: var(--padding-card);
 }
+/* Simulation Exam inherits the Practice workspace and only needs table sizing. */
+.simulation-page .Table-wrapper {
+    overflow-x: auto;
+}
+
+.simulation-page .Table-wrapper table {
+    min-width: 900px;
+}
+
+.simulation-page #simulationExamList:empty::after {
+    content: "Loading available simulation exams…";
+    display: table-cell;
+    padding: 24px;
+    color: var(--color-text-muted);
+    font-size: 13px;
+}

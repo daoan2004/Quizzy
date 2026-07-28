@@ -32,7 +32,7 @@
     position: relative;
     min-height: 220px;
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(255, 79, 123, 0.16), rgba(56, 189, 248, 0.16));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
 }
 
 .register-modal-hero img {
@@ -142,7 +142,7 @@
 
 .price_option:hover {
     transform: translateY(-2px);
-    border-color: rgba(255, 79, 123, 0.32);
+    border-color: var(--color-border-hover);
     box-shadow: var(--glass-highlight), 0 18px 36px rgba(15, 23, 42, 0.12);
 }
 
@@ -163,8 +163,8 @@
 }
 
 .price_option:has(input[type="radio"]:checked) {
-    border-color: rgba(255, 79, 123, 0.46);
-    background: linear-gradient(135deg, rgba(255, 79, 123, 0.14), rgba(255, 255, 255, 0.8));
+    border-color: var(--color-text-white);
+    background: var(--color-bg-hover);
 }
 
 .price-option-main {
@@ -228,7 +228,7 @@
 
 .noti_regis {
     color: #991b1b;
-    background: rgba(255, 79, 123, 0.14);
+    background: var(--color-bg-hover);
     border: 1px solid rgba(153, 27, 27, 0.14);
 }
 
@@ -251,7 +251,7 @@
     border-radius: 999px;
     color: var(--color-text-white);
     background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
-    box-shadow: 0 14px 28px rgba(255, 79, 123, 0.22);
+    box-shadow: var(--shadow-card);
     font-size: 16px;
     font-weight: 900;
     cursor: pointer;
@@ -288,4 +288,119 @@
         flex-wrap: wrap;
         white-space: normal;
     }
+}
+
+/* Monochrome registration modal */
+#subjectPopup .modal-content,
+#popup_register {
+    border: 1px solid var(--color-border-strong);
+    border-radius: 16px;
+    background: var(--color-bg-card);
+    box-shadow: var(--shadow-modal);
+    backdrop-filter: none;
+}
+
+.register-modal-hero {
+    background: var(--color-bg-hover);
+}
+
+.register-modal-hero img {
+    filter: grayscale(1) contrast(1.05);
+}
+
+.register-modal-hero::after {
+    background: linear-gradient(180deg, rgba(8,8,8,.05), rgba(8,8,8,.92));
+}
+
+.register-modal-hero-content span {
+    color: var(--color-text-light);
+    font-size: 10px;
+    letter-spacing: .12em;
+}
+
+.register-modal-hero-content span i {
+    color: var(--color-text-white);
+}
+
+.register-modal-hero-content h2 {
+    font-weight: 700;
+    letter-spacing: -.045em;
+}
+
+.register-modal-tags span {
+    min-height: 25px;
+    padding: 4px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    color: var(--color-text-muted);
+    background: transparent;
+    font-size: 10px;
+}
+
+.register-modal-brief {
+    color: var(--color-text-light);
+    font-weight: 500;
+}
+
+.price_option {
+    min-height: 82px;
+    border: 1px solid var(--color-border);
+    border-radius: 11px;
+    background: var(--color-bg-light);
+    box-shadow: none;
+}
+
+.price_option:hover {
+    transform: translateY(-1px);
+    border-color: var(--color-border-hover);
+    box-shadow: none;
+}
+
+.price_option input[type="radio"] {
+    border-color: var(--color-border-hover);
+    background: var(--color-bg-light);
+    box-shadow: inset 0 0 0 5px var(--color-bg-light);
+}
+
+.price_option input[type="radio"]:checked {
+    border-color: var(--color-text-white);
+    background: var(--color-text-white);
+}
+
+.price_option:has(input[type="radio"]:checked) {
+    border-color: var(--color-text-white);
+    background: var(--color-bg-hover);
+    box-shadow: inset 0 0 0 1px var(--color-text-white);
+}
+
+.package-text {
+    font-weight: 700;
+}
+
+.price_option .sale-price {
+    color: var(--color-text-dark);
+}
+
+.noti {
+    color: var(--color-success);
+    background: rgba(74, 222, 128, .08);
+    border-color: rgba(74, 222, 128, .2);
+}
+
+.noti_regis {
+    color: var(--color-text-light);
+    background: var(--color-bg-light);
+    border-color: var(--color-border);
+}
+
+#register_button_popup_1,
+#register_button_popup_2,
+#login_from_subject_popup {
+    min-width: 180px;
+    border: 1px solid var(--color-text-white);
+    border-radius: 9px;
+    color: var(--color-text-inverse);
+    background: var(--color-text-white);
+    box-shadow: none;
+    font-size: 14px;
 }

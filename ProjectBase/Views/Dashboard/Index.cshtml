@@ -18,7 +18,7 @@
                         <input type="date" id="startDate" value="">
                         <label for="endDate">End Date:</label>
                         <input type="date" id="endDate" value="">
-                        <button onclick="onViewButtonClick()">View</button>
+                        <button type="button" onclick="onViewButtonClick()">View</button>
                     </div>
                 </div>
                 <!-- Dashboard Statistics Section -->
@@ -61,10 +61,10 @@
                             <div class="col-md-6">
                                 <h4>New Registrations</h4>
                                 <div class="filter-buttons">
-                                    <button class="filter-btn active" onclick="filterRegistrations('All')">All</button>
-                                    <button class="filter-btn" onclick="filterRegistrations('Submitted')">Submitted</button>
-                                    <button class="filter-btn" onclick="filterRegistrations('Cancelled')">Cancelled</button>
-                                    <button class="filter-btn" onclick="filterRegistrations('Registrated')">Success</button>
+                                    <button type="button" class="filter-btn active" onclick="filterRegistrations('All')">All</button>
+                                    <button type="button" class="filter-btn" onclick="filterRegistrations('Submitted')">Submitted</button>
+                                    <button type="button" class="filter-btn" onclick="filterRegistrations('Cancelled')">Cancelled</button>
+                                    <button type="button" class="filter-btn" onclick="filterRegistrations('Registrated')">Success</button>
                                 </div>
                                 <div id="registrationList" class="registration-list">
                                     <!-- Registration items will be populated here by JavaScript -->
@@ -158,13 +158,10 @@
                 });
         }
 
-        // Helper function to generate random colors for the chart
+        // Stable monochrome palette keeps charts consistent with the application theme.
         function generateColorArray(num) {
-            const colors = [];
-            for (let i = 0; i < num; i++) {
-                colors.push(`hsl(${Math.random() * 360}, 100%, 75%)`); // Generate a random hue
-            }
-            return colors;
+            const palette = ['#fafafa', '#d4d4d4', '#a3a3a3', '#737373', '#525252', '#404040'];
+            return Array.from({ length: num }, (_, index) => palette[index % palette.length]);
         }
 
         async function fetchCustomerStatistics() {
@@ -224,15 +221,15 @@
                         {
                             label: 'Order Count',
                             data: orderCounts,
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(250, 250, 250, 0.82)',
+                            borderColor: '#fafafa',
                             borderWidth: 1
                         },
                         {
                             label: 'Registrated Count',
                             data: registrationCounts,
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(115, 115, 115, 0.72)',
+                            borderColor: '#a3a3a3',
                             borderWidth: 1
                         }
                     ]
@@ -359,14 +356,14 @@
                         label: 'Registration Status',
                         data: [statusCounts.Submitted, statusCounts.Cancelled, statusCounts.Success],
                         backgroundColor: [
-                            '#4CAF50',  // blue
-                            '#f44336',  // yellow
-                            '#FFC107'   // green
+                            '#fafafa',
+                            '#737373',
+                            '#bdbdbd'
                         ],
                         borderColor: [
-                            '#66bb6a',
-                            '#ff5252',
-                            '#FFD740'
+                            '#ffffff',
+                            '#a3a3a3',
+                            '#e5e5e5'
                         ],
                         borderWidth: 1
                     }]

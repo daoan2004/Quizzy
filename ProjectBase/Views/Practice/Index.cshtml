@@ -33,10 +33,10 @@
 			    </div>
                 <div class="flex" >
                 <div class="new-practice">
-                        <button class="header-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'"><i class="bi bi-plus-circle"></i> New Practice</button>
+                        <button type="button" class="header-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'"><i class="bi bi-plus-circle"></i> New Practice</button>
                 </div>
                 <div class="simulation-exam ">
-                        <button class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'"><i class="bi bi-clipboard2-check"></i> Simulation Exam</button>
+                        <button type="button" class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'"><i class="bi bi-clipboard2-check"></i> Simulation Exam</button>
                 </div>
 				</div>
             </div>
@@ -72,6 +72,19 @@
 @section Scripts {
         <script type="text/javascript">
             $(document).ready(function () {
+                var userId = null;
+
+                function showPracticeMessage(message) {
+                    $('#PracticeList').html(
+                        $('<tr>').append($('<td>', {
+                            colspan: 7,
+                            class: 'table-state-message',
+                            text: message
+                        }))
+                    );
+                    $('#pagination').empty();
+                }
+
                 // Hàm để lấy userId từ API
                 function GetUserDetails() {
                     $.ajax({
@@ -84,11 +97,11 @@
                                 GetPracticePagination(1, userId);
                                 loadFilter(userId);
                             } else {
-                                alert('Failed to get user details: ' + response.message);
+                                showPracticeMessage('Log in to view your practice history.');
                             }
                         },
                         error: function () {
-                            alert('Error retrieving user details.');
+                            showPracticeMessage('Could not retrieve your practice history.');
                         }
                     });
                 }
@@ -104,16 +117,22 @@
                         data: { page: page, pageSize: 5, subjectId: subjectId, levelId : levelId},
                         success: function (response) {
                             $('#PracticeList').empty();
+                            if (!response.practice || response.practice.length === 0) {
+                                showPracticeMessage('No practice attempts found.');
+                                return;
+                            }
                             response.practice.forEach(function (item) {
                                 var takenDate = new Date(item.taken_date).toLocaleDateString();
-                                var correctRate = Math.round((item.number_correct / item.number_quest) * 100);                               
+                                var correctRate = item.number_quest > 0
+                                    ? Math.round((item.number_correct / item.number_quest) * 100)
+                                    : 0;
                                 $('#PracticeList').append('<tr><td>' + item.subject.title + '</td>' +
                                     '<td>' + item.title + '</td>' +
                                     '<td>' + item.number_quest + '</td>' +
                                     '<td>' + correctRate + '%</td>' +
                                     '<td>' + item.level.title + '</td>' +
                                     '<td>' + takenDate + '</td>' +
-                                    '<td><button href="#" id="'+item.id+'" class="details-button"><i class="bi bi-eye"></i> View</button></td></tr>');
+                                    '<td><button type="button" id="'+item.id+'" class="details-button"><i class="bi bi-eye"></i> View</button></td></tr>');
                             });
 
                             $('#pagination').empty();
@@ -127,7 +146,7 @@
 
                         },
                         error: function () {
-                            alert('Error loading items.');
+                            showPracticeMessage('Could not load practice attempts.');
                         }
                     });
                 }

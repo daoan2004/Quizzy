@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Subjects";
+    ViewData["Title"] = "Simulation Exam";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Styles {
@@ -28,7 +28,7 @@
                         </form>
                     </div>
                     <div class="Back">
-                        <button class="header-button" onclick="window.history.back()"><i class="bi bi-arrow-left"></i> Back</button>
+                        <button type="button" class="header-button" onclick="window.history.back()"><i class="bi bi-arrow-left"></i> Back</button>
                     </div>
                 </div>
             </div>
@@ -62,6 +62,19 @@
     @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
+                var userId = null;
+
+                function showExamMessage(message) {
+                    $('#simulationExamList').html(
+                        $('<tr>').append($('<td>', {
+                            colspan: 8,
+                            class: 'table-state-message',
+                            text: message
+                        }))
+                    );
+                    $('#pagination').empty();
+                }
+
                 function GetUserDetails() {
                     $.ajax({
                         url: '/Account/GetUserDetails',
@@ -74,11 +87,11 @@
                                 loadFilter(userId);
                                 
                             } else {
-                                alert('Failed to get user details: ' + response.message);
+                                showExamMessage('Log in to view available simulation exams.');
                             }
                         },
                         error: function () {
-                            alert('Error retrieving user details.');
+                            showExamMessage('Could not retrieve simulation exams.');
                         }
                     });
                 }
@@ -90,6 +103,10 @@
                         data: { page: page, pageSize: 5, levelId: levelId},
                         success: function (response) {
                             $('#simulationExamList').empty();
+                            if (!response.practice || response.practice.length === 0) {
+                                showExamMessage('No simulation exams found.');
+                                return;
+                            }
                             response.practice.forEach(function (item) {
                                 item.subjects.exams.forEach(function (exam) {
                                     $('#simulationExamList').append('<tr><td>' + exam.id + '</td>' +
@@ -99,7 +116,7 @@
                                         '<td>' + exam.number_Question + '</td>' +
                                         '<td>' + exam.duration + '</td>' +
                                         '<td>' + exam.passrate + '%</td>' +
-                                        '<td><button href="#" id="' + exam.id + '" class="details-button"><i class="bi bi-play-circle"></i> Do Exam</button></td></tr>');
+                                        '<td><button type="button" id="' + exam.id + '" class="details-button"><i class="bi bi-play-circle"></i> Do Exam</button></td></tr>');
                                 });
                             });
 
@@ -114,7 +131,7 @@
 
                         },
                         error: function () {
-                            alert('Error loading items.');
+                            showExamMessage('Could not load simulation exams.');
                         }
 
                     });

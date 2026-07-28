@@ -24,8 +24,8 @@
                             <p class="status">status</p>
                             <p class="ismark">mark</p>
                             <div class="navigation-button">
-                                <button class="prev-button"><i class="bi bi-arrow-left"></i> Previous</button>
-                                <button class="next-button">Next <i class="bi bi-arrow-right"></i></button>
+                                <button type="button" class="prev-button"><i class="bi bi-arrow-left"></i> Previous</button>
+                                <button type="button" class="next-button">Next <i class="bi bi-arrow-right"></i></button>
                             </div>
                         </div>
                         <div class="quiz-main">
@@ -55,7 +55,7 @@
                         <div class="quiz-number" id="quiz-number">
 
                         </div>
-                        <button  class="finish-attempt"><i class="bi bi-check-circle"></i> Finish attempt</button>
+                        <button type="button" class="finish-attempt"><i class="bi bi-check-circle"></i> Finish attempt</button>
                     </div>
                    
 
@@ -66,11 +66,11 @@
     <div id="confirm-popup" class="popup">
         <div class="popup-content">
             <p>Are you sure you want to finish the attempt?</p>
-            <button id="confirm-yes">Yes</button>
-            <button id="confirm-no">No</button>
+            <button type="button" id="confirm-yes">Yes</button>
+            <button type="button" id="confirm-no">No</button>
         </div>
-    </section>
     </div>
+    </section>
 @section Scripts {
     <script type="text/javascript">
         function startTimer(duration, display) {

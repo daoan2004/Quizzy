@@ -289,7 +289,7 @@ body {
 
 .answer-option:hover {
     transform: translateY(-1px);
-    border-color: rgba(56, 189, 248, 0.35);
+    border-color: var(--color-border-hover);
     box-shadow: var(--glass-highlight);
 }
 
@@ -366,6 +366,244 @@ body {
     }
 }
 
+/* Monochrome focused quiz workspace */
+.quiz-page {
+    width: 100%;
+    margin: 0;
+    padding: clamp(28px, 4vw, 52px) 0 72px;
+}
+
+.quiz-shell {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.quiz-shell .top-detail {
+    margin-bottom: 18px;
+    padding: 20px 24px;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    background: var(--color-bg-card);
+    box-shadow: none;
+}
+
+.Practice-Title {
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 700;
+    letter-spacing: -.04em;
+}
+
+.Practice-Title i,
+.Practice_Detail i {
+    color: var(--color-text-muted);
+}
+
+.Practice_Detail h3 {
+    color: var(--color-text-muted);
+    font-size: 11px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.quiz-workspace {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 18px;
+}
+
+.quiz-workspace .main-detail,
+.quiz-workspace .Practice-Progress {
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    background: var(--color-bg-card);
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+.quiz-workspace .quiz-item {
+    min-height: 540px;
+}
+
+.quiz-workspace .quiz-side {
+    padding-right: 20px;
+    border-right: 1px solid var(--color-border);
+}
+
+.question-index {
+    color: var(--color-text-dark);
+    font: 700 15px var(--font-heading);
+}
+
+.status,
+.ismark {
+    color: var(--color-text-muted);
+    font-size: 11px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.quiz-title {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-dark);
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 600;
+}
+
+.answer-label {
+    color: var(--color-text-muted);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.answer-option {
+    min-height: 52px;
+    padding: 13px 15px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    color: var(--color-text-body);
+    background: var(--color-bg-light);
+    box-shadow: none;
+}
+
+.answer-option:hover {
+    border-color: var(--color-border-hover);
+    background: var(--color-bg-hover);
+}
+
+.answer-option:has(input:checked) {
+    color: var(--color-text-inverse);
+    border-color: var(--color-text-white);
+    background: var(--color-text-white);
+}
+
+.answer-option:has(input:checked) span {
+    color: var(--color-text-inverse);
+}
+
+.answer-option input {
+    accent-color: var(--color-text-white);
+}
+
+.quiz-answer textarea {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    color: var(--color-text-dark);
+    background: var(--color-bg-light);
+}
+
+.prev-button,
+.next-button,
+.mark-button,
+.unmark-button,
+.finish-attempt {
+    min-height: 42px;
+    border-radius: 9px;
+    box-shadow: none;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.prev-button,
+.mark-button,
+.unmark-button {
+    color: var(--color-text-dark);
+    border: 1px solid var(--color-border-strong);
+    background: transparent;
+}
+
+.next-button,
+.finish-attempt {
+    color: var(--color-text-inverse);
+    border: 1px solid var(--color-text-white);
+    background: var(--color-text-white);
+}
+
+.timer {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-dark);
+    font: 700 clamp(28px, 4vw, 42px) var(--font-heading);
+    letter-spacing: -.04em;
+}
+
+#progress-bar-container {
+    overflow: hidden;
+    height: 7px;
+    border-radius: 99px;
+    background: var(--color-bg-hover);
+}
+
+#progress-bar {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-text-white);
+}
+
+.quiz-navigation h3 {
+    font-size: 15px;
+}
+
+.question-button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-muted);
+    background: var(--color-bg-light);
+    box-shadow: none;
+}
+
+.question-button:hover {
+    color: var(--color-text-white);
+    border-color: var(--color-border-hover);
+    background: var(--color-bg-hover);
+}
+
+.popup {
+    background: var(--color-overlay);
+}
+
+.popup-content {
+    border: 1px solid var(--color-border-strong);
+    border-radius: 14px;
+    color: var(--color-text-dark);
+    background: var(--color-bg-card);
+    box-shadow: var(--shadow-modal);
+}
+
+#confirm-yes,
+#confirm-no {
+    min-height: 40px;
+    border-radius: 8px;
+}
+
+#confirm-yes {
+    color: var(--color-text-inverse);
+    background: var(--color-text-white);
+}
+
+#confirm-no {
+    color: var(--color-text-dark);
+    border: 1px solid var(--color-border);
+    background: transparent;
+}
+
+@media (max-width: 767px) {
+    .quiz-page {
+        padding-top: 20px;
+    }
+
+    .quiz-workspace .quiz-side {
+        padding-right: 0;
+        padding-bottom: 18px;
+        border-right: 0;
+        border-bottom: 1px solid var(--color-border);
+    }
+}
+
 .quiz-page {
     width: min(1180px, calc(100% - 32px));
     margin: 32px auto 48px;
@@ -430,4 +668,29 @@ body {
     .quiz-workspace .quiz-item {
         grid-template-columns: 1fr;
     }
+}
+
+/* Final quiz theme cascade */
+.quiz-page { width: 100%; margin: 0; padding: clamp(28px, 4vw, 52px) 0 72px; }
+.quiz-shell { padding: 0; border: 0; background: transparent; box-shadow: none; }
+.quiz-shell .top-detail,
+.quiz-workspace .main-detail,
+.quiz-workspace .Practice-Progress {
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    background: var(--color-bg-card);
+    box-shadow: none;
+}
+.quiz-workspace { grid-template-columns: minmax(0, 1fr) 280px; gap: 18px; }
+.prev-button, .mark-button, .unmark-button {
+    color: var(--color-text-dark);
+    border: 1px solid var(--color-border-strong);
+    background: transparent;
+    box-shadow: none;
+}
+.next-button, .finish-attempt {
+    color: var(--color-text-inverse);
+    border: 1px solid var(--color-text-white);
+    background: var(--color-text-white);
+    box-shadow: none;
 }

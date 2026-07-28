@@ -134,8 +134,8 @@ body {
     transform: translateY(0);
 }
 
-.btn-new-practice    { background-color: #5585FF; }
-.btn-simulation-exam { background-color: #3BCBC2; }
+.btn-new-practice    { background-color: var(--color-text-white); }
+.btn-simulation-exam { background-color: var(--color-bg-hover); }
 .btn-details         { background-color: var(--color-indigo); }
 .btn-pay             { background-color: var(--color-success-dark); }
 .btn-cancel          { background-color: var(--color-accent); }
@@ -902,4 +902,119 @@ body {
         width: 100%;
         justify-content: center;
     }
+}
+
+/* Monochrome registrations workspace */
+.registrations-page {
+    width: 100%;
+    margin: 0;
+    padding: clamp(36px, 5vw, 64px) 0 72px;
+}
+
+.registrations-page .mainContainer {
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-bg-card);
+    box-shadow: none;
+}
+
+.registrations-hero {
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    background:
+        radial-gradient(circle at 88% 16%, rgba(255,255,255,.08), transparent 28%),
+        var(--color-bg-light);
+    box-shadow: none;
+}
+
+.registrations-eyebrow {
+    color: var(--color-text-muted);
+    letter-spacing: .12em;
+}
+
+.registrations-hero h1 {
+    font-weight: 700;
+    letter-spacing: -.05em;
+}
+
+.registrations-summary div,
+.registration-card,
+.registrations-list-shell {
+    border: 1px solid var(--color-border);
+    border-radius: 11px;
+    background: var(--color-bg-light);
+    box-shadow: none;
+}
+
+.registrations-summary strong {
+    color: var(--color-text-dark);
+}
+
+.registrations-filter select {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-dark);
+    background: var(--color-bg-light);
+}
+
+.btn-filter,
+.registration-card .bttn {
+    border: 1px solid var(--color-border-strong);
+    border-radius: 8px;
+    color: var(--color-text-dark);
+    background: transparent;
+    box-shadow: none;
+}
+
+.btn-filter:hover,
+.registration-card .bttn:hover,
+.registration-card .btn-pay,
+.registration-card .btn-new-practice {
+    color: var(--color-text-inverse);
+    border-color: var(--color-text-white);
+    background: var(--color-text-white);
+}
+
+.registration-icon {
+    color: var(--color-text-inverse);
+    background: var(--color-text-white);
+}
+
+.registration-meta-grid div {
+    border-color: var(--color-border);
+    background: var(--color-bg-card);
+}
+
+.registration-status {
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+}
+
+.registrations-pagination a {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-muted);
+    background: var(--color-bg-card);
+}
+
+.registrations-pagination a.current-page,
+.registrations-pagination a:hover {
+    color: var(--color-text-inverse);
+    border-color: var(--color-text-white);
+    background: var(--color-text-white);
+}
+
+.confirm-modal-content {
+    border: 1px solid var(--color-border-strong);
+    border-radius: 14px;
+    color: var(--color-text-dark);
+    background: var(--color-bg-card);
+    box-shadow: var(--shadow-modal);
+}
+
+.registrations-page .sidebar-box {
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    background: var(--color-bg-card);
+    box-shadow: none;
 }

@@ -154,7 +154,7 @@ body {
     justify-content: center;
     flex-shrink: 0;
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, rgba(255, 79, 123, 0.28), rgba(99, 102, 241, 0.26));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
     border: var(--glass-border);
     box-shadow: var(--glass-highlight);
     transition: border var(--transition-normal), transform var(--transition-normal), box-shadow var(--transition-normal);
@@ -170,8 +170,8 @@ body {
 }
 
 .scroll-list-item.selected {
-    border: 3px solid rgba(56, 189, 248, 0.78);
-    box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.14), var(--shadow-hover);
+    border: 3px solid var(--color-text-white);
+    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.08), var(--shadow-hover);
     transform: translateY(-3px);
 }
 
@@ -257,7 +257,7 @@ body {
     color: var(--color-text-white);
     border: none;
     padding: var(--gap-sm);
-    box-shadow: 0 14px 28px rgba(255, 79, 123, 0.22);
+    box-shadow: var(--shadow-card);
     cursor: pointer;
     transition: filter var(--transition-fast), transform var(--transition-fast);
 }
@@ -376,6 +376,205 @@ body {
     }
 }
 
+/* Monochrome practice workspace */
+.practice-page {
+    width: 100%;
+    margin: 0;
+    padding: clamp(36px, 5vw, 64px) 0 72px;
+}
+
+.practice-page .practice-shell {
+    padding: clamp(20px, 3vw, 30px);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-bg-card);
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+.practice-page .header-wrapper,
+.practice-page .newpractice-header {
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.practice-page .page-name h3 {
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 700;
+    letter-spacing: -.045em;
+}
+
+.practice-page .page-name h3 i {
+    color: var(--color-text-muted);
+}
+
+.practice-page .dropdown-bar select,
+.practice-page .search-bar input,
+.practice-page .inputform,
+.practice-page .input-area select {
+    min-height: 42px;
+    border: 1px solid var(--color-border);
+    border-radius: 9px;
+    color: var(--color-text-dark);
+    background: var(--color-bg-light);
+    box-shadow: none;
+}
+
+.practice-page .header-button,
+.practice-page .submit-button,
+.practice-page .details-button,
+.practice-page .search-bar button {
+    min-height: 42px;
+    border: 1px solid var(--color-text-white);
+    border-radius: 9px;
+    color: var(--color-text-inverse);
+    background: var(--color-text-white);
+    box-shadow: none;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.practice-page .header-button:hover,
+.practice-page .submit-button:hover,
+.practice-page .details-button:hover,
+.practice-page .search-bar button:hover {
+    color: var(--color-text-inverse);
+    background: var(--color-accent-dark);
+    border-color: var(--color-accent-dark);
+    transform: translateY(-1px);
+}
+
+.practice-page .Table-wrapper {
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-bg-light);
+    box-shadow: none;
+}
+
+.practice-page .Table-wrapper table {
+    margin: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    color: var(--color-text-body);
+}
+
+.practice-page .Table-wrapper thead,
+.practice-page .Table-wrapper tr {
+    background: transparent;
+    box-shadow: none;
+}
+
+.practice-page .Table-wrapper th {
+    border-bottom: 1px solid var(--color-border-strong);
+    color: var(--color-text-muted);
+    background: var(--color-bg-hover);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.practice-page .Table-wrapper td {
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-body);
+    font-size: 13px;
+}
+
+.practice-page .Table-wrapper tbody tr {
+    transition: background var(--transition-fast);
+}
+
+.practice-page .Table-wrapper tbody tr:hover {
+    background: var(--color-bg-hover);
+}
+
+.practice-page #pagination a,
+.practice-page #pagination span {
+    min-width: 36px;
+    min-height: 36px;
+    display: inline-grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-muted);
+    background: var(--color-bg-card);
+}
+
+.practice-page #pagination span {
+    color: var(--color-text-inverse);
+    border-color: var(--color-text-white);
+    background: var(--color-text-white);
+}
+
+.practice-detail-page .practice_detail,
+.new-practice-page .input-area {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-bg-light);
+    box-shadow: none;
+}
+
+.practice-detail-page .subject {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-bg-card);
+    box-shadow: none;
+}
+
+.practice-detail-page .practice-subject-media img,
+.practice-detail-page .thumbnail_side img {
+    filter: grayscale(1);
+}
+
+.practice-detail-page .detail-item {
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-light);
+}
+
+.new-practice-page .scroll-list-wrapper {
+    gap: 10px;
+}
+
+.new-practice-page .scroll-list-item {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-bg-light);
+    box-shadow: none;
+}
+
+.new-practice-page .scroll-list-item:hover {
+    border-color: var(--color-border-hover);
+}
+
+.new-practice-page .scroll-list-item.selected {
+    color: var(--color-text-inverse);
+    border-color: var(--color-text-white);
+    background: var(--color-text-white);
+}
+
+.new-practice-page .scroll-list-item.selected h2 {
+    color: var(--color-text-inverse);
+}
+
+.new-practice-page .form-group,
+.new-practice-page .form-topic,
+.new-practice-page .difficulty-level {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.new-practice-page .difficulty-options {
+    color: var(--color-text-light);
+}
+
+@media (max-width: 767px) {
+    .practice-page {
+        padding-top: 24px;
+    }
+}
+
 @media (max-width: 480px) {
     .practice-shell .header-wrapper {
         flex-direction: column;
@@ -437,7 +636,7 @@ body {
     border-radius: 999px;
     color: var(--color-text-white);
     background: linear-gradient(135deg, var(--color-accent), var(--color-indigo));
-    box-shadow: 0 14px 28px rgba(255, 79, 123, 0.18);
+    box-shadow: var(--shadow-card);
     font-weight: 900;
 }
 
@@ -513,7 +712,7 @@ body {
 .practice-subject-media {
     min-height: 220px;
     position: relative;
-    background: linear-gradient(135deg, rgba(255, 79, 123, 0.24), rgba(56, 189, 248, 0.2));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
 }
 
 .practice-subject-title {
@@ -551,5 +750,82 @@ body {
 
     .practice-detail-page .main_subject {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Final monochrome cascade overrides */
+.practice-page {
+    width: 100%;
+    margin: 0;
+    padding: clamp(36px, 5vw, 64px) 0 72px;
+}
+
+.practice-page .practice-shell {
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-bg-card);
+    box-shadow: none;
+}
+
+.practice-page .header-wrapper,
+.practice-page .newpractice-header {
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.practice-page .header-button,
+.practice-page .submit-button,
+.practice-page .details-button,
+.practice-page .search-bar button {
+    border: 1px solid var(--color-text-white);
+    border-radius: 9px;
+    color: var(--color-text-inverse);
+    background: var(--color-text-white);
+    box-shadow: none;
+}
+
+.practice-page .Table-wrapper,
+.practice-page .input-area,
+.practice-page .practice_detail {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-bg-light);
+    box-shadow: none;
+}
+
+.practice-page .Table-wrapper th,
+.practice-page .Table-wrapper td {
+    border-bottom-color: var(--color-border);
+}
+
+.practice-page #pagination a,
+.practice-page #pagination span {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-muted);
+    background: var(--color-bg-card);
+}
+
+.practice-page #pagination span {
+    color: var(--color-text-inverse);
+    border-color: var(--color-text-white);
+    background: var(--color-text-white);
+}
+
+.practice-subject-media {
+    background: var(--color-bg-hover);
+}
+
+.practice-page .table-state-message {
+    padding: 36px 20px;
+    color: var(--color-text-muted);
+    text-align: center;
+    font-weight: 700;
+}
+
+@media (max-width: 767px) {
+    .practice-page {
+        width: 100%;
+        padding-top: 24px;
     }
 }

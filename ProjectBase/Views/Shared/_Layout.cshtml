@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="@(ViewData["MetaDescription"] ?? "Quizly helps learners browse subjects, read learning posts, practice quizzes, and review progress.")" />
     <title>@ViewData["Title"] - Quizly</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/lib/swiper/swiper-bundle.min.css" />
@@ -17,11 +20,18 @@
 </head>
 
 <body id="bootstrap-overrides">
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    }
     <header class="header">
 
-        <nav class="navbar navbar-expand-md navbar-toggleable-md">
+        <nav class="navbar navbar-expand-lg navbar-toggleable-lg" aria-label="Main navigation">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Quizly</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" aria-label="Quizly home">
+                    <span class="brand-mark" aria-hidden="true"><i class="bi bi-check2"></i></span>
+                    <span>Quizly</span>
+                </a>
 
                 @* Hamburger button (hiển thị trên mobile) *@
                 <button class="navbar-toggler" type="button"
@@ -34,29 +44,37 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="mainNavbar">
-                    <form id="searchFormHome" asp-controller="Subjects" asp-action="ShowSearchResults" method="post" class="d-flex mx-2">
-                        <input type="text" id="searchInput" name="searchPhrase" placeholder="Search Subjects here" class="search-input-nav">
-                    </form>
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item text-dark">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Blogs" asp-action="Index">Blogs</a>
+                            <a class="nav-link @(currentController == "Subjects" ? "active" : "")" asp-area="" asp-controller="Subjects" asp-action="Index">Subjects</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Subjects" asp-action="Index">Subjects</a>
+                            <a class="nav-link @(currentController == "Blogs" ? "active" : "")" asp-area="" asp-controller="Blogs" asp-action="Index">Blogs</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">About us</a>
+                            <a class="nav-link @(currentController == "Home" && currentAction == "Privacy" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Privacy">About</a>
                         </li>
                     </ul>
+
+                    <div class="navbar-actions">
+                        <form id="searchFormHome" asp-controller="Subjects" asp-action="ShowSearchResults" method="post">
+                            <label class="nav-search" for="searchInput">
+                                <i class="bi bi-search" aria-hidden="true"></i>
+                                <input type="search" id="searchInput" name="searchPhrase" placeholder="Search subjects" class="search-input-nav" autocomplete="off">
+                                <span class="search-hint" aria-hidden="true">/</span>
+                            </label>
+                        </form>
 
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <div class="action" id="userMenu">
                             <button class="profile" type="button" aria-label="Open user menu" aria-expanded="false" aria-haspopup="true">
                                 <i class="bi bi-person"></i>
+                                <span>Account</span>
+                                <i class="bi bi-chevron-down profile-chevron" aria-hidden="true"></i>
                             </button>
                             <div class="menu">
                                 <ul>
@@ -88,10 +106,11 @@
                     else
                     {
                         <div id="buttonContainer">
-                            <button class="register" type="button" id="registerBtn"><i class="bi bi-person-plus"></i> Register</button>
-                            <button class="login" type="button" id="loginBtn"><i class="bi bi-box-arrow-in-right"></i> Login</button>
+                            <button class="register" type="button" id="registerBtn">Create account</button>
+                            <button class="login" type="button" id="loginBtn">Log in <i class="bi bi-arrow-right"></i></button>
                         </div>
                     }
+                    </div>
                 </div>
             </div>
         </nav>
