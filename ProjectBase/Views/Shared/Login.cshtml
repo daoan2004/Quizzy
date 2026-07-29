@@ -42,8 +42,13 @@
         var isSubmitting = false;
         $('#loginForm').submit(function (event) {
             event.preventDefault();
+            if (isSubmitting) {
+                return;
+            }
             var email = $('#inputUserNameLogin').val();
             var password = $('#inputPasswordLogin').val();
+            var submitButton = $('#loginModelBtn');
+            var originalButtonHtml = submitButton.html();
             $('#loginErrorMessage').hide();
 
             if (!email || !password) {
@@ -53,6 +58,7 @@
 
             formData = { email: email, password: password };
             isSubmitting = true;
+            submitButton.prop('disabled', true).text('Logging in…');
 
             $.ajax({
                 url: '/Account/Login',
@@ -73,6 +79,7 @@
                 },
                 complete: function () {
                     isSubmitting = false;
+                    submitButton.prop('disabled', false).html(originalButtonHtml);
                 }
             });
         });

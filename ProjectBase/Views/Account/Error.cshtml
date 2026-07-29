@@ -7,10 +7,23 @@
         <div class="account-status-icon danger">
             <i class="bi bi-exclamation-triangle-fill"></i>
         </div>
-        <h1>Verification Failed</h1>
-        <p>There was a problem verifying your account. Please try again or contact support.</p>
-        <a asp-controller="Home" asp-action="Index" class="glass-button account-status-action">
-            <i class="bi bi-house-door"></i> Back to home
-        </a>
+        <h1>Verification link unavailable</h1>
+        <p>This verification link is invalid, expired, or has already been used.</p>
+        <div class="account-status-actions">
+            <a asp-controller="Home" asp-action="Index" class="glass-button account-status-action">
+                <i class="bi bi-house-door"></i> Back to home
+            </a>
+            <button type="button" class="glass-button account-status-action" id="verificationRegisterBtn">
+                Create account
+            </button>
+        </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        $('#verificationRegisterBtn').on('click', function () {
+            window.QuizlyUi?.showModal('#registerModal');
+        });
+    </script>
+}

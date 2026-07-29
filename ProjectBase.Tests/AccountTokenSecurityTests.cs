@@ -81,6 +81,35 @@ public sealed class AccountTokenSecurityTests
         Assert.Contains("Token expired", body, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task Password_reset_token_can_only_be_used_once()
+    {
+        await using var factory = new QuizzyWebApplicationFactory();
+        using var client = factory.CreateClient();
+        await AddUserAsync(
+            factory,
+            resetToken: "one-time-reset",
+            resetExpires: DateTime.UtcNow.AddMinutes(10));
+        var request = new
+        {
+            newPassword = "NewPassword@123",
+            reNewPassword = "NewPassword@123",
+            token = "one-time-reset"
+        };
+
+        using var first = await client.PostAsJsonWithCsrfAsync(
+            "/Account/ResetPasswordConfirm",
+            request);
+        using var second = await client.PostAsJsonWithCsrfAsync(
+            "/Account/ResetPasswordConfirm",
+            request);
+        var firstBody = await first.Content.ReadAsStringAsync();
+        var secondBody = await second.Content.ReadAsStringAsync();
+
+        Assert.Contains("successfully", firstBody, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Invalid token", secondBody, StringComparison.OrdinalIgnoreCase);
+    }
+
     private static async Task AddUserAsync(
         QuizzyWebApplicationFactory factory,
         string? verificationToken = null,
