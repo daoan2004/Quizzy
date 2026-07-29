@@ -5,19 +5,20 @@ public class DashboardViewResilienceTests
     [Fact]
     public void DashboardView_DefinesEmptyErrorAndUtcChartStates()
     {
+        var root = FindProjectRoot();
         var view = File.ReadAllText(Path.Combine(
-            FindProjectRoot(),
-            "ProjectBase",
-            "Views",
-            "Dashboard",
-            "Index.cshtml"));
+            root, "ProjectBase", "Views", "Dashboard", "Index.cshtml"));
+        var script = File.ReadAllText(Path.Combine(
+            root, "ProjectBase", "wwwroot", "js", "Dashboard.js"));
 
-        Assert.Contains("No revenue data for this period.", view);
-        Assert.Contains("No reporting data for the selected period.", view);
-        Assert.Contains("Failed to load reporting data.", view);
-        Assert.Contains("No registrations found.", view);
-        Assert.Contains("T00:00:00Z", view);
-        Assert.Contains("setUTCDate", view);
+        Assert.Contains("src=\"~/js/Dashboard.js\"", view);
+        Assert.DoesNotContain("<script>\n", view);
+        Assert.Contains("No revenue data for this period.", script);
+        Assert.Contains("No reporting data for the selected period.", script);
+        Assert.Contains("Failed to load reporting data.", script);
+        Assert.Contains("No registrations found.", script);
+        Assert.Contains("T00:00:00Z", script);
+        Assert.Contains("setUTCDate", script);
     }
 
     private static string FindProjectRoot()

@@ -1,0 +1,391 @@
+var userId; 
+$(document).ready(function () {
+    var userId;
+    var allRegistrations = [];
+    var pageSize = 5;
+    var selectedRegistrationId; // Biến để lưu trữ registration ID được chọn
+
+    // Hàm để hiển thị thông báo
+    function showNotification(message, isSuccess) {
+        var notification = $('#notification');
+        notification.text(message);
+        if (isSuccess) {
+            notification.removeClass('error').addClass('success');
+        } else {
+            notification.removeClass('success').addClass('error');
+        }
+        notification.show();
+
+        // Ẩn thông báo sau 2 giây
+        setTimeout(function () {
+            notification.fadeOut();
+        }, 2000);
+    }
+
+    function showLoginRequiredState(message) {
+        allRegistrations = [];
+        $('#summaryTotal, #summaryActive, #summaryPending').text('0');
+        $('#pagination').empty();
+        $('#myRegistrationsList').html(
+            '<div class="registrations-empty login-required-state">' +
+            '<i class="bi bi-person-lock"></i>' +
+            '<strong>Login required</strong>' +
+            '<span>' + (message || 'Please login to view your registered packages.') + '</span>' +
+            '<div class="login-required-actions">' +
+            '<button type="button" class="bttn btn-login-required" id="myRegistrationsLoginBtn"><i class="bi bi-box-arrow-in-right"></i> Login</button>' +
+            '<span>Test account: customer@quizzy.local / Customer@123</span>' +
+            '</div>' +
+            '</div>'
+        );
+    }
+
+    // Hàm để lấy userId từ API
+    function GetUserDetails() {
+        $.ajax({
+            url: '/Account/GetUserDetails',
+            method: 'GET',
+            success: function (response) {
+                if (response.success) {
+                    userId = response.userDetails.userID;
+                    // Bắt đầu tải tất cả các bản ghi sau khi lấy được userId
+                    GetAllRegistrations(userId);
+                } else {
+                    showLoginRequiredState(response.message);
+                }
+            },
+            error: function () {
+                showLoginRequiredState('Cannot load user details right now.');
+            }
+        });
+    }
+
+    // Hàm để lấy tất cả các bản ghi từ API
+    function GetAllRegistrations(userId, subjectId = null, statusId = null) {
+        if (!userId) {
+            showLoginRequiredState();
+            return;
+        }
+
+        $.ajax({
+            url: '/api/MyRegistrationsApi/GetAllRegistrations/' + userId,
+            type: 'GET',
+            data: { subjectId: subjectId, statusId: statusId },
+            success: function (response) {
+                allRegistrations = response;
+                DisplayRegistrations(1);
+                SetupPagination();
+            },
+            error: function () {
+                showNotification('Error loading items.', false);
+            }
+        });
+    }
+
+    // Hàm để tính toán chuỗi đại diện cho packageType
+    function getPackageTypeString(packageType) {
+        switch (packageType) {
+            case 1:
+                return "3 months";
+            case 2:
+                return "6 months";
+            case 3:
+                return "12 months";
+            default:
+                return "N/A";
+        }
+    }
+
+    // Hàm để tính toán ngày kết thúc (validTo) dựa trên packageType
+    function calculateValidTo(buyAt, packageType) {
+        var buyDate = new Date(buyAt);
+        var monthsToAdd = 0;
+
+        switch (packageType) {
+            case 1:
+                monthsToAdd = 3;
+                break;
+            case 2:
+                monthsToAdd = 6;
+                break;
+            case 3:
+                monthsToAdd = 12;
+                break;
+            default:
+                monthsToAdd = 0;
+                break;
+        }
+
+        buyDate.setMonth(buyDate.getMonth() + monthsToAdd);
+        return buyDate.toLocaleDateString();
+    }
+
+    // Hàm để hiển thị các bản ghi dựa trên trang
+    function DisplayRegistrations(page) {
+        var start = (page - 1) * pageSize;
+        var end = start + pageSize;
+        var pagedRegistrations = allRegistrations.slice(start, end);
+
+        $('#myRegistrationsList').empty();
+        if (pagedRegistrations.length > 0) {
+            pagedRegistrations.forEach(function (item) {
+                var subId = item.subId ? item.subId : 'N/A';
+                var registerDate = new Date(item.buyAt).toLocaleDateString();
+                var validFrom = new Date(item.buyAt).toLocaleDateString();
+                var packageType = getPackageTypeString(item.pricePackage_Type);
+                var validTo = item.pricePackage_Type !== undefined ? calculateValidTo(item.buyAt, item.pricePackage_Type) : 'N/A';
+                var subjectTitle = item.subjectTitle ? item.subjectTitle : 'N/A';
+                var totalCost = item.totalCost ? item.totalCost : 'N/A';
+                var safeSubjectTitle = window.QuizlyUi.escapeHtml(subjectTitle);
+                var safeStatus = window.QuizlyUi.escapeHtml(item.status);
+                var safePackageType = window.QuizlyUi.escapeHtml(packageType);
+                var buttonsHtml = '';
+                var statusClass = item.status === 'Registrated' ? 'is-active' : 'is-pending';
+
+                if (item.status === 'Registrated') {
+                    buttonsHtml = '<button type="button" class="bttn btn-new-practice" onclick="window.location.href=\'/Practice/NewPractice\'"><i class="bi bi-plus-circle"></i> New Practice</button>' +
+                        '<button type="button" class="bttn btn-simulation-exam" onclick="window.location.href=\'/SimulationExam\'"><i class="bi bi-clipboard2-check"></i> Simulation Exam</button>' +
+                        '<button type="button" class="bttn btn-details"><i class="bi bi-info-circle"></i> Details</button>';
+                } else if (item.status === 'Submitted') {
+                    buttonsHtml = '<button type="button" class="bttn btn-pay" data-registration-id="' + item.id + '"><i class="bi bi-credit-card"></i> Pay package</button>' +
+                        '<button type="button" class="bttn btn-Edit" data-subject-id="' + subId + '"><i class="bi bi-pencil-square"></i> Edit package</button>' +
+                        '<button type="button" class="bttn btn-cancel" data-registration-id="' + item.id + '"><i class="bi bi-x-circle"></i> Cancel</button>';
+                }
+                $('#myRegistrationsList').append(
+                    '<article class="registration-card">' +
+                    '<div class="registration-card-main">' +
+                    '<div class="registration-icon"><i class="bi bi-mortarboard"></i></div>' +
+                    '<div class="registration-title-block">' +
+                    '<span class="registration-id">Registration #' + item.id + '</span>' +
+                    '<h2>' + safeSubjectTitle + '</h2>' +
+                    '</div>' +
+                    '<span class="registration-status ' + statusClass + '">' + safeStatus + '</span>' +
+                    '</div>' +
+                    '<div class="registration-meta-grid">' +
+                    '<div><span>Register time</span><strong>' + registerDate + '</strong></div>' +
+                    '<div><span>Package</span><strong>' + safePackageType + '</strong></div>' +
+                    '<div><span>Total Cost</span><strong>' + totalCost + ' USD</strong></div>' +
+                    '<div><span>Valid from</span><strong>' + validFrom + '</strong></div>' +
+                    '<div><span>Valid to</span><strong>' + validTo + '</strong></div>' +
+                    '</div>' +
+                    '<div class="button-container">' + buttonsHtml + '</div>' +
+                    '</article>'
+                );
+            });
+
+            $('.btn-cancel').off('click').on('click', function (event) {
+                var registrationId = $(this).data('registration-id');
+            $('#myModal').data('registrationId', registrationId)
+                .attr('aria-hidden', 'false')
+                .show();
+            $('#confirmCancel').trigger('focus');
+            });
+
+            $('#closeModal').off('click').on('click', function () {
+            $('#myModal').attr('aria-hidden', 'true').hide();
+            });
+
+            $(window).off('click').on('click', function (event) {
+                if ($(event.target).is('#myModal')) {
+                $('#myModal').attr('aria-hidden', 'true').hide();
+                }
+            });
+
+            $('#confirmCancel').off('click').on('click', function () {
+                var registrationId = $('#myModal').data('registrationId');
+                var button = $(this);
+                $.ajax({
+                    url: '/api/MyRegistrationsApi/CancelRegistration/' + registrationId,
+                    type: 'POST',
+                    beforeSend: function () {
+                        button.prop('disabled', true).text('Cancelling…');
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            showNotification('Registration cancelled successfully.', true);
+                        $('#myModal').attr('aria-hidden', 'true').hide();
+                            GetAllRegistrations(userId);
+                        } else {
+                            showNotification('Error: ' + response.message, false);
+                        }
+                    },
+                    error: function (xhr) {
+                        showNotification(
+                            xhr.responseJSON?.message || 'Error cancelling registration.',
+                            false
+                        );
+                    },
+                    complete: function () {
+                        button.prop('disabled', false).text('Confirm');
+                    }
+                });
+            });
+
+            $('.btn-pay').off('click').on('click', function (event) {
+                selectedRegistrationId = $(this).data('registration-id');
+            $('#payModal').attr('aria-hidden', 'false').show();
+            $('#confirmPay').trigger('focus');
+            });
+
+            $('#closePayModal').off('click').on('click', function () {
+            $('#payModal').attr('aria-hidden', 'true').hide();
+            });
+            $(window).off('click').on('click', function (event) {
+                if ($(event.target).is('#payModal')) {
+                $('#payModal').attr('aria-hidden', 'true').hide();
+                }
+            });
+
+            $('#confirmPay').off('click').on('click', function () {
+                var button = $(this);
+                $.ajax({
+                    url: '/api/MyRegistrationsApi/PayPackage/' + selectedRegistrationId,
+                    type: 'POST',
+                    beforeSend: function () {
+                        button.prop('disabled', true).text('Paying…');
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            showNotification('Package paid successfully.', true);
+                        $('#payModal').attr('aria-hidden', 'true').hide();
+                            GetAllRegistrations(userId);
+                        } else {
+                            showNotification('Error: ' + response.message, false);
+                        }
+                    },
+                    error: function (xhr) {
+                        showNotification(
+                            xhr.responseJSON?.message || 'Error paying for package.',
+                            false
+                        );
+                    },
+                    complete: function () {
+                        button.prop('disabled', false).text('Confirm');
+                    }
+                });
+            });
+
+            $('.btn-Edit').on('click', function (e) {
+                e.preventDefault(); // Ngăn chặn hành động mặc định của form
+
+                var subjectId = $(this).data('subject-id'); // Lấy ID từ cột đầu tiên trong cùng hàng
+               
+                // Gọi AJAX để lấy thông tin chi tiết cần chỉnh sửa
+                $.ajax({
+                    url: '/Subjects/GetSubjectData', // Điều chỉnh URL cho phù hợp với API lấy dữ liệu chi tiết
+                    type: 'POST', // Sử dụng POST hoặc GET tùy theo API của bạn
+                    data: { subjectId: subjectId, userId: userId }, // Gửi ID như là dữ liệu
+                    success: function (data) {
+                        $('#subjectPopupContent').html(data); // Đặt nội dung trả về vào trong modal
+                        window.QuizlyUi?.showModal('#subjectPopup');
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error loading registration details.'); // Hiển thị thông báo lỗi
+                    }
+                });
+            });
+        } else {
+            $('#myRegistrationsList').append('<div class="registrations-empty"><i class="bi bi-inbox"></i><strong>No registrations found</strong><span>Try another filter or register a subject first.</span></div>');
+        }
+    }
+
+    // Hàm để thiết lập phân trang
+    function SetupPagination() {
+        $('#pagination').empty();
+        var totalPages = Math.ceil(allRegistrations.length / pageSize);
+        var activeCount = allRegistrations.filter(function (item) { return item.status === 'Registrated'; }).length;
+        var pendingCount = allRegistrations.filter(function (item) { return item.status === 'Submitted'; }).length;
+
+        $('#summaryTotal').text(allRegistrations.length);
+        $('#summaryActive').text(activeCount);
+        $('#summaryPending').text(pendingCount);
+
+        for (var i = 1; i <= totalPages; i++) {
+            if (i === 1) {
+                $('#pagination').append('<a href="#" class="current-page" aria-current="page" data-page="' + i + '">' + i + '</a>');
+            } else {
+                $('#pagination').append('<a href="#" data-page="' + i + '">' + i + '</a>');
+            }
+        }
+
+        $('#pagination').off('click').on('click', 'a', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            DisplayRegistrations(page);
+            $('.current-page').removeClass('current-page');  // Remove the current page class from any link
+            $(this).addClass('current-page');  // Add current page class to the clicked link
+        });
+    }
+
+    // Gọi hàm GetUserDetails để khởi tạo userId và tải tất cả các bản ghi
+    GetUserDetails();
+
+    $(document).on('click', '#myRegistrationsLoginBtn', function () {
+        if (window.QuizlyUi?.showModal) {
+            window.QuizlyUi.showModal('#loginModal');
+        } else {
+            $('#loginModal').modal?.('show');
+        }
+    });
+
+    $(document).ready(function () {
+        loadFilters();
+        // Khi người dùng thay đổi lựa chọn
+        $('#subjectFilter, #levelStatus').change(function () {
+            if (!userId) {
+                showLoginRequiredState();
+                return;
+            }
+            var selectedSubject = $('#subjectFilter').val() || null;
+            var selectedStatus = $('#levelStatus').val() || null;
+            GetAllRegistrations(userId, selectedSubject, selectedStatus);
+        });
+
+        $('#applyRegistrationFilters').click(function () {
+            if (!userId) {
+                showLoginRequiredState();
+                return;
+            }
+            var selectedSubject = $('#subjectFilter').val() || null;
+            var selectedStatus = $('#levelStatus').val() || null;
+            GetAllRegistrations(userId, selectedSubject, selectedStatus);
+        });
+    });
+
+    function loadFilters() {
+        // Load subjects
+        $.ajax({
+            url: '/api/MyRegistrationsApi/GetAllSubjects',
+            type: 'GET',
+            success: function (subjects) {
+                var subjectSelect = $('#subjectFilter');
+                subjects.forEach(function (subject) {
+                    subjectSelect.append($('<option></option>').attr('value', subject.id || subject.ID).text(subject.title));
+                });
+            },
+            error: function () {
+                showNotification('Error loading subjects.', false);
+            }
+        });
+
+        // Load statuses
+        $.ajax({
+            url: '/api/MyRegistrationsApi/GetAllStatuses',
+            type: 'GET',
+            success: function (statuses) {
+                var statusSelect = $('#levelStatus');
+                statusSelect.find('option:not(:first)').remove();
+                statuses.forEach(function (status) {
+                    if (status === 'Registered') {
+                        status = 'Registrated';
+                    }
+                    statusSelect.append($('<option></option>').attr('value', status).text(status));
+                });
+            },
+            error: function () {
+                showNotification('Error loading statuses.', false);
+            }
+        });
+    }
+
+
+});

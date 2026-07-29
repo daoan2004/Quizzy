@@ -2,16 +2,16 @@
 @using ProjectBase.Models
 
 <div class="container">
-    <div class="modal fade" tabindex="-1" id="loginModal" data-keyboard="false" data-backdrop="static">
+    <div class="modal fade" tabindex="-1" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content auth-modal">
                 <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close login dialog">
                     <i class="bi bi-x-lg" aria-hidden="true"></i>
                 </button>
-                <div id="loginErrorMessage" class="alert alert-danger" style="display:none;">
+                <div id="loginErrorMessage" class="alert alert-danger" role="alert" aria-live="assertive" style="display:none;">
                     Invalid email or password. Please try again.
                 </div>
-                <div class="modal-title text-center w-100"><i class="bi bi-stars"></i> Quizly</div>
+                <div id="loginModalTitle" class="modal-title text-center w-100"><i class="bi bi-stars"></i> Quizly</div>
                 <div class="modal-body">
                     <form id="loginForm" asp-action="Login" asp-controller="Account">
                         <div class="form-group d-flex justify-content-center">
@@ -36,57 +36,5 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        var formData = {};
-        var isSubmitting = false;
-        $('#loginForm').submit(function (event) {
-            event.preventDefault();
-            if (isSubmitting) {
-                return;
-            }
-            var email = $('#inputUserNameLogin').val();
-            var password = $('#inputPasswordLogin').val();
-            var submitButton = $('#loginModelBtn');
-            var originalButtonHtml = submitButton.html();
-            $('#loginErrorMessage').hide();
-
-            if (!email || !password) {
-                $('#loginErrorMessage').text('Please enter both email and password.').show();
-                return;
-            }
-
-            formData = { email: email, password: password };
-            isSubmitting = true;
-            submitButton.prop('disabled', true).text('Logging in…');
-
-            $.ajax({
-                url: '/Account/Login',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                success: function (response) {
-                    if (response.success) {
-                        $('#buttonContainer').hide();
-                        $('#userMenu').show();
-                        location.reload();
-                    } else {
-                        $('#loginErrorMessage').text(response.message).show();
-                    }
-                },
-                error: function (xhr, status, error) {
-                    $('#loginErrorMessage').text('An error occurred while logging in.').show();
-                },
-                complete: function () {
-                    isSubmitting = false;
-                    submitButton.prop('disabled', false).html(originalButtonHtml);
-                }
-            });
-        });
-
-        $('#registerBtnLogin').click(function () {
-            window.QuizlyUi?.hideModal('#loginModal');
-            window.QuizlyUi?.showModal('#registerModal');
-        });
-    });
+<script src="~/js/AccountLogin.js" asp-append-version="true"></script>
 </script>

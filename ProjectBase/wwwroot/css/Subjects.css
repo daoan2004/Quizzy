@@ -400,7 +400,6 @@
 .subject-search-form input {
     min-width: 0;
     border: 0;
-    outline: 0;
     background: transparent;
     color: var(--color-text-dark);
     font-weight: 800;

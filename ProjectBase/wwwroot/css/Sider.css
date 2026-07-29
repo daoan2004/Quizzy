@@ -74,7 +74,6 @@
 .search input {
     font-size: 16px;
     padding: 6px 12px;
-    outline: none;
     border: 1px solid #ccc;
     border-radius: 5px;
     width: calc(100% - 20px); /* Adjust width to fit within container */

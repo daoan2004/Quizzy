@@ -18,10 +18,10 @@
                 </div>
                 <div class="flex">
                     <div class="new-practice">
-                    <button class="header-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'"><i class="bi bi-plus-circle"></i> New Practice</button>
+                    <button type="button" class="header-button" onclick="location.href='@Url.Action("NewPractice", "Practice")'"><i class="bi bi-plus-circle"></i> New Practice</button>
                     </div>
                     <div class="simulation-exam ">
-                    <button class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'"><i class="bi bi-clipboard2-check"></i> Simulation Exam</button>
+                    <button type="button" class="header-button" onclick="location.href='@Url.Action("Index", "SimulationExam")'"><i class="bi bi-clipboard2-check"></i> Simulation Exam</button>
                     </div>
                 </div>
             </div>
@@ -136,10 +136,10 @@
 			</div>
             <div class="bottom-button">            
                 <div class="Back">
-                <button class="header-button" onclick="window.history.back()"><i class="bi bi-arrow-left"></i> Back</button>
+                <button type="button" class="header-button" onclick="window.history.back()"><i class="bi bi-arrow-left"></i> Back</button>
                 </div>
                 <div class="Review-practice">
-                <button class="header-button" onclick="location.href='@Url.Action("Handle", "Quiz", new { id = Model.ID })'"><i class="bi bi-eye"></i> Review Practice</button>
+                <button type="button" class="header-button" onclick="location.href='@Url.Action("Handle", "Quiz", new { id = Model.ID })'"><i class="bi bi-eye"></i> Review Practice</button>
                 </div>       
 			</div>
         </div>

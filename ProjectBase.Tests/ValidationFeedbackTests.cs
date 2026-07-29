@@ -6,6 +6,7 @@ namespace ProjectBase.Tests;
 public sealed class ValidationFeedbackTests : IClassFixture<QuizzyWebApplicationFactory>
 {
     private readonly string _viewsRoot;
+    private readonly string _scriptsRoot;
 
     public ValidationFeedbackTests(QuizzyWebApplicationFactory factory)
     {
@@ -13,13 +14,14 @@ public sealed class ValidationFeedbackTests : IClassFixture<QuizzyWebApplication
             .GetRequiredService<IWebHostEnvironment>()
             .ContentRootPath;
         _viewsRoot = Path.Combine(contentRoot, "Views");
+        _scriptsRoot = Path.Combine(contentRoot, "wwwroot", "js");
     }
 
     [Fact]
     public void Register_displays_server_validation_errors_as_text()
     {
         var view = File.ReadAllText(
-            Path.Combine(_viewsRoot, "Shared", "Register.cshtml"));
+            Path.Combine(_scriptsRoot, "AccountRegister.js"));
 
         Assert.Contains("response.errors.forEach", view, StringComparison.Ordinal);
         Assert.Contains("$('<li>').text(error)", view, StringComparison.Ordinal);
@@ -30,7 +32,7 @@ public sealed class ValidationFeedbackTests : IClassFixture<QuizzyWebApplication
     public void Login_has_a_visible_safe_error_target()
     {
         var view = File.ReadAllText(
-            Path.Combine(_viewsRoot, "Shared", "Login.cshtml"));
+            Path.Combine(_scriptsRoot, "AccountLogin.js"));
 
         Assert.Contains("loginErrorMessage", view, StringComparison.Ordinal);
         Assert.Contains(".text(response.message).show()", view, StringComparison.Ordinal);

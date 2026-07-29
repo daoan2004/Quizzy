@@ -7,15 +7,16 @@ namespace ProjectBase.Tests;
 public sealed class AccountUiStateTests : IClassFixture<QuizzyWebApplicationFactory>
 {
     private readonly QuizzyWebApplicationFactory _factory;
+    private readonly string _contentRoot;
     private readonly string _viewsRoot;
 
     public AccountUiStateTests(QuizzyWebApplicationFactory factory)
     {
         _factory = factory;
-        var contentRoot = factory.Services
+        _contentRoot = factory.Services
             .GetRequiredService<IWebHostEnvironment>()
             .ContentRootPath;
-        _viewsRoot = Path.Combine(contentRoot, "Views");
+        _viewsRoot = Path.Combine(_contentRoot, "Views");
     }
 
     [Theory]
@@ -44,13 +45,36 @@ public sealed class AccountUiStateTests : IClassFixture<QuizzyWebApplicationFact
         string relativePath,
         string loadingText)
     {
-        var view = File.ReadAllText(
-            Path.Combine(_viewsRoot, relativePath.Replace('/', Path.DirectorySeparatorChar)));
+        var sourcePath = relativePath switch
+        {
+            "Shared/Login.cshtml" => Path.Combine(_contentRoot, "wwwroot", "js", "AccountLogin.js"),
+            "Shared/Register.cshtml" => Path.Combine(_contentRoot, "wwwroot", "js", "AccountRegister.js"),
+            _ => Path.Combine(_viewsRoot, relativePath.Replace('/', Path.DirectorySeparatorChar))
+        };
+        var view = File.ReadAllText(sourcePath);
 
         Assert.Contains(loadingText, view, StringComparison.Ordinal);
         Assert.Contains("originalButtonHtml", view, StringComparison.Ordinal);
         Assert.Contains("prop('disabled', true)", view, StringComparison.Ordinal);
         Assert.Contains("prop('disabled', false)", view, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("ChangePassword.js", "Changing…", "isSubmitting")]
+    [InlineData("Profile.js", "Updating…", "isUpdating")]
+    public void Account_update_forms_prevent_duplicate_submissions(
+        string scriptName,
+        string loadingText,
+        string guardName)
+    {
+        var script = File.ReadAllText(
+            Path.Combine(_contentRoot, "wwwroot", "js", scriptName));
+
+        Assert.Contains(guardName, script, StringComparison.Ordinal);
+        Assert.Contains(loadingText, script, StringComparison.Ordinal);
+        Assert.Contains("attr('aria-busy', 'true')", script, StringComparison.Ordinal);
+        Assert.Contains("prop('disabled', true)", script, StringComparison.Ordinal);
+        Assert.Contains("complete:", script, StringComparison.Ordinal);
     }
 
     [Fact]

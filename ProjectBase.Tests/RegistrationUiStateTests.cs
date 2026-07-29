@@ -19,12 +19,19 @@ public sealed class RegistrationUiStateTests : IClassFixture<QuizzyWebApplicatio
     {
         var view = File.ReadAllText(
             Path.Combine(_contentRoot, "Views", "MyRegistrations", "Index.cshtml"));
+        var script = File.ReadAllText(
+            Path.Combine(_contentRoot, "wwwroot", "js", "MyRegistrations.js"));
 
-        Assert.Contains("Cancelling…", view, StringComparison.Ordinal);
-        Assert.Contains("Paying…", view, StringComparison.Ordinal);
-        Assert.Contains("xhr.responseJSON?.message", view, StringComparison.Ordinal);
-        Assert.Contains("button.prop('disabled', true)", view, StringComparison.Ordinal);
-        Assert.Contains("button.prop('disabled', false)", view, StringComparison.Ordinal);
+        Assert.Contains("src=\"~/js/MyRegistrations.js\"", view, StringComparison.Ordinal);
+        Assert.DoesNotContain("<script type=\"text/javascript\">", view, StringComparison.Ordinal);
+        Assert.Contains("Cancelling…", script, StringComparison.Ordinal);
+        Assert.Contains("Paying…", script, StringComparison.Ordinal);
+        Assert.Contains("xhr.responseJSON?.message", script, StringComparison.Ordinal);
+        Assert.Contains("button.prop('disabled', true)", script, StringComparison.Ordinal);
+        Assert.Contains("button.prop('disabled', false)", script, StringComparison.Ordinal);
+        Assert.Contains(".attr('aria-hidden', 'false')", script, StringComparison.Ordinal);
+        Assert.Contains(".attr('aria-hidden', 'true')", script, StringComparison.Ordinal);
+        Assert.Contains("trigger('focus')", script, StringComparison.Ordinal);
     }
 
     [Fact]

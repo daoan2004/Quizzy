@@ -1,4 +1,4 @@
-        <div class="modal fade" tabindex="-1" id="profileModal" data-bs-keyboard="false" data-bs-backdrop="static">
+        <div class="modal fade" tabindex="-1" id="profileModal" role="dialog" aria-modal="true" aria-label="User profile" data-bs-keyboard="false" data-bs-backdrop="static">
             <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
                 <div class="modal-content auth-modal profile-modal-content">
                     <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close profile dialog">
@@ -12,9 +12,11 @@
                                         <img id="profileAvatar" src="/picture/DropList/user.png" alt="User Avatar" class="profile-avatar" />
                                     </div>
                                     <div class="form-group d-flex justify-content-center">
+                                        <label class="visually-hidden" for="profileName">Full name</label>
                                         <input id="profileName" name="fullName" class="form-control" type="text" placeholder="Name" readonly />
                                     </div>
                                     <div class="form-group d-flex justify-content-center">
+                                        <label class="visually-hidden" for="profileRole">Account role</label>
                                         <input id="profileRole" name="role" class="form-control" type="text" placeholder="Role" readonly />
                                     </div>
                                     <div class="" id="avatarUpload" style="display: none;">
@@ -58,10 +60,10 @@
                                     <div class="form-group text-center">
                                         <button type="button" id="editProfileBtn" class="btn btn-primary">Edit Profile</button>
                                         <button type="submit" id="updateProfileBtn" class="btn btn-primary" style="display: none;">Update Profile</button>
-                                        <div class="alert alert-success mt-3" id="successMessage" role="alert" style="display: none;">
+                                        <div class="alert alert-success mt-3" id="successMessage" role="status" aria-live="polite" style="display: none;">
                                             Profile updated successfully.
                                         </div>
-                                        <div class="alert alert-danger mt-3" id="errorMessage" role="alert" style="display: none;">
+                                        <div class="alert alert-danger mt-3" id="errorMessage" role="alert" aria-live="assertive" style="display: none;">
                                             An error occurred while updating the profile.
                                         </div>
                                     </div>
@@ -72,123 +74,5 @@
                 </div>
             </div>
         </div>
-    <script>
-        $(document).ready(function () {
-            $('#profileBtn').click(function () {
-                fetchUserDetails();
-            });
-
-            function fetchUserDetails() {
-                $.ajax({
-                    url: '/Account/GetUserDetails', // Adjust API URL for fetching user details
-                    method: 'GET',
-                    success: function (response) {
-                        if (response.success) {
-                            var data = response.userDetails;
-                            $('#profileAvatar').attr('src', data.avatarUrl || '/picture/DropList/user.png'); // Set default avatar if none
-                            $('#profileName').val(data.fullName);
-                            $('#profileRole').val(data.role);
-                            $('input[name="gender"][value="' + data.gender + '"]').prop('checked', true);
-                            $('#address').val(data.address || '');
-                            $('#email').val(data.email);
-                            $('#phoneNumber').val(data.phone);
-                            $('#dob').val(data.dob || ''); // Set the date of birth value
-
-                            $('#description').val(data.description || '');
-                            window.QuizlyUi.ensureDatepicker(function () {
-                                // Initialize datepicker with the correct value
-                                $('#dob').datepicker({
-                                    dateFormat: 'yy-mm-dd',
-                                    changeMonth: true,
-                                    changeYear: true,
-                                    yearRange: '1900:2030',
-                                    onSelect: function (dateText, inst) {
-                                        $(this).val(dateText);
-                                    }
-                                }).datepicker('setDate', data.dob || ''); // Set the date
-
-                                window.QuizlyUi?.showModal('#profileModal');
-                            });
-                        } else {
-                            $('#errorMessage').text(response.message || 'Could not load profile details.').fadeIn();
-                        }
-                    },
-                    error: function (error) {
-                        $('#errorMessage').text('An error occurred while fetching user details.').fadeIn();
-                    }
-                });
-            }
-
-            $('#editProfileBtn').click(function () {
-                // Enable editing of fields
-                $('#profileName').prop('readonly', false);
-                $('#profileRole').prop('readonly', true); // Adjust if role should be editable
-                $('#email').prop('readonly', true);      // Adjust if email should be editable
-                $('#address').prop('readonly', false);
-                $('#phoneNumber').prop('readonly', false);
-                $('#description').prop('readonly', false);
-                $('#profileForm input[type="radio"]').prop('disabled', false);
-                $('#avatarUpload').css('display', 'block'); // Show avatar upload
-                $('#editProfileBtn').hide();
-                $('#updateProfileBtn').show();
-                $('#dob').datepicker('option', 'disabled', false);  // Enable DatePicker
-                $('#successMessage').hide();  // Hide success message when editing
-                $('#errorMessage').hide();    // Hide error message when editing
-            });
-
-            $('#profileForm').submit(function (event) {
-                event.preventDefault();
-                var formData = new FormData(this);
-
-                // Get gender value and convert to true (Male) or false (Female)
-                var genderValue = $('input[name="gender"]:checked').val() === "true";
-                formData.append("Gender", genderValue);
-
-                $.ajax({
-                    url: '/Account/UpdateUserProfile',
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        if (response.success) {
-                            $('#successMessage').fadeIn();
-                            $('#errorMessage').hide();
-
-                            // Update the avatar image immediately after a successful update
-                            var updatedAvatarUrl = response.updatedAvatarUrl || $('#profileAvatar').attr('src');
-                            $('#profileAvatar').attr('src', updatedAvatarUrl);
-                            // Re-fetch user details and reopen modal without closing it first
-                            fetchUserDetails();
-                            setTimeout(function () {
-                                $('#successMessage').fadeOut();
-                                window.QuizlyUi?.hideModal('#profileModal');
-                            }, 2000);
-
-                            // Disable fields and revert buttons
-                            $('#profileName').prop('readonly', true);
-                            $('#profileRole').prop('readonly', true);
-                            $('#email').prop('readonly', true);
-                            $('#address').prop('readonly', true);
-                            $('#phoneNumber').prop('readonly', true);
-                            $('#description').prop('readonly', true);
-                            $('#profileForm input[type="radio"]').prop('disabled', true);
-                            $('#avatarUpload').hide();
-                            $('#editProfileBtn').show();
-                            $('#updateProfileBtn').hide();
-                            $('#dob').datepicker('option', 'disabled', true); // Disable DatePicker
-
-                        } else {
-                            $('#errorMessage').fadeIn();
-                            $('#successMessage').hide();
-                        }
-                    },
-                    error: function (error) {
-                        $('#errorMessage').fadeIn();
-                        $('#successMessage').hide();
-                    }
-                });
-            });
-        });
-
+    <script src="~/js/Profile.js" asp-append-version="true"></script>
     </script>

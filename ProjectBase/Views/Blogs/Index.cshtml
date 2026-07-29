@@ -44,7 +44,7 @@
 
                                 <div class="blog-card-footer">
                                     <span class="blog-date"><i class="bi bi-clock"></i> @item.publishAt.ToString("dd/MM/yyyy")</span>
-                                    <div id="blog-category-@item.ID" class="blog-category"></div>
+                                    <div id="blog-category-@item.ID" class="blog-category" aria-live="polite"></div>
                                 </div>
 
                                 <a class="blog-read-more" asp-action="BlogsDetail" asp-controller="Blogs" asp-route-blogid="@item.ID" asp-route-userid="@item.userID">
@@ -55,9 +55,9 @@
                     }
                 </div>
 
-                <div class="pagination-container">
+                <nav class="pagination-container" aria-label="Blog pages">
                     <ul class="pagination"></ul>
-                </div>
+                </nav>
             </main>
 
             <aside class="blog-sidebar">
@@ -75,89 +75,5 @@
 
 @section Scripts {
     <script src="/js/BlogsScript.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.blog-card').each(function () {
-                var blogId = $(this).find('.blog-category').attr('id').split('-')[2];
-                var userId = $(this).find('.blog-user-meta').data('user-id');
-                loadUserInfo(userId);
-                loadCategories(blogId);
-            });
-
-            $('.home-side-post-card').each(function () {
-                var userId = $(this).find('.author').data('user-id');
-                loadLatestPostInfo(userId);
-            });
-        });
-
-        function loadCategories(blogId) {
-            $.ajax({
-                url: '/api/BlogApi/GetBlogCategory/' + blogId,
-                type: 'GET',
-                success: function (data) {
-                    var categoriesHtml = '';
-                    data.forEach(function (category) {
-                        categoriesHtml += '<span>' + category.title + '</span> ';
-                    });
-                    $('#blog-category-' + blogId).html(categoriesHtml);
-                },
-                error: function () {
-                    $('#blog-category-' + blogId).html('');
-                }
-            });
-        }
-
-        function loadUserInfo(userId) {
-            $.ajax({
-                url: '/api/BlogApi/GetBlogUser/' + userId,
-                type: 'GET',
-                success: function (data) {
-                    if (!data || !data.length) {
-                        return;
-                    }
-                    var user = data[0];
-                    var container = $('.blog-user-' + userId).empty();
-                    $('<span>').append(
-                        $('<i>', { class: 'bi bi-person' }),
-                        document.createTextNode(' By '),
-                        $('<a>', { href: '#', text: user.fullname || '' })
-                    ).appendTo(container);
-                    $('<span>').append(
-                        $('<i>', { class: 'bi bi-tag-fill' }),
-                        document.createTextNode(' Blogs')
-                    ).appendTo(container);
-                },
-                error: function () {
-                    $('.blog-user-' + userId).html('<span><i class="bi bi-person"></i> By Quizly</span>');
-                }
-            });
-        }
-
-        function loadLatestPostInfo(userId) {
-            $.ajax({
-                url: '/api/BlogApi/GetBlogUser/' + userId,
-                type: 'GET',
-                success: function (data) {
-                    if (!data || !data.length) {
-                        return;
-                    }
-                    var user = data[0];
-                    $('.author-user-' + userId)
-                        .empty()
-                        .append($('<i>', { class: 'bi bi-person' }))
-                        .append(document.createTextNode(' ' + (user.fullname || '')));
-                },
-                error: function () {
-                    $('.author-user-' + userId).html('<i class="bi bi-person"></i> Quizly');
-                }
-            });
-        }
-
-        document.querySelectorAll('.blog-category').forEach(function (container) {
-            container.addEventListener('wheel', function (event) {
-                this.scrollLeft += event.deltaY > 0 ? 30 : -30;
-                event.preventDefault();
-            });
-        });
-    </script>
+    <script src="~/js/BlogIndex.js" asp-append-version="true"></script>
 }

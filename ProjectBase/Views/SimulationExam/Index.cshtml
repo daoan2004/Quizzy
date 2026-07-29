@@ -16,14 +16,14 @@
                     </div>
                     <div class="dropdown-bar">
                         <form>
-                            <select id="subjectFilter">
+                            <select id="subjectFilter" aria-label="Filter simulation exams by level">
                                 <option value="">All Subjects</option>
                                 </select>
                         </form>
                     </div>
                     <div class="search-bar">
                         <form>
-                            <input type="text" id="nameSearchBox" placeholder="Search by Name..." />
+                            <input type="search" id="nameSearchBox" placeholder="Search by Name..." aria-label="Search simulation exams by name" />
                             <button type="button" id="searchButton"><i class="bi bi-search"></i> Search</button>
                         </form>
                     </div>
@@ -49,131 +49,15 @@
                         </tr>
                     </thead>
 
-                    <tbody id="simulationExamList">
+                    <tbody id="simulationExamList" aria-live="polite">
                     </tbody>
 
                 </table>
 
-                <div id="pagination">
-                </div>
+                <nav id="pagination" aria-label="Simulation exam pages"></nav>
             </div>
         </div>
     </section>
     @section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-                var userId = null;
-
-                function showExamMessage(message) {
-                    $('#simulationExamList').html(
-                        $('<tr>').append($('<td>', {
-                            colspan: 8,
-                            class: 'table-state-message',
-                            text: message
-                        }))
-                    );
-                    $('#pagination').empty();
-                }
-
-                function GetUserDetails() {
-                    $.ajax({
-                        url: '/Account/GetUserDetails',
-                        method: 'GET',
-                        success: function (response) {
-                            if (response.success) {
-                                userId = response.userDetails.userID;
-                                // Bắt đầu tải mục đầu tiên sau khi lấy được userId
-                                GetExamPagination(1, userId);
-                                loadFilter(userId);
-                                
-                            } else {
-                                showExamMessage('Log in to view available simulation exams.');
-                            }
-                        },
-                        error: function () {
-                            showExamMessage('Could not retrieve simulation exams.');
-                        }
-                    });
-                }
-        GetUserDetails();
-                function GetExamPagination(page, userId, levelId = null) {
-                    $.ajax({
-                        url: '/api/SimulationExamApi/GetExamPagination/' + userId,
-                        type: 'GET',
-                        data: { page: page, pageSize: 5, levelId: levelId},
-                        success: function (response) {
-                            $('#simulationExamList').empty();
-                            if (!response.practice || response.practice.length === 0) {
-                                showExamMessage('No simulation exams found.');
-                                return;
-                            }
-                            response.practice.forEach(function (item) {
-                                item.subjects.exams.forEach(function (exam) {
-                                    $('#simulationExamList').append('<tr><td>' + exam.id + '</td>' +
-                                        '<td>' + item.subjects.title + '</td>' +
-                                        '<td>' + exam.examName + '</td>' +
-                                        '<td>' + exam.level.title + '</td>' +
-                                        '<td>' + exam.number_Question + '</td>' +
-                                        '<td>' + exam.duration + '</td>' +
-                                        '<td>' + exam.passrate + '%</td>' +
-                                        '<td><button type="button" id="' + exam.id + '" class="details-button"><i class="bi bi-play-circle"></i> Do Exam</button></td></tr>');
-                                });
-                            });
-
-                            $('#pagination').empty();
-                            for (var i = 1; i <= response.totalPages; i++) {
-                                if (i === response.currentPage) {
-                                    $('#pagination').append('<span>' + i + '</span>');
-                                } else {
-                                    $('#pagination').append('<a href="#" data-page="' + i + '">' + i + '</a>');
-                                }
-                            }
-
-                        },
-                        error: function () {
-                            showExamMessage('Could not load simulation exams.');
-                        }
-
-                    });
-                }
-                $('#pagination').on('click', 'a', function (e) {
-                    e.preventDefault();
-                    var page = $(this).data('page');
-                    var levelId = $('#subjectFilter').val();
-                    GetExamPagination(page, userId, levelId);
-                });
-                // hàm để tải filter
-                function loadFilter(userId) {
-                    $.ajax({
-                        url: '/api/SimulationExamApi/LoadFilter/' + userId,
-                        method: 'GET',
-                        success: function (response) {
-                            const seenTitles = new Set();
-                           
-                            response.forEach(function (item) {
-                                item.subjects.exams.forEach(function (exam) {
-                                    if (!seenTitles.has(exam.level.title)) {
-                                        $('#subjectFilter').append('<option value="' + exam.level.id + '">' + exam.level.title + '</option>');
-                                        seenTitles.add(exam.level.title);
-                                    }
-                                });
-                            });
-                            
-                        },
-
-                    });
-                }
-                $('#subjectFilter').on('change', function () {
-                    
-                    var levelId = $('#subjectFilter').val();
-                    GetExamPagination(1, userId, levelId);
-                });
-                $('#simulationExamList').on('click', '.details-button', function (e) {
-                    e.preventDefault();
-                    var examId = $(this).attr('id');
-                    window.location.href = '/Quiz/Handle?UserID=' + userId + '&PracticeID=' + examId + '&IsPractice=false';
-                });
-        });
-
-    </script>
+    <script src="~/js/SimulationExam.js" asp-append-version="true"></script>
     }

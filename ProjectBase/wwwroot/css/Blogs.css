@@ -334,7 +334,6 @@
     background: rgba(255, 255, 255, 0.78);
     box-shadow: var(--glass-highlight);
     font-weight: 800;
-    outline: none;
 }
 
 .search input:focus {

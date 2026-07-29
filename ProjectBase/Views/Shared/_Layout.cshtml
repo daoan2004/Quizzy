@@ -25,6 +25,7 @@
 </head>
 
 <body id="bootstrap-overrides">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     @{
         var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
         var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
@@ -124,7 +125,7 @@
     </header>
     <div class="page-wrapper">
         <div class="container">
-            <main role="main" class="pb-3">
+            <main id="main-content" role="main" class="pb-3" tabindex="-1">
                 @RenderBody()
             </main>
         </div>

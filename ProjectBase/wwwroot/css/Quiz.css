@@ -108,6 +108,16 @@ body {
     margin-bottom: var(--gap-md);
 }
 
+.quiz-feedback {
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--color-danger);
+    border-radius: 9px;
+    color: var(--color-danger);
+    background: var(--color-bg-card);
+    font-weight: 700;
+}
+
 .status {
     font-size: 16px;
 }
@@ -305,7 +315,6 @@ body {
     background: rgba(255, 255, 255, 0.72);
     padding: var(--gap-sm);
     color: var(--color-text-dark);
-    outline: none;
 }
 
 /* ════════════════════════════════════

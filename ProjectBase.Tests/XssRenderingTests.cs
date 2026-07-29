@@ -30,12 +30,18 @@ public sealed class XssRenderingTests : IClassFixture<QuizzyWebApplicationFactor
     }
 
     [Theory]
-    [InlineData("Views/Dashboard/Index.cshtml", "${reg.subjectTitle}")]
-    [InlineData("Views/Dashboard/Index.cshtml", "${reg.status}")]
-    [InlineData("Views/Practice/Index.cshtml", "' + item.subject.title + '")]
-    [InlineData("Views/Practice/Index.cshtml", "' + item.title + '")]
-    [InlineData("Views/Quiz/Handle.cshtml", ".html(response.quizBank.title)")]
-    [InlineData("Views/Shared/Register.cshtml", "'<li>' + error + '</li>'")]
+    [InlineData("wwwroot/js/Dashboard.js", "${reg.subjectTitle}")]
+    [InlineData("wwwroot/js/Dashboard.js", "${reg.status}")]
+    [InlineData("wwwroot/js/PracticeList.js", "' + item.subject.title + '")]
+    [InlineData("wwwroot/js/PracticeList.js", "' + item.title + '")]
+    [InlineData("wwwroot/js/QuizHandle.js", ".html(response.quizBank.title)")]
+    [InlineData("wwwroot/js/AccountRegister.js", "'<li>' + error + '</li>'")]
+    [InlineData("wwwroot/js/BlogIndex.js", "'<span>' + category.title")]
+    [InlineData("wwwroot/js/BlogDetail.js", "user.fullname +")]
+    [InlineData("wwwroot/js/SimulationExam.js", "' + exam.examName + '")]
+    [InlineData("wwwroot/js/SimulationExam.js", "' + item.subjects.title + '")]
+    [InlineData("wwwroot/js/QuizHandle.js", "' + response.quizBank.qa + '")]
+    [InlineData("wwwroot/js/QuizHandle.js", "'+selectedAnswer+'")]
     public void User_controlled_values_are_not_concatenated_into_html(
         string relativePath,
         string unsafePattern)

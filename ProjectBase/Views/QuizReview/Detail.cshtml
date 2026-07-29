@@ -14,7 +14,7 @@
             <div class="quiz-review-main">
                 <div class="quiz_review_header glass-panel" data-aos="fade-up">
                     <h1 class="text_style"><i class="bi bi-clipboard-check"></i> Quiz Review</h1>
-                    <button id="filter-correct" class="btn btn-primary"><i class="bi bi-filter-circle"></i> Show Correct Answers Only</button>
+                    <button type="button" id="filter-correct" class="btn btn-primary"><i class="bi bi-filter-circle"></i> Show Correct Answers Only</button>
                     <div class="text_style">
                         <p><strong>Title:</strong> @Model.Practice?.title</p>
                         <p><strong>Taken Date:</strong> @Model.Practice?.taken_date</p>
@@ -279,7 +279,7 @@
                             foreach (var quiz_review in reviews)
                             {
                                 
-                                    <button class="sidebar-button" data-target="#question-@quiz_review.QuizID">
+                                    <button type="button" class="sidebar-button" data-target="#question-@quiz_review.QuizID" aria-label="Go to question @index">
                                         @index
                                     </button>
                                 

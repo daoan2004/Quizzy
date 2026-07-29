@@ -64,37 +64,5 @@
     <!--AJAX for showing blog category-->
     @section Scripts {
         <script src="/js/BlogsScript.js"></script>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.home-side-post-card').each(function () {
-                    var userId = $(this).find('.author').data('user-id');
-                    loadLatestPostInfo(userId);
-
-                });
-
-            });
-
-            
-
-            // gọi yêu cầu AJAX tới BlogApi.cs để thực hiện function GetBlogUser cho lastest post
-            function loadLatestPostInfo(userId) {
-                $.ajax({
-                    url: '/api/BlogApi/GetBlogUser/' + userId,
-                    type: 'GET',
-                    success: function (data) {
-                        if (!data || !data.length) {
-                            return;
-                        }
-                        var user = data[0];
-                        var userHtml = '';
-                        userHtml += '<i class="bi bi-person"></i> ' + user.fullname;
-                        $('.author-user-' + userId).html(userHtml);
-
-                    },
-                    error: function (error) {
-                        $('.author-user-' + userId).html('<i class="bi bi-person"></i> Quizly');
-                    }
-                });
-            }
-        </script>
+        <script src="~/js/BlogDetail.js" asp-append-version="true"></script>
     }

@@ -2,6 +2,8 @@ const endpoint = process.argv[2] ?? "http://127.0.0.1:9223";
 const baseUrl = process.argv[3] ?? "http://localhost:5152";
 const testEmail = process.argv[4];
 const testPassword = process.argv[5];
+const viewportWidth = Number(process.argv[6] ?? 375);
+const viewportHeight = viewportWidth <= 375 ? 812 : viewportWidth <= 768 ? 1024 : 900;
 
 const targets = [
   ["/", "home"],
@@ -109,12 +111,12 @@ await command("Log.enable");
 await command("Network.enable");
 await command("Network.clearBrowserCookies");
 await command("Emulation.setDeviceMetricsOverride", {
-  width: 375,
-  height: 812,
+  width: viewportWidth,
+  height: viewportHeight,
   deviceScaleFactor: 1,
   mobile: true,
-  screenWidth: 375,
-  screenHeight: 812,
+  screenWidth: viewportWidth,
+  screenHeight: viewportHeight,
 });
 await command("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 1 });
 
@@ -295,7 +297,7 @@ if (testEmail && testPassword) {
 }
 
 console.log(JSON.stringify({
-  viewport: { width: 375, height: 812 },
+  viewport: { width: viewportWidth, height: viewportHeight },
   routes: results,
   interactions,
   authenticated,
