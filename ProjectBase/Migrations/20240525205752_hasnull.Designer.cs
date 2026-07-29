@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectBase.Helpers;
 
 #nullable disable
+#pragma warning disable CS8981 // Preserve the applied legacy migration class name.
 
 namespace ProjectBase.Migrations
 {
@@ -174,3 +175,4 @@ namespace ProjectBase.Migrations
         }
     }
 }
+#pragma warning restore CS8981
