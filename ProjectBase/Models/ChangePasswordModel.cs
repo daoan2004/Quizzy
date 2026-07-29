@@ -1,9 +1,16 @@
-﻿namespace ProjectBase.Models
+using System.ComponentModel.DataAnnotations;
+
+namespace ProjectBase.Models;
+
+public class ChangePasswordModel
 {
-    public class ChangePasswordModel
-    {
-        public string CurrentPassword { get; set; }
-        public string NewPassword { get; set; }
-        public string ConfirmNewPassword { get; set; }
-    }
+    [Required]
+    public string CurrentPassword { get; set; } = string.Empty;
+
+    [Required]
+    public string NewPassword { get; set; } = string.Empty;
+
+    [Required]
+    [Compare(nameof(NewPassword), ErrorMessage = "New password and confirmation do not match")]
+    public string ConfirmNewPassword { get; set; } = string.Empty;
 }

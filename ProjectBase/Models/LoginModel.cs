@@ -1,8 +1,13 @@
-﻿namespace ProjectBase.Models
+using System.ComponentModel.DataAnnotations;
+
+namespace ProjectBase.Models;
+
+public class LoginModel
 {
-    public class LoginModel
-    {
-        public string email { get; set; }
-        public string password { get; set; }      
-    }
+    [Required]
+    [EmailAddress]
+    public string email { get; set; } = string.Empty;
+
+    [Required]
+    public string password { get; set; } = string.Empty;
 }

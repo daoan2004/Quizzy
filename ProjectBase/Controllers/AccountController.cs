@@ -200,6 +200,11 @@ namespace ProjectBase.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Invalid email or password." });
+            }
+
             var user = await _context.Users
                 .Include(u => u.Role) // Bao gồm thông tin vai trò của người dùng
                 .FirstOrDefaultAsync(u => u.email == model.email);
@@ -255,6 +260,18 @@ namespace ProjectBase.Controllers
         [Route("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Invalid password data.",
+                    errors = ModelState.Values
+                        .SelectMany(value => value.Errors)
+                        .Select(error => error.ErrorMessage)
+                });
+            }
+
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (long.TryParse(userIdString, out long userId))
             {
@@ -437,6 +454,18 @@ namespace ProjectBase.Controllers
         [Route("UpdateUserProfile")]
         public async Task<IActionResult> UpdateUserProfile([FromForm] UpdateUserProfileModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Invalid profile data.",
+                    errors = ModelState.Values
+                        .SelectMany(value => value.Errors)
+                        .Select(error => error.ErrorMessage)
+                });
+            }
+
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (long.TryParse(userIdString, out long userId))
             {

@@ -1,17 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace ProjectBase.Models
+namespace ProjectBase.Models;
+
+public class ResetPasswordConfirmModel
 {
-    public class ResetPasswordConfirmModel
-    {
-        [Required]
-        public string NewPassword { get; set; }
+    [Required]
+    public string NewPassword { get; set; } = string.Empty;
 
-        [Required]
-        public string ReNewPassword { get; set; }
+    [Required]
+    [Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match")]
+    public string ReNewPassword { get; set; } = string.Empty;
 
-        [Required]
-        public string Token { get; set; }
-    }
-
+    [Required]
+    public string Token { get; set; } = string.Empty;
 }
