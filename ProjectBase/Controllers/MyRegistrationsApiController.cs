@@ -86,9 +86,11 @@ namespace ProjectBase.Controllers
 
                 return Ok(filteredRegistrations);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(new { message = ex.Message });
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to load registrations.");
             }
         }
 
@@ -112,9 +114,11 @@ namespace ProjectBase.Controllers
 
                 return Ok(new { success = true, message = "Registration cancelled successfully." });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(new { success = false, message = ex.Message });
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to cancel registration.");
             }
         }
 
@@ -131,9 +135,11 @@ namespace ProjectBase.Controllers
 
                 return Ok(subjects);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(new { message = ex.Message });
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to load subjects.");
             }
         }
         [HttpGet("GetAllStatuses")]
@@ -144,9 +150,11 @@ namespace ProjectBase.Controllers
                 var statuses = new string[] { "Registered", "Submitted"};  // Điều chỉnh theo nhu cầu thực tế của bạn
                 return Ok(statuses);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(new { message = "Unable to retrieve statuses: " + ex.Message });
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to load registration statuses.");
             }
         }
 
@@ -171,9 +179,11 @@ namespace ProjectBase.Controllers
 
                 return Ok(new { success = true });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(new { success = false, message = ex.Message });
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to update registration payment.");
             }
         }
 

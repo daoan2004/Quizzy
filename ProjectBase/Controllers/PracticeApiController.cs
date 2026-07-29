@@ -46,7 +46,13 @@ namespace ProjectBase.Controllers
                 var totalItem = await query.CountAsync();
                 var totalPages = (int)System.Math.Ceiling(totalItem / (double)pageSize);
                 return Ok(new {practice, totalItem, totalPages,currentPage = page });
-            } catch (Exception ex) { return BadRequest(ex.Message); }
+            }
+            catch (Exception)
+            {
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to load practices.");
+            }
         }
         [HttpGet("LoadFilter/{UserID}")]
         public async Task<ActionResult<IEnumerable<PracticeModel>>> LoadFilter(long UserID)
@@ -61,9 +67,11 @@ namespace ProjectBase.Controllers
                 .ToListAsync();
                 return Ok(practice);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to load practice filters.");
             }
         }
         [HttpGet("LoadSubject/{UserID}")]
@@ -78,9 +86,11 @@ namespace ProjectBase.Controllers
                 .ToListAsync();
                 return Ok(subject);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to load registered subjects.");
             }
         }
 
@@ -294,8 +304,10 @@ namespace ProjectBase.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
-                return BadRequest(ex.Message);
+                Console.Error.WriteLine($"Unable to create practice: {ex}");
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to create practice.");
             }
         }
 

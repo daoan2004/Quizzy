@@ -31,9 +31,11 @@ namespace ProjectBase.Controllers
                 .ToListAsync();
                 return Ok(exam);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to load simulation exams.");
             }
         }
         [HttpGet("GetExamPagination/{UserID}")]
@@ -61,7 +63,12 @@ namespace ProjectBase.Controllers
                 var totalPages = (int)System.Math.Ceiling(totalItem / (double)pageSize);
                 return Ok(new { practice, totalItem, totalPages, currentPage = page });
             }
-            catch (Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception)
+            {
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to load simulation exams.");
+            }
         }
 
         [HttpGet("LoadFilter/{UserID}")]
@@ -77,9 +84,11 @@ namespace ProjectBase.Controllers
                 .ToListAsync();
                 return Ok(practice);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to load simulation exam filters.");
             }
         }
 
