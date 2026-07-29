@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration; // Thêm namespace này
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectBase.Helpers;
+using ProjectBase.Health;
 using ProjectBase.Middleware;
 using ProjectBase.Models;
 using ProjectBase.Services;
@@ -88,6 +90,14 @@ namespace ProjectBase
             services.AddScoped<IPasswordHasher<ProjectBase.Models.DAO.User>, PasswordHasher<ProjectBase.Models.DAO.User>>();
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IPracticeCreationFaultInjector, NoOpPracticeCreationFaultInjector>();
+            services.AddHealthChecks()
+                .AddCheck(
+                    "self",
+                    () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy(),
+                    tags: ["live", "ready"])
+                .AddCheck<DatabaseHealthCheck>(
+                    "database",
+                    tags: ["ready"]);
 
             // Add authentication services
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -170,6 +180,16 @@ namespace ProjectBase
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
+                {
+                    Predicate = registration => registration.Tags.Contains("live"),
+                    ResponseWriter = HealthCheckResponseWriter.WriteJsonAsync
+                });
+                endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
+                {
+                    Predicate = registration => registration.Tags.Contains("ready"),
+                    ResponseWriter = HealthCheckResponseWriter.WriteJsonAsync
+                });
             });
             
         }
