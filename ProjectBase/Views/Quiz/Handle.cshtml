@@ -73,13 +73,13 @@
     </section>
 @section Scripts {
     <script type="text/javascript">
-        function startTimer(duration, display) {
-var timer = duration, hours, minutes, seconds;
- var finishAttemptButton = $('.finish-attempt');
-    setInterval(function () {
-        hours = parseInt(timer / 3600, 10);
-        minutes = parseInt((timer % 3600) / 60, 10);
-        seconds = parseInt(timer % 60, 10);
+        function startTimer(deadline, display) {
+            var finishAttemptButton = $('.finish-attempt');
+            var timerInterval = setInterval(function () {
+        var timer = Math.max(0, Math.floor((deadline.getTime() - Date.now()) / 1000));
+        var hours = parseInt(timer / 3600, 10);
+        var minutes = parseInt((timer % 3600) / 60, 10);
+        var seconds = parseInt(timer % 60, 10);
 
         hours = hours < 10 ? "0" + hours : hours;
         minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -87,22 +87,12 @@ var timer = duration, hours, minutes, seconds;
 
         display.text("Time remaining: " + hours + ":" + minutes + ":" + seconds);
 
-        if (--timer < 0) {
-            timer = 0;
-            
+        if (timer <= 0) {
+            clearInterval(timerInterval);
             finishAttemptButton.click();
-            // Add logic to submit the quiz or redirect to a submission page
         }
     }, 1000);
 }
-        function convertTimeOnlyToSeconds(timeString) {
-            var parts = timeString.split(':');
-            var hours = parseInt(parts[0], 10);
-            var minutes = parseInt(parts[1], 10);
-            var seconds = parseInt(parts[2], 10);
-
-            return (hours * 3600) + (minutes * 60) + seconds;
-        }
         var currentQuestionID = 0;
         var currentQuestionIndex = 0;
         // This function will be executed when the DOM is fully loaded
@@ -126,28 +116,9 @@ var timer = duration, hours, minutes, seconds;
                     }
                 });
             });
-            var duration = convertTimeOnlyToSeconds("@Model.duration.ToString("HH:mm:ss")"); // 10 minutes in seconds
-            var display = $('.timer'); // Element where the timer will be displayed
-
-            var endTime = localStorage.getItem('quizEndTime');
-
-            if (endTime) {
-                // Calculate the remaining time
-                var remainingTime = Math.floor((new Date(endTime) - new Date()) / 1000);
-
-                // If the remaining time is less than or equal to zero, reset the endTime
-                if (remainingTime <= 0) {
-                    endTime = null;
-                } else {
-                    startTimer(remainingTime, display);
-                    return;
-                }
-            }
-            
-            // Calculate the end time
-            var endTime = new Date(new Date().getTime() + duration * 1000);
-            localStorage.setItem('quizEndTime', endTime);
-            startTimer(duration, display); // Start the timer
+            var display = $('.timer');
+            var serverDeadline = new Date('@ViewData["AttemptEndsAtUtc"]');
+            startTimer(serverDeadline, display);
             
         });
 
@@ -176,18 +147,18 @@ var timer = duration, hours, minutes, seconds;
                             loadQuestion(questionId);
                         });
                         // Attach click event for next and previous button
-                        $('.prev-button').on('click', function() {
-                            if (currentQuestionID > response[0].id) {
-                                currentQuestionID--; // Giảm vị trí hiện tại đi một đơn vị nếu vị trí không phải là câu hỏi đầu tiên
+                        $('.prev-button').off('click').on('click', function() {
+                            if (currentQuestionIndex > 1) {
                                 currentQuestionIndex--;
-                                loadQuestion(currentQuestionID); // Load câu hỏi trước đó
+                                currentQuestionID = response[currentQuestionIndex - 1].id;
+                                loadQuestion(currentQuestionID);
                             }
                         });
-                        $('.next-button').on('click', function() {
-                            if (currentQuestionID < response[response.length-1].id) {
-                                currentQuestionID++; // Tăng vị trí hiện tại lên một đơn vị nếu vị trí không phải là câu hỏi cuối cùng
+                        $('.next-button').off('click').on('click', function() {
+                            if (currentQuestionIndex < response.length) {
                                 currentQuestionIndex++;
-                                loadQuestion(currentQuestionID); // Load câu hỏi tiếp theo
+                                currentQuestionID = response[currentQuestionIndex - 1].id;
+                                loadQuestion(currentQuestionID);
                             }
                         });
                         // Load the first question
@@ -250,6 +221,22 @@ var timer = duration, hours, minutes, seconds;
                     $('.question-index').html('Question No.'+ currentQuestionIndex);
                         var mark = response.isMark == 1 ? '<button class="unmark-button"><i class="bi bi-bookmark-x"></i> Unmark</button>' : '<button class="mark-button"><i class="bi bi-bookmark"></i> Mark</button>';
                         $('.ismark').html(mark);
+                        $('.ismark').off('click', '.mark-button, .unmark-button')
+                            .on('click', '.mark-button, .unmark-button', function () {
+                                var shouldMark = $(this).hasClass('mark-button');
+                                $.ajax({
+                                    url: '/api/QuizApi/toggleMark',
+                                    method: 'POST',
+                                    data: {
+                                        questionId: questionId,
+                                        PracticeID: @Model.ID,
+                                        isMarked: shouldMark
+                                    },
+                                    success: function () {
+                                        loadQuestion(questionId);
+                                    }
+                                });
+                            });
                     var quizanswer = '';
                     if (response.quizBank.groupID == "1" || response.quizBank.groupID == "2") {
                         var selectedAnswer = response.qAnswer || "";
@@ -276,8 +263,7 @@ var timer = duration, hours, minutes, seconds;
                         quizanswer += '</form>';
                     }
                     else if (response.quizBank.groupID == "3") {
-                        var correctAnswer = response.quizBank.qcorrect.split(';');
-                        var length = correctAnswer.length;
+                        var length = response.quizBank.selectionLimit;
                         var userChoices = response.qanswer ? response.qanswer.split(';') : [];
 
                         // Duyệt qua từng checkbox và đánh dấu nếu giá trị checkbox có trong mảng userChoices
@@ -326,27 +312,13 @@ var timer = duration, hours, minutes, seconds;
                         submitAnswer(questionId, $(this).val());
                         }
                     });
-                    var selectedAnswers = [];
-                    var count = 0;
-
                     $('.answer-checkbox input').on('change', function() {
-                        // Add the selected checkbox value to the array
-                        selectedAnswers.push($(this).val());
-                        count++;
-                            
-                        
-
-                        // Check if the number of selected checkboxes equals the correct answers count
-                        if (count == response.quizBank.qcorrect.split(';').length) {
-                            // Join selected answers into a string separated by ';'
+                        var selectedAnswers = $('.answer-checkbox input:checked')
+                            .map(function () { return $(this).val(); })
+                            .get();
+                        if (selectedAnswers.length == response.quizBank.selectionLimit) {
                             var answerString = selectedAnswers.join(';');
-        
-                            // Submit the answers
                             submitAnswer(currentQuestionID, answerString);
-
-                            // Reset count and selectedAnswers array
-                            count = 0;
-                            selectedAnswers = [];
                         }
                     });
                 },

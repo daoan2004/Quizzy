@@ -33,8 +33,8 @@ public sealed class DoubleSubmitProtectionTests : IClassFixture<QuizzyWebApplica
         var controller = File.ReadAllText(
             Path.Combine(_contentRoot, "Controllers", "QuizApiController.cs"));
 
-        Assert.Contains("SELECT COUNT(*)", controller, StringComparison.Ordinal);
-        Assert.Contains("AND UserID = @UserID", controller, StringComparison.Ordinal);
+        Assert.Contains("QuizHandle.CountAsync", controller, StringComparison.Ordinal);
+        Assert.Contains("handle.UserID == currentUserId", controller, StringComparison.Ordinal);
         Assert.DoesNotContain(
             "number_correct = number_correct + 1",
             controller,

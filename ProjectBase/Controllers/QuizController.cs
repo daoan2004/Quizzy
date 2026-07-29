@@ -45,6 +45,10 @@ namespace ProjectBase.Controllers
             ViewData["Level"] = level.title;
             ViewData["QuizTitle"] = practice.title;
             ViewData["SubjectTitle"] = subject.title;
+            var startedAtUtc = DateTime.SpecifyKind(practice.taken_date, DateTimeKind.Utc);
+            ViewData["AttemptEndsAtUtc"] = startedAtUtc
+                .Add(practice.duration.ToTimeSpan())
+                .ToString("O");
             if (isPractice)
             {
                 ViewData["Type"] = "Practice";
