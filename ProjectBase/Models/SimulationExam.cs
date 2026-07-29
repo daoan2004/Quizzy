@@ -11,7 +11,7 @@ namespace ProjectBase.Models {
         public long ID { get; set; }
         public long SubjectID { get; set; }
         public int LevelID { get; set; }
-        public string ExamName { get; set; }
+        public string ExamName { get; set; } = null!;
         public int Number_Question { get; set; }
         public int Duration { get; set; }
         [Range(0, 100)]
@@ -19,8 +19,8 @@ namespace ProjectBase.Models {
 
         [ForeignKey("SubjectID")]
         [JsonIgnore]
-        public SubjectsModel Subjects { get; set; }
+        public SubjectsModel Subjects { get; set; } = null!;
         [ForeignKey("LevelID")]
-        public PracticeLevel Level { get; set; }
+        public PracticeLevel Level { get; set; } = null!;
     }
 }

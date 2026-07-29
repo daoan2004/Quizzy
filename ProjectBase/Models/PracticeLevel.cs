@@ -9,12 +9,12 @@ namespace ProjectBase.Models
     public class PracticeLevel
     {
         public int ID { get; set; }
-        public string title { get; set; }
-        public string Description { get; set; }
+        public string title { get; set; } = null!;
+        public string Description { get; set; } = null!;
         [JsonIgnore]
-        public ICollection<PracticeModel> Practice { get; set; }
+        public ICollection<PracticeModel> Practice { get; set; } = [];
         [JsonIgnore]
-        public ICollection<SimulationExam> Exams { get; set; }
+        public ICollection<SimulationExam> Exams { get; set; } = [];
 
     }
 }

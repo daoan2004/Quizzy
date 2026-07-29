@@ -12,7 +12,7 @@ namespace ProjectBase.Models
         public long ID { get; set; }
         public long UserID { get; set; }
         public long SubjectID { get; set; }
-        public string title { get; set; }
+        public string title { get; set; } = null!;
         public DateTime taken_date { get; set; }
         public TimeOnly duration { get; set; }
         public int number_quest { get; set; }
@@ -22,20 +22,20 @@ namespace ProjectBase.Models
         public int topicID { get; set; }
         public TimeOnly time_taken { get; set; }
 
-        public string Quest_group { get; set; }
+        public string Quest_group { get; set; } = null!;
         public bool Status { get; set; }
         [NotMapped]
         [ForeignKey("UserID")]
-        public User User { get; set; }
+        public User User { get; set; } = null!;
         [NotMapped]
         [ForeignKey("SubjectID")]
-        public SubjectsModel Subject { get; set; }
+        public SubjectsModel Subject { get; set; } = null!;
         [NotMapped]
         [ForeignKey("levelID")]
-        public PracticeLevel Level { get; set; }
+        public PracticeLevel Level { get; set; } = null!;
         [NotMapped]
         [ForeignKey("topicID")]
-        public SubjectTopicModel Topic { get; set; }
+        public SubjectTopicModel Topic { get; set; } = null!;
 
 
     }

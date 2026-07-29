@@ -12,9 +12,9 @@ namespace ProjectBase.Models
        
         public int id {  get; set; }
         public long subjectId { get; set; }
-        public string title { get; set; }
+        public string title { get; set; } = null!;
 
         [JsonIgnore]
-        public ICollection<PracticeModel> Practice { get; set; }
+        public ICollection<PracticeModel> Practice { get; set; } = [];
     }
 }

@@ -12,14 +12,14 @@ namespace ProjectBase.Models
         public long UserID { get; set; }
         public long PracticeID { get; set; }
         public long QuizID { get; set; }
-        public string QAnswer { get; set; } 
+        public string QAnswer { get; set; } = null!;
 
         public bool isMark {  get; set; } 
         public bool status { get; set; } 
         public bool isCorrect { get; set; }
         
         [ForeignKey("QuizID")]
-        public QuizBankModel QuizBank { get; set; }
+        public QuizBankModel QuizBank { get; set; } = null!;
 
         [NotMapped]
         public string StatusDescription

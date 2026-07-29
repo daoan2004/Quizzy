@@ -10,9 +10,9 @@ namespace ProjectBase.Models
         public long CategoryID { get; set; }
 
         [ForeignKey("CategoryID")]
-        public CategoryModel Category { get; set; }
+        public CategoryModel Category { get; set; } = null!;
 
         [ForeignKey("SubjectID")]
-        public SubjectsModel Subjects { get; set; }
+        public SubjectsModel Subjects { get; set; } = null!;
     }
 }

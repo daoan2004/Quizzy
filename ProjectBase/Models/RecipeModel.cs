@@ -18,17 +18,17 @@ namespace ProjectBase.Models
         public long PricePackage_Type { get; set; }
         public DateTime BuyAt { get; set; } // Thời gian mua
         public DateTime EndAt { get; set; } // Thời gian kết thúc
-        public string Status { get; set; } // Trạng thái của Recipe, ví dụ: "Pending", "Paid", "Completed", "Cancelled", v.v.
+        public string Status { get; set; } = null!; // Trạng thái của Recipe, ví dụ: "Pending", "Paid", "Completed", "Cancelled", v.v.
         
 
         [ForeignKey("PricePackage_ID")]
         [JsonIgnore]
-        public PricePackageModel PricePackage { get; set; } // Navigation property đến PricePackage
+        public PricePackageModel PricePackage { get; set; } = null!; // Navigation property đến PricePackage
 
         [JsonIgnore]
         [ForeignKey("UserID")]
-        public User User { get; set; } // Navigation property đến Use
+        public User User { get; set; } = null!; // Navigation property đến Use
         [ForeignKey("SubjectID")]
-        public SubjectsModel Subjects { get; set; }
+        public SubjectsModel Subjects { get; set; } = null!;
     }
 }

@@ -14,7 +14,7 @@ namespace ProjectBase.Models
         public long ListPrice { get; set; }
         public long SalePrice { get; set; }
         [ForeignKey("SubjectID")]
-        public SubjectsModel Subjects { get; set; }
-        public ICollection<RecipeModel> Recipe { get; set; }
+        public SubjectsModel Subjects { get; set; } = null!;
+        public ICollection<RecipeModel> Recipe { get; set; } = [];
     }
 }

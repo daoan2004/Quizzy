@@ -13,18 +13,18 @@ namespace ProjectBase.Models
         public int TopicID { get; set; }
         public int LevelID { get; set; }
         public bool Status { get; set; }
-        public string GroupID { get; set; }
-        public string Title { get; set; }
-        public string QA { get; set; }
-        public string QB { get; set; }
-        public string QC { get; set; }
-        public string QD { get; set; }
-        public string QE { get; set; }
-        public string QF { get; set; }
-        public string Qcorrect { get; set; }
+        public string GroupID { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public string QA { get; set; } = null!;
+        public string QB { get; set; } = null!;
+        public string QC { get; set; } = null!;
+        public string QD { get; set; } = null!;
+        public string QE { get; set; } = null!;
+        public string QF { get; set; } = null!;
+        public string Qcorrect { get; set; } = null!;
 
         [JsonIgnore]
-        public ICollection<QuizHandleModel> QuizHandle { get; set; }
+        public ICollection<QuizHandleModel> QuizHandle { get; set; } = [];
 
     }
 }

@@ -5,9 +5,9 @@ namespace ProjectBase.Models
     public class CategoryModel
     {
         public long ID { get; set; }
-        public string title { get; set; }
-        public string description { get; set; }
+        public string title { get; set; } = null!;
+        public string description { get; set; } = null!;
 
-        public ICollection<Subject_CategoryModel> Subject_Category { get; set; }
+        public ICollection<Subject_CategoryModel> Subject_Category { get; set; } = [];
     }
 }
