@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration; // Thêm namespace này
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectBase.Helpers;
+using ProjectBase.Middleware;
 using ProjectBase.Models;
 using ProjectBase.Services;
 using System;
@@ -140,6 +141,7 @@ namespace ProjectBase
                 app.UseHsts();
             }
 
+            app.UseMiddleware<ApiExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
