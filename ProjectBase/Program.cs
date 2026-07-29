@@ -10,6 +10,7 @@ using ProjectBase.Helpers;
 using ProjectBase.Models;
 using ProjectBase.Services;
 using System;
+using System.Threading.RateLimiting;
 
 namespace ProjectBase
 {
@@ -44,6 +45,28 @@ namespace ProjectBase
             services.AddAntiforgery(options =>
             {
                 options.HeaderName = "X-CSRF-TOKEN";
+            });
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                options.AddPolicy("EmailVerification", httpContext =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromMinutes(10),
+                            QueueLimit = 0
+                        }));
+                options.AddPolicy("PasswordReset", httpContext =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromMinutes(10),
+                            QueueLimit = 0
+                        }));
             });
             services.AddOptions<EmailOptions>()
                 .Bind(configuration.GetSection(EmailOptions.SectionName));
@@ -120,6 +143,7 @@ namespace ProjectBase
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseRateLimiter();
 
             // Use authentication and authorization
             app.UseAuthentication();

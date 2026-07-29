@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ProjectBase.Controllers
 {
@@ -43,6 +44,7 @@ namespace ProjectBase.Controllers
         //Hàm đăng kí         
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [EnableRateLimiting("EmailVerification")]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
@@ -349,31 +351,33 @@ namespace ProjectBase.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [EnableRateLimiting("PasswordReset")]
         [Route("ResetPasswordRequest")]
         public async Task<IActionResult> ResetPasswordRequest([FromBody] ResetPasswordRequestModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.email == model.email);
-                if (user == null)
+                if (user != null)
                 {
-                    return Json(new { success = false, message = "No user found with this email address." });
+                    var token = Guid.NewGuid().ToString();
+                    user.PasswordResetToken = token;
+                    int expirationHours = _config.GetValue<int>("PasswordResetLinkExpirationHours");
+                    user.PasswordResetTokenExpires = DateTime.UtcNow.AddHours(expirationHours);
+
+                    await _context.SaveChangesAsync();
+
+                    await _emailSender.SendPasswordResetLinkAsync(
+                        model.email,
+                        token,
+                        HttpContext.RequestAborted);
                 }
 
-                var token = Guid.NewGuid().ToString();
-                user.PasswordResetToken = token;
-                // Lấy giá trị cấu hình thời gian hết hạn từ appsettings.json
-                int expirationHours = _config.GetValue<int>("PasswordResetLinkExpirationHours");
-                user.PasswordResetTokenExpires = DateTime.UtcNow.AddHours(expirationHours);
-
-                await _context.SaveChangesAsync();
-
-                await _emailSender.SendPasswordResetLinkAsync(
-                    model.email,
-                    token,
-                    HttpContext.RequestAborted);
-
-                return Json(new { success = true, message = "Password reset email sent." });
+                return Json(new
+                {
+                    success = true,
+                    message = "If an account exists for this email, a password reset link has been sent."
+                });
 
             }
             return Json(new { success = false, message = "Invalid request." });
