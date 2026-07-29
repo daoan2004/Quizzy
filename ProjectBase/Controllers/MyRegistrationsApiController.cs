@@ -32,7 +32,8 @@ namespace ProjectBase.Controllers
                 var query = _dataContext.Recipe
                     .Include(r => r.Subjects)
                     .Include(r => r.PricePackage)
-                    .Where(r => r.UserID == currentUserId && r.Status != "Cancelled");
+                    .Where(r => r.UserID == currentUserId &&
+                                r.Status != RegistrationStatuses.Cancelled);
 
                 // Áp dụng bộ lọc nếu có
                 if (subjectId.HasValue)
@@ -63,28 +64,7 @@ namespace ProjectBase.Controllers
                     })
                     .ToListAsync();
 
-                // Lọc lại TotalCost bằng cách so sánh SubjectID và PricePackageType
-                var filteredRegistrations = registrations.Where(r =>
-                    _dataContext.Price_package.Any(pp => pp.SubjectID == r.SubjectID && pp.PackageType == r.PricePackage_Type))
-                    .Select(r => new
-                    {
-                        r.ID,
-                        r.PricePackage_ID,
-                        r.UserID,
-                        r.SubjectID,
-                        r.BuyAt,
-                        r.EndAt,
-                        r.Status,
-                        r.PricePackage_Type,
-                        TotalCost = _dataContext.Price_package
-                            .Where(pp => pp.SubjectID == r.SubjectID && pp.PackageType == r.PricePackage_Type)
-                            .Select(pp => pp.SalePrice)
-                            .FirstOrDefault(),
-                        r.SubId,
-                        r.SubjectTitle
-                    }).ToList();
-
-                return Ok(filteredRegistrations);
+                return Ok(registrations);
             }
             catch (Exception)
             {
@@ -107,9 +87,16 @@ namespace ProjectBase.Controllers
                 {
                     return NotFound(new { success = false, message = "Registration not found." });
                 }
+                if (registration.Status != RegistrationStatuses.Submitted)
+                {
+                    return Conflict(new
+                    {
+                        success = false,
+                        message = "Only a submitted registration can be cancelled."
+                    });
+                }
 
-                // Update registration status to "Cancelled" instead of removing it
-                registration.Status = "Cancelled";
+                registration.Status = RegistrationStatuses.Cancelled;
                 await _dataContext.SaveChangesAsync();
 
                 return Ok(new { success = true, message = "Registration cancelled successfully." });
@@ -147,7 +134,11 @@ namespace ProjectBase.Controllers
         {
             try
             {
-                var statuses = new string[] { "Registered", "Submitted"};  // Điều chỉnh theo nhu cầu thực tế của bạn
+                var statuses = new[]
+                {
+                    RegistrationStatuses.Registered,
+                    RegistrationStatuses.Submitted
+                };
                 return Ok(statuses);
             }
             catch (Exception)
@@ -171,9 +162,16 @@ namespace ProjectBase.Controllers
                 {
                     return NotFound(new { success = false, message = "Registration not found." });
                 }
+                if (registration.Status != RegistrationStatuses.Submitted)
+                {
+                    return Conflict(new
+                    {
+                        success = false,
+                        message = "Only a submitted registration can be paid."
+                    });
+                }
 
-                // Thay đổi trạng thái đăng ký
-                registration.Status = "Registrated";
+                registration.Status = RegistrationStatuses.Registered;
                 _dataContext.Recipe.Update(registration);
                 await _dataContext.SaveChangesAsync();
 

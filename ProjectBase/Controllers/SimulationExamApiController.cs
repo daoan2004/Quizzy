@@ -27,7 +27,8 @@ namespace ProjectBase.Controllers
                 var exam = await _dataContext.Recipe
                 .Include(s => s.Subjects)
                 .ThenInclude(e=>e.Exams)
-                .Where(u => u.UserID == currentUserId).Where(r => r.Status == "Registrated")
+                .Where(u => u.UserID == currentUserId)
+                .Where(r => r.Status == RegistrationStatuses.Registered)
                 .ToListAsync();
                 return Ok(exam);
             }

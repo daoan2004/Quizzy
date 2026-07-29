@@ -22,7 +22,9 @@ namespace ProjectBase.Controllers
         public async Task<IActionResult> GetNewRegistrations()
         {
             var registrations = await _context.Recipe
-                .Where(r => r.Status == "Registrated" || r.Status == "Submitted" || r.Status == "Cancelled")
+                .Where(r => r.Status == RegistrationStatuses.Registered ||
+                            r.Status == RegistrationStatuses.Submitted ||
+                            r.Status == RegistrationStatuses.Cancelled)
                 .Include(r => r.Subjects)
                 .Select(r => new RegistrationViewModel
                 {
@@ -50,7 +52,7 @@ namespace ProjectBase.Controllers
         {
             var recipes = await _context.Recipe
                 .Include(r => r.PricePackage)
-                .Where(r => r.Status == "Registrated")
+                .Where(r => r.Status == RegistrationStatuses.Registered)
                 .ToListAsync();
 
             long totalRevenue = 0;
@@ -66,7 +68,8 @@ namespace ProjectBase.Controllers
         public async Task<IActionResult> GetRevenuesBySubject(int subjectId)
         {
             var revenue = await _context.Recipe
-                .Where(r => r.SubjectID == subjectId && r.Status == "Registrated")
+                .Where(r => r.SubjectID == subjectId &&
+                            r.Status == RegistrationStatuses.Registered)
                 .SumAsync(r => r.PricePackage.SalePrice);
             return Ok(new { TotalRevenue = revenue });
         }
@@ -138,7 +141,8 @@ namespace ProjectBase.Controllers
             var end = endDate.Value.Date.AddDays(1).AddTicks(-1); // Ensure the end date is inclusive
 
             var registrationCounts = await _context.Recipe
-                .Where(o => o.Status == "Registrated" && o.BuyAt >= start && o.BuyAt <= end)
+                .Where(o => o.Status == RegistrationStatuses.Registered &&
+                            o.BuyAt >= start && o.BuyAt <= end)
                 .GroupBy(o => o.BuyAt.Date)
                 .Select(group => new {
                     Date = group.Key,
@@ -155,7 +159,7 @@ namespace ProjectBase.Controllers
         public async Task<IActionResult> GetRevenuesByAllSubjects()
         {
             var subjectRevenues = await _context.Recipe
-                .Where(r => r.Status == "Registrated")
+                .Where(r => r.Status == RegistrationStatuses.Registered)
                 .GroupBy(r => r.Subjects)
                 .Select(group => new {
                     SubjectName = group.Key.title,

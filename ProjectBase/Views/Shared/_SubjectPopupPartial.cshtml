@@ -36,8 +36,7 @@
                                 : "12 Months";
 
                         <label class="price_option" for="package_@pricePackage.PackageType">
-                            <input type="hidden" name="packageId" value="@pricePackage.ID" />
-                            <input type="radio" id="package_@pricePackage.PackageType" name="selectedPackage" value="@pricePackage.PackageType"
+                            <input type="radio" id="package_@pricePackage.PackageType" name="packageId" value="@pricePackage.ID"
                                    @(Model.UserRegistration != null && Model.UserRegistration.PricePackage_ID == pricePackage.ID ? "checked" : "") />
 
                             <span class="price-option-main">
@@ -61,6 +60,12 @@
                             <i class="bi bi-box-arrow-in-right"></i> Login
                         </button>
                     </div>
+                }
+                else if (Model.UserRegistration?.Status == RegistrationStatuses.Registered)
+                {
+                    <p class="noti">
+                        <i class="bi bi-check-circle"></i> This subject is active on your account.
+                    </p>
                 }
                 else if (Model.UserRegistration != null)
                 {

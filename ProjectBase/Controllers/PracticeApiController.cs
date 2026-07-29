@@ -82,7 +82,8 @@ namespace ProjectBase.Controllers
             {
                 var subject = await _dataContext.Recipe
                 .Include(s => s.Subjects)
-                .Where(u => u.UserID == currentUserId).Where(r=>r.Status== "Registrated")
+                .Where(u => u.UserID == currentUserId)
+                .Where(r => r.Status == RegistrationStatuses.Registered)
                 .ToListAsync();
                 return Ok(subject);
             }

@@ -32,7 +32,21 @@ public class SubjectRegister : Controller
             return BadRequest(ModelState);
         }
 
-        var buyAt = DateTime.Now;
+        await using var transaction = _context.Database.IsRelational()
+            ? await _context.Database.BeginTransactionAsync()
+            : null;
+
+        var pricePackage = await _context.Price_package
+            .FirstOrDefaultAsync(package =>
+                package.ID == packageId &&
+                package.SubjectID == subjectId);
+        if (pricePackage == null)
+        {
+            return BadRequest("The selected package is invalid for this subject.");
+        }
+
+        selectedPackage = checked((int)pricePackage.PackageType);
+        var buyAt = DateTime.UtcNow;
         DateTime endAt;
 
         switch (selectedPackage)
@@ -55,12 +69,21 @@ public class SubjectRegister : Controller
 
         if (existingRecipe != null)
         {
+            if (existingRecipe.Status == RegistrationStatuses.Registered)
+            {
+                return Conflict(new
+                {
+                    success = false,
+                    message = "A paid registration cannot change package."
+                });
+            }
+
             // Update existing recipe
             existingRecipe.BuyAt = buyAt;
             existingRecipe.EndAt = endAt;
             existingRecipe.PricePackage_ID = packageId;
             existingRecipe.PricePackage_Type = selectedPackage;
-            existingRecipe.Status = "Submitted"; // or keep it "Summited" if you prefer
+            existingRecipe.Status = RegistrationStatuses.Submitted;
         }
         else
         {
@@ -72,7 +95,7 @@ public class SubjectRegister : Controller
                 EndAt = endAt,
                 PricePackage_ID = packageId,
                 PricePackage_Type = selectedPackage,
-                Status = "Submitted",
+                Status = RegistrationStatuses.Submitted,
                 SubjectID = subjectId,
             };
 
@@ -82,6 +105,10 @@ public class SubjectRegister : Controller
         try
         {
             await _context.SaveChangesAsync();
+            if (transaction != null)
+            {
+                await transaction.CommitAsync();
+            }
             return RedirectToAction("Index", "MyRegistrations");
         }
         catch (Exception ex)

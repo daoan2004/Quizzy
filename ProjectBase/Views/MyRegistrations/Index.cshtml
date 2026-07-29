@@ -314,9 +314,13 @@
 
                         $('#confirmCancel').off('click').on('click', function () {
                             var registrationId = $('#myModal').data('registrationId');
+                            var button = $(this);
                             $.ajax({
                                 url: '/api/MyRegistrationsApi/CancelRegistration/' + registrationId,
                                 type: 'POST',
+                                beforeSend: function () {
+                                    button.prop('disabled', true).text('Cancelling…');
+                                },
                                 success: function (response) {
                                     if (response.success) {
                                         showNotification('Registration cancelled successfully.', true);
@@ -326,8 +330,14 @@
                                         showNotification('Error: ' + response.message, false);
                                     }
                                 },
-                                error: function () {
-                                    showNotification('Error cancelling registration.', false);
+                                error: function (xhr) {
+                                    showNotification(
+                                        xhr.responseJSON?.message || 'Error cancelling registration.',
+                                        false
+                                    );
+                                },
+                                complete: function () {
+                                    button.prop('disabled', false).text('Confirm');
                                 }
                             });
                         });
@@ -347,9 +357,13 @@
                         });
 
                         $('#confirmPay').off('click').on('click', function () {
+                            var button = $(this);
                             $.ajax({
                                 url: '/api/MyRegistrationsApi/PayPackage/' + selectedRegistrationId,
                                 type: 'POST',
+                                beforeSend: function () {
+                                    button.prop('disabled', true).text('Paying…');
+                                },
                                 success: function (response) {
                                     if (response.success) {
                                         showNotification('Package paid successfully.', true);
@@ -359,8 +373,14 @@
                                         showNotification('Error: ' + response.message, false);
                                     }
                                 },
-                                error: function () {
-                                    showNotification('Error paying for package.', false);
+                                error: function (xhr) {
+                                    showNotification(
+                                        xhr.responseJSON?.message || 'Error paying for package.',
+                                        false
+                                    );
+                                },
+                                complete: function () {
+                                    button.prop('disabled', false).text('Confirm');
                                 }
                             });
                         });
