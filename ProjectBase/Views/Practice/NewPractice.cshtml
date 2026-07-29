@@ -160,6 +160,7 @@
                     });
 
                     $(".submit-button").click(function () {
+                        var submitButton = $(this);
                         var title = $('#test-name').val();
                         var noOfQuestions = $('#no-of-questions').val();
                         var questionGroup = $('#Quest-group').val();
@@ -212,13 +213,21 @@
                                     levelID: difficultyLevel
                                     // Thêm các thuộc tính khác tương ứng trong data object
                                 }),
+                                beforeSend: function () {
+                                    submitButton.prop('disabled', true).text('Creating…');
+                                },
                                 success: function (response) {
                                     practiceID = response
                                     window.location.href = '/Quiz/Handle?UserID=' + userId + '&PracticeID=' + practiceID + '&IsPractice=' + isPractice;
                                 },
                                 error: function (xhr, status, error) {
                                     $('.alertbottom').empty();
-                                    $('.alertbottom').append('Could not create practice. Please try again.');
+                                    $('.alertbottom').text(
+                                        xhr.responseJSON?.message || 'Could not create practice. Please try again.'
+                                    );
+                                },
+                                complete: function () {
+                                    submitButton.prop('disabled', false).text('Create Practice');
                                 }
                             });
                             

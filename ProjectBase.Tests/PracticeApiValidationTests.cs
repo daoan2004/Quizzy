@@ -20,7 +20,7 @@ public sealed class PracticeApiValidationTests
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Contains(
-            "Invalid practice data",
+            "Practice title",
             await response.Content.ReadAsStringAsync(),
             StringComparison.OrdinalIgnoreCase);
     }

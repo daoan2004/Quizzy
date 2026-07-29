@@ -99,6 +99,148 @@ namespace ProjectBase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPractice()
         {
+            if (!TryGetCurrentUserId(out var userId)) return Unauthorized();
+            if (!Request.HasFormContentType)
+            {
+                return BadRequest(new { message = "Form data is required." });
+            }
+
+            var form = await Request.ReadFormAsync(HttpContext.RequestAborted);
+            var title = form["title"].ToString().Trim();
+            var questGroup = form["Quest_group"].ToString().Trim();
+
+            if (title.Length is < 3 or > 100)
+            {
+                return BadRequest(new { message = "Practice title must contain 3 to 100 characters." });
+            }
+            if (!long.TryParse(form["SubjectID"], out var subjectId) || subjectId <= 0)
+            {
+                return BadRequest(new { message = "A valid subject is required." });
+            }
+            if (!int.TryParse(form["number_quest"], out var questionCount) ||
+                questionCount is < 1 or > 100)
+            {
+                return BadRequest(new { message = "Question count must be between 1 and 100." });
+            }
+            if (!int.TryParse(form["levelID"], out var levelId) || levelId is < 1 or > 3)
+            {
+                return BadRequest(new { message = "Difficulty must be Easy, Medium, or Hard." });
+            }
+            if (!TimeOnly.TryParse(form["duration"], out var duration) ||
+                duration == TimeOnly.MinValue ||
+                duration > new TimeOnly(3, 0))
+            {
+                return BadRequest(new { message = "Duration must be between 1 minute and 3 hours." });
+            }
+            if (string.IsNullOrWhiteSpace(questGroup))
+            {
+                return BadRequest(new { message = "Question group is required." });
+            }
+
+            var hasActiveRegistration = await _dataContext.Recipe.AnyAsync(
+                registration =>
+                    registration.UserID == userId &&
+                    registration.SubjectID == subjectId &&
+                    registration.Status == RegistrationStatuses.Registered);
+            if (!hasActiveRegistration)
+            {
+                return StatusCode(
+                    StatusCodes.Status403Forbidden,
+                    new { message = "An active subject registration is required." });
+            }
+            var duplicateOpenPractice = await _dataContext.Practice.AnyAsync(practice =>
+                practice.UserID == userId &&
+                practice.SubjectID == subjectId &&
+                practice.title == title &&
+                !practice.Status);
+            if (duplicateOpenPractice)
+            {
+                return Conflict(new
+                {
+                    message = "An unfinished practice with this title already exists."
+                });
+            }
+
+            const int topicId = 1;
+            var candidates = await _dataContext.QuizBank
+                .Where(question =>
+                    question.SubjectID == subjectId &&
+                    question.TopicID == topicId &&
+                    (questGroup == "0" || question.GroupID == questGroup))
+                .ToListAsync();
+            var distribution = GetQuestionDistribution(levelId, questionCount);
+            var selectedQuestions = new List<QuizBankModel>(questionCount);
+            foreach (var requirement in distribution)
+            {
+                var available = candidates
+                    .Where(question => question.LevelID == requirement.Key)
+                    .OrderBy(_ => Random.Shared.Next())
+                    .Take(requirement.Value)
+                    .ToList();
+                if (available.Count != requirement.Value)
+                {
+                    return Conflict(new
+                    {
+                        message = $"Not enough level {requirement.Key} questions. " +
+                                  $"Required {requirement.Value}, available {available.Count}."
+                    });
+                }
+                selectedQuestions.AddRange(available);
+            }
+
+            await using var transaction = _dataContext.Database.IsRelational()
+                ? await _dataContext.Database.BeginTransactionAsync(HttpContext.RequestAborted)
+                : null;
+            try
+            {
+                var practice = new PracticeModel
+                {
+                    UserID = userId,
+                    SubjectID = subjectId,
+                    title = title,
+                    number_quest = questionCount,
+                    Quest_group = questGroup,
+                    duration = duration,
+                    levelID = levelId,
+                    taken_date = DateTime.UtcNow,
+                    time_taken = TimeOnly.MinValue,
+                    Status = false,
+                    number_correct = 0,
+                    topicID = topicId
+                };
+                _dataContext.Practice.Add(practice);
+                await _dataContext.SaveChangesAsync(HttpContext.RequestAborted);
+
+                _dataContext.QuizHandle.AddRange(selectedQuestions.Select(question =>
+                    new QuizHandleModel
+                    {
+                        UserID = userId,
+                        PracticeID = practice.ID,
+                        QuizID = question.ID,
+                        QAnswer = string.Empty,
+                        isMark = false,
+                        status = false,
+                        isCorrect = false
+                    }));
+                await _dataContext.SaveChangesAsync(HttpContext.RequestAborted);
+                if (transaction != null)
+                {
+                    await transaction.CommitAsync(HttpContext.RequestAborted);
+                }
+
+                return Ok(practice.ID);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Unable to create practice: {ex}");
+                return Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Unable to create practice.");
+            }
+        }
+
+        private async Task<IActionResult> LegacyAddPractice()
+        {
             if (!TryGetCurrentUserId(out var userID)) return Unauthorized();
             try
             {
@@ -311,6 +453,29 @@ namespace ProjectBase.Controllers
                     title: "Unable to create practice.");
             }
         }
+
+        private static Dictionary<int, int> GetQuestionDistribution(
+            int levelId,
+            int questionCount) =>
+            levelId switch
+            {
+                1 => new()
+                {
+                    [1] = (int)(questionCount * 0.9),
+                    [2] = questionCount - (int)(questionCount * 0.9)
+                },
+                2 => new()
+                {
+                    [1] = (int)(questionCount * 0.3),
+                    [2] = questionCount - (int)(questionCount * 0.3)
+                },
+                3 => new()
+                {
+                    [2] = (int)(questionCount * 0.6),
+                    [3] = questionCount - (int)(questionCount * 0.6)
+                },
+                _ => []
+            };
 
         private bool TryGetCurrentUserId(out long userId) =>
             long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
