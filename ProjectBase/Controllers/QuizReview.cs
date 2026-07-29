@@ -8,12 +8,12 @@ using System.Security.Claims;
 namespace ProjectBase.Controllers
 {
     [Authorize]
-    public class QuizReview : Controller
+    public class QuizReviewController : Controller
     {
 
         private readonly DataContext _context;
 
-        public QuizReview(DataContext context)
+        public QuizReviewController(DataContext context)
         {
             _context = context;
         }
@@ -47,15 +47,25 @@ namespace ProjectBase.Controllers
                 return NotFound();
             }
 
+            if (!practice.Status)
+            {
+                return Conflict("Complete the practice before reviewing it.");
+            }
+
             var quiz_review = await _context.QuizHandle
                 .Include(qh => qh.QuizBank)
                 .Where(qh => qh.PracticeID == practiceId && qh.UserID == currentUserId)
+                .OrderBy(qh => qh.ID)
                 .ToListAsync();
 
             var model = new QuizReviewViewModel
             {
                 QuizReviews = quiz_review,
-                Practice = practice
+                Practice = practice,
+                TotalQuestions = quiz_review.Count,
+                CorrectCount = quiz_review.Count(qh => qh.status && qh.isCorrect),
+                IncorrectCount = quiz_review.Count(qh => qh.status && !qh.isCorrect),
+                UnansweredCount = quiz_review.Count(qh => !qh.status)
             };
 
             // Format time fields

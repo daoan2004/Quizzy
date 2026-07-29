@@ -20,10 +20,11 @@
                         <p><strong>Taken Date:</strong> @Model.Practice?.taken_date</p>
                         <p><strong>Quiz Duration:</strong> @ViewBag.DurationFormatted</p>
                         <p><strong>Time Taken:</strong> @ViewBag.TimeTakenFormatted</p>
-                        <p><strong>Number of Questions:</strong> @(Model.Practice?.number_quest ?? 0)</p>
-                        <p><strong>Number of Correct Answers:</strong> @(Model.Practice?.number_correct ?? 0)</p>
-                        <p><strong>Number of Wrong Answers:</strong> @((Model.Practice?.number_quest ?? 0) - (Model.Practice?.number_correct ?? 0))</p>
-                        <p><strong>Percentage of Correct Answers:</strong> @(((Model.Practice?.number_quest ?? 0) > 0 ? ((Model.Practice?.number_correct ?? 0) / (double)(Model.Practice?.number_quest ?? 1)) * 100 : 0).ToString("F2"))%</p>
+                        <p><strong>Number of Questions:</strong> @Model.TotalQuestions</p>
+                        <p><strong>Number of Correct Answers:</strong> @Model.CorrectCount</p>
+                        <p><strong>Number of Wrong Answers:</strong> @Model.IncorrectCount</p>
+                        <p><strong>Number of Unanswered Questions:</strong> @Model.UnansweredCount</p>
+                        <p><strong>Percentage of Correct Answers:</strong> @Model.CorrectPercentage.ToString("F2")%</p>
                         <p><strong>Status:</strong> @(Model.Practice?.Status == true ? "Completed" : "Incomplete")</p>              
                     </div>
                 </div>
@@ -37,7 +38,9 @@
 
                         foreach (var quiz_review in reviews)
                         {
-                            <div id="question-@quiz_review.QuizID" class="quiz_question glass-card" data-aos="fade-up">
+                            var userAnswer = quiz_review.QAnswer ?? string.Empty;
+                            var result = !quiz_review.status ? "unanswered" : quiz_review.isCorrect ? "correct" : "incorrect";
+                            <div id="question-@quiz_review.QuizID" class="quiz_question glass-card" data-result="@result" data-aos="fade-up">
                                 <div class="quiz_bank" data-correct="@quiz_review.QuizBank.Qcorrect" data-answer="@quiz_review.QAnswer">
                                     <div class="quiz_title">
                                         <p class="text_style question_number"><strong>Question @index:</strong></p>
@@ -70,7 +73,7 @@
                                         {
                                             @if (@quiz_review.QuizBank.Qcorrect.Contains("A"))
                                             {
-                                                @if (@quiz_review.QAnswer.Contains("A"))
+                                                @if (userAnswer.Contains("A"))
                                                 {
                                                     <p class="answer-review is-correct">
                                                         <strong>A:</strong> @quiz_review.QuizBank.QA <span><i class="bi bi-check-lg"></i></span>
@@ -83,7 +86,7 @@
                                                     </p>
                                                 }
                                             }
-                                            else if (@quiz_review.QAnswer.Contains("A"))
+                                            else if (userAnswer.Contains("A"))
                                             {
                                                 <p class="answer-review is-wrong">
                                                     <strong>A:</strong> @quiz_review.QuizBank.QA <span><i class="bi bi-x-lg"></i></span>
@@ -101,7 +104,7 @@
                                         {
                                             @if (@quiz_review.QuizBank.Qcorrect.Contains("B"))
                                             {
-                                                @if (@quiz_review.QAnswer.Contains("B"))
+                                                @if (userAnswer.Contains("B"))
                                                 {
                                                     <p class="answer-review is-correct">
                                                         <strong>B:</strong> @quiz_review.QuizBank.QB <span><i class="bi bi-check-lg"></i></span>
@@ -114,7 +117,7 @@
                                                     </p>
                                                 }
                                             }
-                                            else if (@quiz_review.QAnswer.Contains("B"))
+                                            else if (userAnswer.Contains("B"))
                                             {
                                                 <p class="answer-review is-wrong">
                                                     <strong>B:</strong> @quiz_review.QuizBank.QB <span><i class="bi bi-x-lg"></i></span>
@@ -132,7 +135,7 @@
                                         {
                                             @if (@quiz_review.QuizBank.Qcorrect.Contains("C"))
                                             {
-                                                @if (@quiz_review.QAnswer.Contains("C"))
+                                                @if (userAnswer.Contains("C"))
                                                 {
                                                     <p class="answer-review is-correct">
                                                         <strong>C:</strong> @quiz_review.QuizBank.QC <span><i class="bi bi-check-lg"></i></span>
@@ -145,7 +148,7 @@
                                                     </p>
                                                 }
                                             }
-                                            else if (@quiz_review.QAnswer.Contains("C"))
+                                            else if (userAnswer.Contains("C"))
                                             {
                                                 <p class="answer-review is-wrong">
                                                     <strong>C:</strong> @quiz_review.QuizBank.QC <span><i class="bi bi-x-lg"></i></span>
@@ -163,7 +166,7 @@
                                         {
                                             @if (@quiz_review.QuizBank.Qcorrect.Contains("D"))
                                             {
-                                                @if (@quiz_review.QAnswer.Contains("D"))
+                                                @if (userAnswer.Contains("D"))
                                                 {
                                                     <p class="answer-review is-correct">
                                                         <strong>D:</strong> @quiz_review.QuizBank.QD <span><i class="bi bi-check-lg"></i></span>
@@ -176,7 +179,7 @@
                                                     </p>
                                                 }
                                             }
-                                            else if (@quiz_review.QAnswer.Contains("D"))
+                                            else if (userAnswer.Contains("D"))
                                             {
                                                 <p class="answer-review is-wrong">
                                                     <strong>D:</strong> @quiz_review.QuizBank.QD <span><i class="bi bi-x-lg"></i></span>
@@ -194,7 +197,7 @@
                                         {
                                             @if (@quiz_review.QuizBank.Qcorrect.Contains("E"))
                                             {
-                                                @if (@quiz_review.QAnswer.Contains("E"))
+                                                @if (userAnswer.Contains("E"))
                                                 {
                                                     <p class="answer-review is-correct">
                                                         <strong>E:</strong> @quiz_review.QuizBank.QE <span><i class="bi bi-check-lg"></i></span>
@@ -207,7 +210,7 @@
                                                     </p>
                                                 }
                                             }
-                                            else if (@quiz_review.QAnswer.Contains("E"))
+                                            else if (userAnswer.Contains("E"))
                                             {
                                                 <p class="answer-review is-wrong">
                                                     <strong>E:</strong> @quiz_review.QuizBank.QE <span><i class="bi bi-x-lg"></i></span>
@@ -225,7 +228,7 @@
                                         {
                                             @if (@quiz_review.QuizBank.Qcorrect.Contains("F"))
                                             {
-                                                @if (@quiz_review.QAnswer.Contains("F"))
+                                                @if (userAnswer.Contains("F"))
                                                 {
                                                     <p class="answer-review is-correct">
                                                         <strong>F:</strong> @quiz_review.QuizBank.QF <span><i class="bi bi-check-lg"></i></span>
@@ -238,7 +241,7 @@
                                                     </p>
                                                 }
                                             }
-                                            else if (@quiz_review.QAnswer.Contains("F"))
+                                            else if (userAnswer.Contains("F"))
                                             {
                                                 <p class="answer-review is-wrong">
                                                     <strong>F:</strong> @quiz_review.QuizBank.QF <span><i class="bi bi-x-lg"></i></span>
@@ -254,7 +257,7 @@
                                     </div>
 
 
-                                    <p class="text_style"><strong>Your Answer:</strong> @quiz_review.QAnswer</p>
+                                    <p class="text_style"><strong>Your Answer:</strong> @(string.IsNullOrWhiteSpace(userAnswer) ? "Not answered" : userAnswer)</p>
                                     <p class="text_style"><strong>Correct Answer:</strong> @quiz_review.QuizBank.Qcorrect</p>
                                 </div>
                             </div>
@@ -312,16 +315,14 @@
                 filterState = (filterState + 1) % 3;
 
                 document.querySelectorAll('.quiz_question').forEach(function (quizReview) {
-                    const quizBank = quizReview.querySelector('.quiz_bank');
-                    const correctAnswers = (quizBank?.dataset.correct || '').trim();
-                    const userAnswers = (quizBank?.dataset.answer || '').trim();
+                    const result = quizReview.dataset.result;
 
                     if (filterState === 0) {
                         quizReview.hidden = false;
                     } else if (filterState === 1) {
-                        quizReview.hidden = correctAnswers !== userAnswers;
+                        quizReview.hidden = result !== 'correct';
                     } else if (filterState === 2) {
-                        quizReview.hidden = correctAnswers === userAnswers;
+                        quizReview.hidden = result !== 'incorrect';
                     }
                 });
 
