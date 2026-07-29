@@ -21,6 +21,18 @@ namespace ProjectBase
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Logging.ClearProviders();
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Logging.AddSimpleConsole(options =>
+                    options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ");
+            }
+            else
+            {
+                builder.Logging.AddJsonConsole(options =>
+                    options.TimestampFormat = "yyyy-MM-ddTHH:mm:ss.fffZ");
+            }
+
             // Configure services
             ConfigureServices(builder.Services, builder.Configuration);
 

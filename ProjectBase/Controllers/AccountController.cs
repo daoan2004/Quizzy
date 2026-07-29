@@ -21,17 +21,20 @@ namespace ProjectBase.Controllers
         private readonly DataContext _context;
         private readonly IEmailSender _emailSender;
         private readonly IPasswordService _passwordService;
+        private readonly ILogger<AccountController> _logger;
 
         public AccountController(
             IConfiguration config,
             DataContext context,
             IEmailSender emailSender,
-            IPasswordService passwordService)
+            IPasswordService passwordService,
+            ILogger<AccountController> logger)
         {
             _config = config;
             _context = context;
             _emailSender = emailSender;
             _passwordService = passwordService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -122,10 +125,18 @@ namespace ProjectBase.Controllers
                         newUser.email,
                         token,
                         HttpContext.RequestAborted);
+                    _logger.LogInformation(
+                        "Account registration created user {UserId}; verification delivery completed. TraceId: {TraceId}",
+                        newUser.ID,
+                        HttpContext.TraceIdentifier);
                     return Json(new { success = true });
                 }
-                catch (Exception)
+                catch (Exception exception)
                 {
+                    _logger.LogError(
+                        exception,
+                        "Account registration failed. TraceId: {TraceId}",
+                        HttpContext.TraceIdentifier);
                     return Problem(
                         statusCode: StatusCodes.Status500InternalServerError,
                         title: "Unable to register account.");
@@ -155,6 +166,10 @@ namespace ProjectBase.Controllers
                 user.VerificationTokenExpires = null;
                 await _context.SaveChangesAsync();
 
+                _logger.LogInformation(
+                    "Account verification completed for user {UserId}. TraceId: {TraceId}",
+                    user.ID,
+                    HttpContext.TraceIdentifier);
                 return RedirectToAction("VerificationSuccess");
             }
 
@@ -227,6 +242,9 @@ namespace ProjectBase.Controllers
                 var passwordCheck = _passwordService.VerifyPassword(user, model.password);
                 if (!passwordCheck.Succeeded)
                 {
+                    _logger.LogWarning(
+                        "Login rejected because credentials were invalid. TraceId: {TraceId}",
+                        HttpContext.TraceIdentifier);
                     return Json(new { success = false, message = "Invalid email or password." });
                 }
 
@@ -263,6 +281,11 @@ namespace ProjectBase.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 // Đăng nhập người dùng với identity đã tạo
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                _logger.LogInformation(
+                    "User {UserId} logged in with role {Role}. TraceId: {TraceId}",
+                    user.ID.Value,
+                    user.Role.RoleName,
+                    HttpContext.TraceIdentifier);
                 // Thiết lập một cookie với email của người dùng
                 Response.Cookies.Append("UserEmail", model.email);
                 return Json(new { success = true });
@@ -335,6 +358,10 @@ namespace ProjectBase.Controllers
                 _context.Update(user);
                 await _context.SaveChangesAsync();
 
+                _logger.LogInformation(
+                    "Password changed for user {UserId}. TraceId: {TraceId}",
+                    userId,
+                    HttpContext.TraceIdentifier);
                 return Json(new { success = true, message = "Password changed successfully." });
             }
             else
@@ -429,6 +456,10 @@ namespace ProjectBase.Controllers
             user.PasswordResetTokenExpires = null;
             await _context.SaveChangesAsync();
 
+            _logger.LogInformation(
+                "Password reset completed for user {UserId}. TraceId: {TraceId}",
+                user.ID,
+                HttpContext.TraceIdentifier);
             return Json(new { success = true, message = "Password has been reset successfully." });
         }
         [HttpGet]
@@ -550,10 +581,13 @@ namespace ProjectBase.Controllers
                         // Update the avatar path in the database
                         user.profile_picture = $"/picture/avatar/{fileName}";
                     }
-                    catch (Exception ex)
+                    catch (Exception exception)
                     {
-                        // Log the error (consider using a logging framework like Serilog, NLog, etc.)
-                        Console.Error.WriteLine($"Failed to save avatar: {ex.Message}");
+                        _logger.LogError(
+                            exception,
+                            "Avatar save failed for user {UserId}. TraceId: {TraceId}",
+                            userId,
+                            HttpContext.TraceIdentifier);
                         return Json(new { success = false, message = "Failed to save avatar." });
                     }
                 }
@@ -593,8 +627,13 @@ namespace ProjectBase.Controllers
                 var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
                 return File(fileStream, contentType);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                _logger.LogError(
+                    exception,
+                    "Avatar read failed for user {UserId}. TraceId: {TraceId}",
+                    userId,
+                    HttpContext.TraceIdentifier);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

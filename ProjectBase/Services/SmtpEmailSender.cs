@@ -9,13 +9,16 @@ public sealed class SmtpEmailSender : IEmailSender
 {
     private readonly EmailOptions _options;
     private readonly IAccountLinkBuilder _linkBuilder;
+    private readonly ILogger<SmtpEmailSender> _logger;
 
     public SmtpEmailSender(
         IOptions<EmailOptions> options,
-        IAccountLinkBuilder linkBuilder)
+        IAccountLinkBuilder linkBuilder,
+        ILogger<SmtpEmailSender> logger)
     {
         _options = options.Value;
         _linkBuilder = linkBuilder;
+        _logger = logger;
     }
 
     public Task SendVerificationLinkAsync(
@@ -76,7 +79,23 @@ public sealed class SmtpEmailSender : IEmailSender
             IsBodyHtml = true
         };
 
-        await smtp.SendMailAsync(message, cancellationToken);
+        try
+        {
+            await smtp.SendMailAsync(message, cancellationToken);
+            _logger.LogInformation(
+                "SMTP message sent successfully. MessageType: {MessageType}",
+                subject);
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            _logger.LogError(
+                exception,
+                "SMTP delivery failed. Host: {SmtpHost}, Port: {SmtpPort}, MessageType: {MessageType}",
+                _options.Host,
+                _options.Port,
+                subject);
+            throw;
+        }
     }
 
     private void ValidateConfiguration()
@@ -92,6 +111,9 @@ public sealed class SmtpEmailSender : IEmailSender
 
         if (missingSettings.Count > 0)
         {
+            _logger.LogError(
+                "SMTP configuration is incomplete. MissingSettings: {MissingSettings}",
+                string.Join(",", missingSettings));
             throw new InvalidOperationException(
                 $"SMTP is not configured. Missing: {string.Join(", ", missingSettings)}.");
         }

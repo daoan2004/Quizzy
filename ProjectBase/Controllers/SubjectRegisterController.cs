@@ -12,10 +12,12 @@ using System.Security.Claims;
 public class SubjectRegister : Controller
 {
     private readonly DataContext _context;
+    private readonly ILogger<SubjectRegister> _logger;
 
-    public SubjectRegister(DataContext context)
+    public SubjectRegister(DataContext context, ILogger<SubjectRegister> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpPost]
@@ -113,8 +115,12 @@ public class SubjectRegister : Controller
         }
         catch (Exception ex)
         {
-            // Log the exception or handle it appropriately
-            Console.WriteLine($"Error saving to database: {ex.Message}");
+            _logger.LogError(
+                ex,
+                "Subject registration save failed for user {UserId}, subject {SubjectId}. TraceId: {TraceId}",
+                currentUserId,
+                subjectId,
+                HttpContext.TraceIdentifier);
             return StatusCode(500, "Internal server error");
         }
     }

@@ -18,13 +18,16 @@ namespace ProjectBase.Controllers
     {
         private readonly DataContext _dataContext;
         private readonly IPracticeCreationFaultInjector _faultInjector;
+        private readonly ILogger<PracticeApiController> _logger;
 
         public PracticeApiController(
             DataContext dataContext,
-            IPracticeCreationFaultInjector faultInjector)
+            IPracticeCreationFaultInjector faultInjector,
+            ILogger<PracticeApiController> logger)
         {
             _dataContext = dataContext;
             _faultInjector = faultInjector;
+            _logger = logger;
         }
 
         [HttpGet("GetPracticePagination/{UserID}")]
@@ -238,7 +241,11 @@ namespace ProjectBase.Controllers
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Unable to create practice: {ex}");
+                _logger.LogError(
+                    ex,
+                    "Practice creation failed for user {UserId}. TraceId: {TraceId}",
+                    userId,
+                    HttpContext.TraceIdentifier);
                 return Problem(
                     statusCode: StatusCodes.Status500InternalServerError,
                     title: "Unable to create practice.");
@@ -453,7 +460,11 @@ namespace ProjectBase.Controllers
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Unable to create practice: {ex}");
+                _logger.LogError(
+                    ex,
+                    "Simulation practice creation failed for user {UserId}. TraceId: {TraceId}",
+                    userID,
+                    HttpContext.TraceIdentifier);
                 return Problem(
                     statusCode: StatusCodes.Status500InternalServerError,
                     title: "Unable to create practice.");
