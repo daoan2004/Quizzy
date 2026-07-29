@@ -241,6 +241,25 @@ window.QuizlyUi = {
 $(document).ready(function () {
     initUiLibraries();
 
+    $(document).on("submit", "form", function (event) {
+        const form = $(this);
+        if (form.data("quizlySubmitting")) {
+            event.preventDefault();
+            return;
+        }
+
+        form.data("quizlySubmitting", true);
+        form.find('button[type="submit"], input[type="submit"]').prop("disabled", true);
+    });
+
+    $(document).ajaxComplete(function () {
+        $("form").each(function () {
+            const form = $(this);
+            form.removeData("quizlySubmitting");
+            form.find('button[type="submit"], input[type="submit"]').prop("disabled", false);
+        });
+    });
+
     window.addEventListener("load", function () {
         window.setTimeout(loadDeferredEffects, 120);
     });

@@ -74,15 +74,20 @@ namespace ProjectBase.Controllers
                     isCorrect,
                     QuestionID = questionId
                 });
-                // Update Practice table if answer is correct
-                if (isCorrect == 1)
+                // Recalculate instead of incrementing so retries/double-clicks stay idempotent.
+                var updatePracticeSql = @"
+                    UPDATE Practice
+                    SET number_correct = (
+                        SELECT COUNT(*)
+                        FROM QuizHandle
+                        WHERE PracticeID = @PracticeID AND isCorrect = 1
+                    )
+                    WHERE ID = @PracticeID AND UserID = @UserID;";
+                await connection.ExecuteAsync(updatePracticeSql, new
                 {
-                    var updatePracticeSql = "UPDATE Practice SET number_correct = number_correct + 1 WHERE ID = @PracticeID;";
-                    await connection.ExecuteAsync(updatePracticeSql, new
-                    {
-                        PracticeID = PracticeID // Assuming `PracticeID` is the foreign key to the Practice table
-                    });
-                }
+                    PracticeID,
+                    UserID = currentUserId
+                });
 
             }
             return Ok();
