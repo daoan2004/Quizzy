@@ -195,6 +195,87 @@ const interactions = await evaluate(`(async () => {
   return result;
 })()`);
 
+await navigate("/Subjects");
+const subjectChecks = await evaluate(`(async () => {
+  const result = {
+    paginationLinks: document.querySelectorAll(".pagination a").length
+  };
+  const links = [...document.querySelectorAll(".pagination a")];
+  if (links.length > 1) {
+    links[1].click();
+    await new Promise(resolve => setTimeout(resolve, 200));
+    result.paginationChangedPage = links[1].classList.contains("active");
+  } else {
+    result.paginationChangedPage = links.length === 1;
+  }
+
+  document.querySelector(".register_button")?.click();
+  await new Promise(resolve => setTimeout(resolve, 800));
+  const popup = document.querySelector("#subjectPopup");
+  result.subjectPopupShown = popup?.classList.contains("show") ?? false;
+  result.subjectPopupHasContent = (document.querySelector("#subjectPopupContent")?.textContent ?? "").trim().length > 0;
+  window.QuizlyUi?.hideModal("#subjectPopup");
+  await new Promise(resolve => setTimeout(resolve, 250));
+  result.subjectPopupClosed = !popup?.classList.contains("show");
+  return result;
+})()`);
+
+await navigate("/");
+const carouselChecks = await evaluate(`(async () => {
+  const slider = document.querySelector("#Mainslider");
+  const instance = slider?.swiper;
+  const slideCount = slider?.querySelectorAll(".swiper-slide").length ?? 0;
+  const before = instance?.activeIndex ?? -1;
+  slider?.querySelector(".swiper-button-next")?.click();
+  await new Promise(resolve => setTimeout(resolve, 650));
+  const after = instance?.activeIndex ?? -1;
+  return {
+    initialized: slider?.dataset.swiperReady === "true" && Boolean(instance),
+    slideCount,
+    nextButtonWorked: slideCount <= 1 || after !== before
+  };
+})()`);
+
+await navigate("/Subjects");
+const searchChecks = await evaluate(`(async () => {
+  const input = document.querySelector("#searchInput");
+  const form = document.querySelector("#searchFormHome");
+  if (!input || !form) return { controlPresent: false, submitted: false };
+  input.value = "C#";
+  form.requestSubmit();
+  return { controlPresent: true, submitted: true };
+})()`);
+await sleep(1200);
+searchChecks.resultTitle = await evaluate("document.title");
+searchChecks.resultPath = await evaluate("location.pathname");
+
+await navigate("/");
+const keyboardStops = [];
+for (let index = 0; index < 8; index += 1) {
+  await command("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab" });
+  await command("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab" });
+  keyboardStops.push(await evaluate(`(() => {
+    const element = document.activeElement;
+    const rect = element?.getBoundingClientRect();
+    const style = element ? getComputedStyle(element) : null;
+    return {
+      tag: element?.tagName ?? "",
+      id: element?.id ?? "",
+      visible: Boolean(rect && rect.width > 0 && rect.height > 0),
+      focusIndicator: Boolean(style && (
+        (style.outlineStyle !== "none" && parseFloat(style.outlineWidth) > 0) ||
+        style.boxShadow !== "none"
+      ))
+    };
+  })()`));
+}
+const keyboardChecks = {
+  stops: keyboardStops,
+  reachedInteractiveControls: keyboardStops.some(stop =>
+    ["A", "BUTTON", "INPUT", "SELECT"].includes(stop.tag) && stop.visible),
+  hasVisibleFocusIndicator: keyboardStops.some(stop => stop.focusIndicator)
+};
+
 let authenticated = null;
 if (testEmail && testPassword) {
   const loginResult = await evaluate(`(async () => {
@@ -272,6 +353,41 @@ if (testEmail && testPassword) {
     };
   })()`);
 
+  await navigate("/Practice");
+  const filterChecks = await evaluate(`(async () => {
+    const result = {};
+    await new Promise(resolve => setTimeout(resolve, 900));
+    const subjectFilter = document.querySelector("#subjectFilter");
+    const levelFilter = document.querySelector("#levelFilter");
+    result.practiceFiltersPresent = Boolean(subjectFilter && levelFilter);
+    const option = [...(subjectFilter?.options ?? [])].find(item => item.value);
+    if (option && subjectFilter) {
+      subjectFilter.value = option.value;
+      subjectFilter.dispatchEvent(new Event("change", { bubbles: true }));
+      await new Promise(resolve => setTimeout(resolve, 700));
+    }
+    result.practiceFilterHandled = Boolean(
+      document.querySelector("#PracticeList") ||
+      document.querySelector(".table-state-message")
+    );
+
+    return result;
+  })()`);
+
+  await navigate("/SimulationExam");
+  Object.assign(filterChecks, await evaluate(`(async () => {
+    await new Promise(resolve => setTimeout(resolve, 900));
+    const search = document.querySelector("#nameSearchBox");
+    const button = document.querySelector("#searchButton");
+    if (search) search.value = "QA";
+    button?.click();
+    await new Promise(resolve => setTimeout(resolve, 700));
+    return {
+      simulationSearchPresent: Boolean(search && button),
+      simulationSearchHandled: Boolean(document.querySelector("#simulationExamList") || document.querySelector("tbody"))
+    };
+  })()`));
+
   await navigate("/MyRegistrations");
   const registrationModals = await evaluate(`(async () => {
     await new Promise(resolve => setTimeout(resolve, 800));
@@ -292,6 +408,7 @@ if (testEmail && testPassword) {
     routes: authenticatedRoutes,
     modalChecks,
     practiceValidation,
+    filterChecks,
     registrationModals,
   };
 }
@@ -300,6 +417,10 @@ console.log(JSON.stringify({
   viewport: { width: viewportWidth, height: viewportHeight },
   routes: results,
   interactions,
+  subjectChecks,
+  carouselChecks,
+  searchChecks,
+  keyboardChecks,
   authenticated,
 }, null, 2));
 
