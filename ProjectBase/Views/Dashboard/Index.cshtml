@@ -80,6 +80,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <canvas id="revenuePieChart"></canvas> <!-- Canvas cho biểu đồ tròn -->
+                                <p id="revenueChartMessage" class="dashboard-message" hidden></p>
                             </div>
                             <div class="col-md-6">
                                 <h4>Revenues</h4>
@@ -117,8 +118,17 @@
 
         function fetchAndDrawRevenueChart() {
             fetch('/api/dashboardapi/revenues-by-subject')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch revenue data');
+                    return response.json();
+                })
                 .then(data => {
+                    const message = document.getElementById('revenueChartMessage');
+                    message.hidden = data.length > 0;
+                    message.textContent = data.length === 0 ? 'No revenue data for this period.' : '';
+                    if (data.length === 0) {
+                        return;
+                    }
                     const ctx = document.getElementById('revenuePieChart').getContext('2d');
                     if (window.revenueChart) {
                         window.revenueChart.destroy(); // Destroy the old chart if it exists
@@ -150,11 +160,10 @@
                         }
                     });
                 })
-                .catch(error => {
-                    const revenueCanvas = document.getElementById('revenuePieChart');
-                    if (revenueCanvas) {
-                        revenueCanvas.insertAdjacentHTML('afterend', '<p class="dashboard-error">Failed to load revenue data.</p>');
-                    }
+                .catch(() => {
+                    const message = document.getElementById('revenueChartMessage');
+                    message.hidden = false;
+                    message.textContent = 'Failed to load revenue data.';
                 });
         }
 
@@ -185,10 +194,22 @@
                 return;
             }
 
-            const [orderData, registrationData] = await Promise.all([
-                fetchData(`/api/dashboardapi/order-count?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`),
-                fetchData(`/api/dashboardapi/registration-count?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
-            ]);
+            const errorMessage = document.getElementById('error-message');
+            let orderData;
+            let registrationData;
+            try {
+                [orderData, registrationData] = await Promise.all([
+                    fetchData(`/api/dashboardapi/order-count?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`),
+                    fetchData(`/api/dashboardapi/registration-count?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
+                ]);
+                errorMessage.textContent =
+                    orderData.length === 0 && registrationData.length === 0
+                        ? 'No reporting data for the selected period.'
+                        : '';
+            } catch {
+                errorMessage.textContent = 'Failed to load reporting data.';
+                return;
+            }
             // Process data to fill in missing dates
             const labels = [];
             const orderCounts = [];
@@ -205,7 +226,7 @@
                 orderCounts.push(orderCountData ? orderCountData.count : 0);
                 registrationCounts.push(registrationCountData ? registrationCountData.count : 0);
 
-                currentDate.setDate(currentDate.getDate() + 1);
+                currentDate.setUTCDate(currentDate.getUTCDate() + 1);
             }
 
             const ctxOrder = document.getElementById('orderCountChart').getContext('2d');
@@ -245,22 +266,19 @@
         }
 
         async function fetchData(url) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-                const data = await response.json();
-
-                const result = data.map(item => ({
-                    date: item.date.substring(0, 10),
-                    count: item.count
-                }));
-
-                return result;
-            } catch (error) {
-                return [];
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error("Failed to fetch data");
             }
+            const data = await response.json();
+            return data.map(item => ({
+                date: item.date.substring(0, 10),
+                count: item.count
+            }));
+        }
+
+        function parseUtcDate(value) {
+            return value ? new Date(`${value}T00:00:00Z`) : null;
         }
 
         function setupDateInputsAndChart() {
@@ -274,16 +292,16 @@
                 endDateInput.valueAsDate = new Date();
             }
 
-            updateChart(new Date(startDateInput.value), new Date(endDateInput.value));
+            updateChart(parseUtcDate(startDateInput.value), parseUtcDate(endDateInput.value));
         }
 
         function onViewButtonClick() {
             var errorMessageDiv = document.getElementById("error-message");
             let startDateInput = document.getElementById('startDate');
             let endDateInput = document.getElementById('endDate');
-            let startDate = new Date(startDateInput.value);
-            let endDate = new Date(endDateInput.value);
-            if (!startDate || !endDate || endDate < startDate) {
+            let startDate = parseUtcDate(startDateInput.value);
+            let endDate = parseUtcDate(endDateInput.value);
+            if (!startDate || !endDate || isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || endDate < startDate) {
                 errorMessageDiv.innerText = "Please select a valid date range.";
                 return;
             } else {
@@ -297,7 +315,10 @@
 
         function fetchRegistrations() {
             fetch('/api/dashboardapi/registrations')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch registrations');
+                    return response.json();
+                })
                 .then(data => {
                     allRegistrations = data;
                     updateRegistrations(allRegistrations);
@@ -321,6 +342,10 @@
         function updateRegistrations(registrations) {
             const container = document.getElementById('registrationList');
             container.innerHTML = '';
+            if (registrations.length === 0) {
+                container.innerHTML = '<div class="registration-item">No registrations found.</div>';
+                return;
+            }
             registrations.forEach(reg => {
                 const div = document.createElement('div');
                 div.className = 'registration-item';
@@ -353,7 +378,10 @@
             };
 
             const ctx = document.getElementById('registrationStatusPieChart').getContext('2d');
-            const pieChart = new Chart(ctx, {
+            if (window.registrationStatusChart) {
+                window.registrationStatusChart.destroy();
+            }
+            window.registrationStatusChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
                     labels: ['Submitted', 'Cancelled', 'Success'],

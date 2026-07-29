@@ -50,27 +50,20 @@ namespace ProjectBase.Controllers
         [HttpGet("total-revenue")]
         public async Task<IActionResult> GetTotalRevenue()
         {
-            var recipes = await _context.Recipe
-                .Include(r => r.PricePackage)
+            var totalRevenue = await _context.Recipe
                 .Where(r => r.Status == RegistrationStatuses.Registered)
-                .ToListAsync();
-
-            long totalRevenue = 0;
-            foreach (var recipe in recipes)
-            {
-                totalRevenue += recipe.PricePackage.SalePrice;
-            }
+                .SumAsync(r => (long?)r.PricePackage.SalePrice) ?? 0;
 
             return Ok(new { TotalRevenue = totalRevenue });
         }
 
         [HttpGet("RevenuesBySubject")]
-        public async Task<IActionResult> GetRevenuesBySubject(int subjectId)
+        public async Task<IActionResult> GetRevenuesBySubject(long subjectId)
         {
             var revenue = await _context.Recipe
                 .Where(r => r.SubjectID == subjectId &&
                             r.Status == RegistrationStatuses.Registered)
-                .SumAsync(r => r.PricePackage.SalePrice);
+                .SumAsync(r => (long?)r.PricePackage.SalePrice) ?? 0;
             return Ok(new { TotalRevenue = revenue });
         }
 
@@ -93,27 +86,17 @@ namespace ProjectBase.Controllers
 
         // Endpoint to get order counts, optionally filtered by date
         [HttpGet("order-count")]
-        public async Task<IActionResult> GetOrderCount([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
+        public async Task<IActionResult> GetOrderCount(
+            [FromQuery] DateTimeOffset? startDate,
+            [FromQuery] DateTimeOffset? endDate)
         {
-            // Lấy thông tin múi giờ của Việt Nam
-            TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"); // Mã múi giờ cho Việt Nam trên Windows
-                                                                                                         // Nếu sử dụng Linux, bạn có thể cần thay thế bằng "Asia/Ho_Chi_Minh"
-
-            if (!startDate.HasValue || !endDate.HasValue)
+            if (!TryGetUtcDateRange(startDate, endDate, out var startUtc, out var endUtcExclusive, out var error))
             {
-                return BadRequest("Both start date and end date are required.");
+                return BadRequest(error);
             }
-
-            if (endDate < startDate)
-            {
-                return BadRequest("End date must be greater than or equal to start date.");
-            }
-
-            var start = startDate.Value.Date;
-            var end = endDate.Value.Date.AddDays(1).AddTicks(-1); // Ensure the end date is inclusive
 
             var orderCounts = await _context.Recipe
-                .Where(o => o.BuyAt >= start && o.BuyAt <= end)
+                .Where(o => o.BuyAt >= startUtc && o.BuyAt < endUtcExclusive)
                 .GroupBy(o => o.BuyAt.Date)
                 .Select(group => new {
                     Date = group.Key,
@@ -125,24 +108,18 @@ namespace ProjectBase.Controllers
         }
 
         [HttpGet("registration-count")]
-        public async Task<IActionResult> GetRegistrationCount([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
+        public async Task<IActionResult> GetRegistrationCount(
+            [FromQuery] DateTimeOffset? startDate,
+            [FromQuery] DateTimeOffset? endDate)
         {
-            if (!startDate.HasValue || !endDate.HasValue)
+            if (!TryGetUtcDateRange(startDate, endDate, out var startUtc, out var endUtcExclusive, out var error))
             {
-                return BadRequest("Both start date and end date are required.");
+                return BadRequest(error);
             }
-
-            if (endDate < startDate)
-            {
-                return BadRequest("End date must be greater than or equal to start date.");
-            }
-
-            var start = startDate.Value.Date;
-            var end = endDate.Value.Date.AddDays(1).AddTicks(-1); // Ensure the end date is inclusive
 
             var registrationCounts = await _context.Recipe
                 .Where(o => o.Status == RegistrationStatuses.Registered &&
-                            o.BuyAt >= start && o.BuyAt <= end)
+                            o.BuyAt >= startUtc && o.BuyAt < endUtcExclusive)
                 .GroupBy(o => o.BuyAt.Date)
                 .Select(group => new {
                     Date = group.Key,
@@ -160,10 +137,10 @@ namespace ProjectBase.Controllers
         {
             var subjectRevenues = await _context.Recipe
                 .Where(r => r.Status == RegistrationStatuses.Registered)
-                .GroupBy(r => r.Subjects)
+                .GroupBy(r => new { r.SubjectID, r.Subjects.title })
                 .Select(group => new {
                     SubjectName = group.Key.title,
-                    Revenue = group.Sum(g => g.PricePackage.SalePrice) // Assuming SalePrice is a field in PricePackage
+                    Revenue = group.Sum(g => g.PricePackage.SalePrice)
                 })
                 .OrderByDescending(sr => sr.Revenue)
                 .ToListAsync();
@@ -171,6 +148,40 @@ namespace ProjectBase.Controllers
             return Ok(subjectRevenues);
         }
 
+        private static bool TryGetUtcDateRange(
+            DateTimeOffset? startDate,
+            DateTimeOffset? endDate,
+            out DateTime startUtc,
+            out DateTime endUtcExclusive,
+            out string error)
+        {
+            startUtc = default;
+            endUtcExclusive = default;
+            error = string.Empty;
+
+            if (!startDate.HasValue || !endDate.HasValue)
+            {
+                error = "Both start date and end date are required.";
+                return false;
+            }
+
+            startUtc = startDate.Value.UtcDateTime.Date;
+            var endUtc = endDate.Value.UtcDateTime.Date;
+            if (endUtc < startUtc)
+            {
+                error = "End date must be greater than or equal to start date.";
+                return false;
+            }
+
+            if ((endUtc - startUtc).TotalDays > 366)
+            {
+                error = "Date range cannot exceed 366 days.";
+                return false;
+            }
+
+            endUtcExclusive = endUtc.AddDays(1);
+            return true;
+        }
 
     }
 }
