@@ -45,6 +45,15 @@ public sealed class EmailFlowIntegrationTests : IClassFixture<QuizzyWebApplicati
         Assert.StartsWith(
             "https://quizzy.test/Account/VerifyAccount?token=",
             email.Link);
+
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<DataContext>();
+        var user = Assert.Single(context.Users);
+        Assert.NotNull(user.VerificationTokenExpires);
+        Assert.InRange(
+            user.VerificationTokenExpires.Value,
+            DateTime.UtcNow.AddHours(23),
+            DateTime.UtcNow.AddHours(25));
     }
 
     [Fact]

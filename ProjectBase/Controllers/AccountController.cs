@@ -94,6 +94,8 @@ namespace ProjectBase.Controllers
                 {
                     // Tạo mã xác minh
                     string token = Guid.NewGuid().ToString();
+                    var verificationExpirationHours =
+                        _config.GetValue<int>("VerificationLinkExpirationHours", 24);
 
                     // Thêm đối tượng User vào cơ sở dữ liệu
                     var newUser = new User
@@ -104,6 +106,8 @@ namespace ProjectBase.Controllers
                         email = model.email,
                         gender = model.gender,
                         verificationToken = token,
+                        VerificationTokenExpires = DateTime.UtcNow.AddHours(
+                            verificationExpirationHours),
                         status = 0,
                         RoleID = 2,
                     };
@@ -118,10 +122,11 @@ namespace ProjectBase.Controllers
                         HttpContext.RequestAborted);
                     return Json(new { success = true });
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    // Xử lý lỗi nếu có
-                    return StatusCode(500, "Internal server error: " + ex.StackTrace );
+                    return Problem(
+                        statusCode: StatusCodes.Status500InternalServerError,
+                        title: "Unable to register account.");
                 }
             }
 
@@ -137,11 +142,15 @@ namespace ProjectBase.Controllers
             }
 
             // Tìm người dùng với mã xác minh
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.verificationToken == token);
-            if (user != null)
+            var user = await _context.Users.FirstOrDefaultAsync(
+                u => u.verificationToken == token);
+            if (user != null &&
+                user.VerificationTokenExpires.HasValue &&
+                user.VerificationTokenExpires.Value >= DateTime.UtcNow)
             {
                 user.status = 1; // Đã kích hoạt
                 user.verificationToken = null; // Xóa mã xác minh sau khi xác minh thành công
+                user.VerificationTokenExpires = null;
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("VerificationSuccess");
@@ -355,9 +364,7 @@ namespace ProjectBase.Controllers
                 user.PasswordResetToken = token;
                 // Lấy giá trị cấu hình thời gian hết hạn từ appsettings.json
                 int expirationHours = _config.GetValue<int>("PasswordResetLinkExpirationHours");
-                // Tính thời gian hết hạn của token
-                TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-                user.PasswordResetTokenExpires = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone).AddHours(expirationHours); 
+                user.PasswordResetTokenExpires = DateTime.UtcNow.AddHours(expirationHours);
 
                 await _context.SaveChangesAsync();
 
@@ -407,11 +414,8 @@ namespace ProjectBase.Controllers
                 return Json(new { success = false, message = "Invalid token." });
             }
 
-            // Lấy múi giờ Việt Nam
-            TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-            DateTime vietnamCurrentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
-
-            if (user.PasswordResetTokenExpires < vietnamCurrentTime)
+            if (!user.PasswordResetTokenExpires.HasValue ||
+                user.PasswordResetTokenExpires.Value < DateTime.UtcNow)
             {
                 return Json(new { success = false, message = "Token expired." });
             }

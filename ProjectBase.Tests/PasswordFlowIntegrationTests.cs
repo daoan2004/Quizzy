@@ -236,9 +236,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
             PasswordResetToken = resetToken,
             PasswordResetTokenExpires = resetToken is null
                 ? null
-                : TimeZoneInfo.ConvertTimeFromUtc(
-                    DateTime.UtcNow,
-                    TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")).AddHours(1)
+                : DateTime.UtcNow.AddHours(1)
         };
         context.Users.Add(user);
         await context.SaveChangesAsync();

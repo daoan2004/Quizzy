@@ -22,6 +22,7 @@ namespace ProjectBase.Models.DAO
         public string? description { get; set; }
         public int? status { get; set; }
         public string? verificationToken { get; set; }
+        public DateTime? VerificationTokenExpires { get; set; }
         public string? PasswordResetToken { get; set; }
         public DateTime? PasswordResetTokenExpires { get; set; }
         public Role? Role { get; set; }
