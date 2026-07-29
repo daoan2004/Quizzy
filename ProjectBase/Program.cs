@@ -74,6 +74,7 @@ namespace ProjectBase
             services.AddScoped<IEmailSender, SmtpEmailSender>();
             services.AddScoped<IPasswordHasher<ProjectBase.Models.DAO.User>, PasswordHasher<ProjectBase.Models.DAO.User>>();
             services.AddScoped<IPasswordService, PasswordService>();
+            services.AddScoped<IPracticeCreationFaultInjector, NoOpPracticeCreationFaultInjector>();
 
             // Add authentication services
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

@@ -8,6 +8,7 @@ using Dapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using ProjectBase.Services;
 namespace ProjectBase.Controllers
 {
     [Route("api/[controller]")]
@@ -16,10 +17,14 @@ namespace ProjectBase.Controllers
     public class PracticeApiController : ControllerBase
     {
         private readonly DataContext _dataContext;
+        private readonly IPracticeCreationFaultInjector _faultInjector;
 
-        public PracticeApiController(DataContext dataContext)
+        public PracticeApiController(
+            DataContext dataContext,
+            IPracticeCreationFaultInjector faultInjector)
         {
             _dataContext = dataContext;
+            _faultInjector = faultInjector;
         }
 
         [HttpGet("GetPracticePagination/{UserID}")]
@@ -210,6 +215,7 @@ namespace ProjectBase.Controllers
                 };
                 _dataContext.Practice.Add(practice);
                 await _dataContext.SaveChangesAsync(HttpContext.RequestAborted);
+                await _faultInjector.AfterPracticeSavedAsync(HttpContext.RequestAborted);
 
                 _dataContext.QuizHandle.AddRange(selectedQuestions.Select(question =>
                     new QuizHandleModel
