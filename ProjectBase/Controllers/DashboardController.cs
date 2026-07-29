@@ -4,6 +4,7 @@ using ProjectBase.Helpers;
 
 namespace ProjectBase.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.Authorize(Policy = "DashboardAccess")]
     public class DashboardController : Controller
     {
         private readonly DataContext _dataContext;

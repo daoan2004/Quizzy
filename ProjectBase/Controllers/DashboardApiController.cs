@@ -7,6 +7,7 @@ namespace ProjectBase.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Policy = "DashboardAccess")]
     public class DashboardApiController : ControllerBase
     {
         private readonly DataContext _context;

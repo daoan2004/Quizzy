@@ -53,9 +53,35 @@ namespace ProjectBase
                 .AddCookie(options =>
                 {
                     options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                    options.Cookie.SameSite = SameSiteMode.Lax;
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                    options.SlidingExpiration = true;
                     options.LoginPath = "/Account/Login";
                     options.LogoutPath = "/Account/Logout";
+                    options.AccessDeniedPath = "/Account/AccessDenied";
+                    options.Events.OnRedirectToLogin = context =>
+                    {
+                        if (context.Request.Path.StartsWithSegments("/api"))
+                        {
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            return Task.CompletedTask;
+                        }
+
+                        context.Response.Redirect(context.RedirectUri);
+                        return Task.CompletedTask;
+                    };
+                    options.Events.OnRedirectToAccessDenied = context =>
+                    {
+                        if (context.Request.Path.StartsWithSegments("/api"))
+                        {
+                            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            return Task.CompletedTask;
+                        }
+
+                        context.Response.Redirect(context.RedirectUri);
+                        return Task.CompletedTask;
+                    };
                 });
 
             // Add authorization services
@@ -67,6 +93,7 @@ namespace ProjectBase
                 options.AddPolicy("SaleOnly", policy => policy.RequireRole("Sale"));
                 options.AddPolicy("ExpertOnly", policy => policy.RequireRole("Expert"));
                 options.AddPolicy("GuestOnly", policy => policy.RequireRole("Guest"));
+                options.AddPolicy("DashboardAccess", policy => policy.RequireRole("Marketing", "Admin"));
             });
 
             // Register IConfiguration for injection

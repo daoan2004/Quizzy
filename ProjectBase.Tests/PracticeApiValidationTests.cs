@@ -2,18 +2,12 @@ using System.Net;
 
 namespace ProjectBase.Tests;
 
-public sealed class PracticeApiValidationTests : IClassFixture<QuizzyWebApplicationFactory>
+public sealed class PracticeApiValidationTests
 {
-    private readonly HttpClient _client;
-
-    public PracticeApiValidationTests(QuizzyWebApplicationFactory factory)
-    {
-        _client = factory.CreateClient();
-    }
-
     [Fact]
     public async Task Add_practice_rejects_missing_form_values_before_database_write()
     {
+        await using var session = await AuthenticatedTestSession.CreateAsync();
         using var content = new FormUrlEncodedContent(new Dictionary<string, string>
         {
             ["UserID"] = "invalid",
@@ -22,7 +16,7 @@ public sealed class PracticeApiValidationTests : IClassFixture<QuizzyWebApplicat
             ["levelID"] = "9"
         });
 
-        using var response = await _client.PostAsync("/api/PracticeApi/AddPractice", content);
+        using var response = await session.Client.PostAsync("/api/PracticeApi/AddPractice", content);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Contains(
@@ -34,7 +28,8 @@ public sealed class PracticeApiValidationTests : IClassFixture<QuizzyWebApplicat
     [Fact]
     public async Task Add_practice_requires_form_content_type()
     {
-        using var response = await _client.PostAsync(
+        await using var session = await AuthenticatedTestSession.CreateAsync();
+        using var response = await session.Client.PostAsync(
             "/api/PracticeApi/AddPractice",
             new StringContent("{}"));
 

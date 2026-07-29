@@ -5,11 +5,14 @@ using ProjectBase.Models;
 using Microsoft.EntityFrameworkCore;
 using Dapper;
 using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ProjectBase.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class QuizApiController : ControllerBase
     {
         private readonly DataContext _dataContext;
@@ -22,25 +25,32 @@ namespace ProjectBase.Controllers
         [HttpGet("getQuestionsList")]
         public async Task<IActionResult> getQuestionsList(long UserID, long PracticeID)
         {
-            var QuestionList = _dataContext.QuizHandle.Include(p=>p.QuizBank).Where(s => s.UserID == UserID && s.PracticeID == PracticeID).ToList();
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
+            if (!await OwnsPracticeAsync(PracticeID, currentUserId)) return NotFound();
+            var QuestionList = await _dataContext.QuizHandle
+                .Include(p=>p.QuizBank)
+                .Where(s => s.UserID == currentUserId && s.PracticeID == PracticeID)
+                .ToListAsync();
             return Ok(QuestionList);
         }
         [HttpGet("loadQuestion/{questionId}")]
         public async Task<IActionResult> loadQuestion(long questionId)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             var question = await _dataContext.QuizHandle
                 .Include(p => p.QuizBank)
-                .FirstOrDefaultAsync(s => s.ID == questionId);
+                .FirstOrDefaultAsync(s => s.ID == questionId && s.UserID == currentUserId);
             return question == null ? NotFound() : Ok(question);
         }
         [HttpPost("submitAnswer")]
         public async Task<IActionResult> submitAnswer([FromForm] long questionId, [FromForm] string answer, [FromForm] long PracticeID)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             var isCorrect = 0;
             
             var question = await _dataContext.QuizHandle
                 .Include(p => p.QuizBank)
-                .FirstOrDefaultAsync(s => s.ID == questionId);
+                .FirstOrDefaultAsync(s => s.ID == questionId && s.UserID == currentUserId);
             if (question?.QuizBank == null)
             {
                 return NotFound();
@@ -49,6 +59,7 @@ namespace ProjectBase.Controllers
             {
                 return BadRequest("Question does not belong to the supplied practice.");
             }
+            if (!await OwnsPracticeAsync(PracticeID, currentUserId)) return NotFound();
             if (question.QuizBank.Qcorrect.Equals(answer,StringComparison.OrdinalIgnoreCase)) {
                 isCorrect = 1;
             }
@@ -78,6 +89,8 @@ namespace ProjectBase.Controllers
         [HttpPost("finishAttempt")]
         public async Task<IActionResult> finishAttempt(long UserID, long PracticeID)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
+            if (!await OwnsPracticeAsync(PracticeID, currentUserId)) return NotFound();
             var sql = "UPDATE Practice SET  Status = 1 WHERE ID = @PracticeID;";
             using (var connection = _dataContext.Database.GetDbConnection())
             {
@@ -92,6 +105,11 @@ namespace ProjectBase.Controllers
             return Ok();
         }
 
+        private bool TryGetCurrentUserId(out long userId) =>
+            long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
+
+        private Task<bool> OwnsPracticeAsync(long practiceId, long userId) =>
+            _dataContext.Practice.AnyAsync(p => p.ID == practiceId && p.UserID == userId);
 
     }
 }

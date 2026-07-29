@@ -6,10 +6,13 @@ using ProjectBase.Models;
 using ProjectBase.Models.DAO;
 using Dapper;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 namespace ProjectBase.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PracticeApiController : ControllerBase
     {
         private readonly DataContext _dataContext;
@@ -22,12 +25,13 @@ namespace ProjectBase.Controllers
         [HttpGet("GetPracticePagination/{UserID}")]
         public async Task<ActionResult<IEnumerable<PracticeModel>>> GetPracticePagination(long UserID, [FromQuery] int page = 1, [FromQuery] int pageSize=5, [FromQuery] long? subjectId = null, [FromQuery] int? levelId = null)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             try { 
                 
                 var query = _dataContext.Practice
                 .Include(s => s.Subject)            
                 .Include(s => s.Level).OrderByDescending(p => p.taken_date)
-                .Where(u => u.UserID == UserID);
+                .Where(u => u.UserID == currentUserId);
                 
                 if (subjectId.HasValue) {
                     query = query.Where(p => p.SubjectID == subjectId);
@@ -47,12 +51,13 @@ namespace ProjectBase.Controllers
         [HttpGet("LoadFilter/{UserID}")]
         public async Task<ActionResult<IEnumerable<PracticeModel>>> LoadFilter(long UserID)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             try
             {            
                 var practice = await _dataContext.Practice
                 .Include(s => s.Subject)
                 .Include(s => s.Level)
-                .Where(u => u.UserID == UserID)
+                .Where(u => u.UserID == currentUserId)
                 .ToListAsync();
                 return Ok(practice);
             }
@@ -64,11 +69,12 @@ namespace ProjectBase.Controllers
         [HttpGet("LoadSubject/{UserID}")]
         public async Task<ActionResult<IEnumerable<RecipeModel>>> LoadSubject(long UserID)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             try
             {
                 var subject = await _dataContext.Recipe
                 .Include(s => s.Subjects)
-                .Where (u => u.UserID == UserID).Where(r=>r.Status== "Registrated")
+                .Where(u => u.UserID == currentUserId).Where(r=>r.Status== "Registrated")
                 .ToListAsync();
                 return Ok(subject);
             }
@@ -81,6 +87,7 @@ namespace ProjectBase.Controllers
         [HttpPost("AddPractice")]
         public async Task<IActionResult> AddPractice()
         {
+            if (!TryGetCurrentUserId(out var userID)) return Unauthorized();
             try
             {
                 if (!Request.HasFormContentType)
@@ -93,8 +100,7 @@ namespace ProjectBase.Controllers
                 var questGroup = form["Quest_group"].ToString().Trim();
                 var duration = form["duration"].ToString().Trim();
 
-                if (!long.TryParse(form["UserID"], out var userID) || userID <= 0 ||
-                    !int.TryParse(form["SubjectID"], out var subjectID) || subjectID <= 0 ||
+                if (!int.TryParse(form["SubjectID"], out var subjectID) || subjectID <= 0 ||
                     !int.TryParse(form["number_quest"], out var numberQuest) || numberQuest <= 0 ||
                     !int.TryParse(form["levelID"], out var levelID) || levelID is < 1 or > 3 ||
                     string.IsNullOrWhiteSpace(title) ||
@@ -292,5 +298,7 @@ namespace ProjectBase.Controllers
             }
         }
 
+        private bool TryGetCurrentUserId(out long userId) =>
+            long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
     }
 }

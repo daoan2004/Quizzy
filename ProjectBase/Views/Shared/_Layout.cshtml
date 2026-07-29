@@ -84,7 +84,7 @@
                                     <li>
                                         <a href="#" id="changePasswordBtn">Change Password</a>
                                     </li>
-                                    @if (User.IsInRole("Marketing"))
+                                    @if (User.IsInRole("Marketing") || User.IsInRole("Admin"))
                                     {
                                         <li>
                                             <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>

@@ -3,9 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using ProjectBase.Helpers;
 using ProjectBase.Models;
 using ProjectBase.Models.DAO;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ProjectBase.Controllers
 {
+    [Authorize]
     public class QuizController : Controller
     {
         private readonly ILogger<QuizController> _logger;
@@ -18,10 +21,16 @@ namespace ProjectBase.Controllers
         }
         public async Task<IActionResult> HandleAsync(long UserID, long PracticeID, bool isPractice)
         {
-            ViewData["UserID"] = UserID;
+            if (!long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var currentUserId))
+            {
+                return Challenge();
+            }
+
+            ViewData["UserID"] = currentUserId;
             ViewData["PracticeID"] = PracticeID;
             ViewData["IsPractice"] = isPractice;
-            var practice = await _dataContext.Practice.FirstOrDefaultAsync(p => p.ID == PracticeID);
+            var practice = await _dataContext.Practice
+                .FirstOrDefaultAsync(p => p.ID == PracticeID && p.UserID == currentUserId);
             if (practice == null)
             {
                 return NotFound();

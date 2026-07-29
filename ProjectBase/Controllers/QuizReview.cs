@@ -2,9 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectBase.Helpers;
 using ProjectBase.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ProjectBase.Controllers
 {
+    [Authorize]
     public class QuizReview : Controller
     {
 
@@ -16,35 +19,7 @@ namespace ProjectBase.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            long PracticeId = 10077;
-
-            var quiz_review = await _context.QuizHandle
-                .Include(qh => qh.QuizBank)
-                .Where(qh => qh.PracticeID == PracticeId)
-                .ToListAsync();
-
-            var practice = await _context.Practice
-                .Include(p => p.User)
-                .Include(p => p.Subject)
-                .Include(p => p.Level)
-                .Include(p => p.Topic)
-                .FirstOrDefaultAsync(p => p.ID == PracticeId);
-
-            if (practice == null)
-            {
-                return NotFound();
-            }
-
-            var model = new QuizReviewViewModel
-            {
-                QuizReviews = quiz_review,
-                Practice = practice
-            };
-
-            ViewBag.DurationFormatted = FormatTime(practice.duration);
-            ViewBag.TimeTakenFormatted = FormatTime(practice.time_taken);
-
-            return View("Detail", model);
+            return RedirectToAction("Index", "Practice");
         }
 
         public async Task<IActionResult> Detail(long? id)
@@ -55,23 +30,27 @@ namespace ProjectBase.Controllers
             }
 
             var practiceId = id.Value;
-
-            var quiz_review = await _context.QuizHandle
-                .Include(qh => qh.QuizBank)
-                .Where(qh => qh.PracticeID == practiceId)
-                .ToListAsync();
+            if (!long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var currentUserId))
+            {
+                return Challenge();
+            }
 
             var practice = await _context.Practice
                 .Include(p => p.User)
                 .Include(p => p.Subject)
                 .Include(p => p.Level)
                 .Include(p => p.Topic)
-                .FirstOrDefaultAsync(p => p.ID == practiceId);
+                .FirstOrDefaultAsync(p => p.ID == practiceId && p.UserID == currentUserId);
 
             if (practice == null)
             {
                 return NotFound();
             }
+
+            var quiz_review = await _context.QuizHandle
+                .Include(qh => qh.QuizBank)
+                .Where(qh => qh.PracticeID == practiceId && qh.UserID == currentUserId)
+                .ToListAsync();
 
             var model = new QuizReviewViewModel
             {

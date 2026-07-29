@@ -260,6 +260,7 @@ namespace ProjectBase.Controllers
         }
 
         //hàm đăng xuất
+        [Microsoft.AspNetCore.Authorization.Authorize]
         [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
@@ -268,6 +269,7 @@ namespace ProjectBase.Controllers
         }
         //hàm thay đổi mật khẩu
         [HttpPost]
+        [Microsoft.AspNetCore.Authorization.Authorize]
         [Route("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
         {
@@ -424,6 +426,7 @@ namespace ProjectBase.Controllers
             return View("~/Views/User/ResetPasswordConfirm.cshtml");
         }
         [HttpGet]
+        [Microsoft.AspNetCore.Authorization.Authorize]
         [Route("GetUserDetails")]
         public async Task<IActionResult> GetUserDetails()
         {
@@ -472,6 +475,7 @@ namespace ProjectBase.Controllers
             }
         }
         [HttpPost]
+        [Microsoft.AspNetCore.Authorization.Authorize]
         [Route("UpdateUserProfile")]
         public async Task<IActionResult> UpdateUserProfile([FromForm] UpdateUserProfileModel model)
         {
