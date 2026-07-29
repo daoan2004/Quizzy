@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectBase.Helpers;
 using ProjectBase.Health;
+using ProjectBase.Configuration;
 using ProjectBase.Middleware;
 using ProjectBase.Models;
 using ProjectBase.Services;
@@ -22,6 +23,11 @@ namespace ProjectBase
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            if (builder.Environment.IsProduction())
+            {
+                ProductionConfigurationValidator.Validate(builder.Configuration);
+            }
 
             builder.Logging.ClearProviders();
             if (builder.Environment.IsDevelopment())
