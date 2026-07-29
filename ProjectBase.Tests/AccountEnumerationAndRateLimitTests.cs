@@ -93,6 +93,47 @@ public sealed class AccountEnumerationAndRateLimitTests
         Assert.Equal(HttpStatusCode.TooManyRequests, statuses[5]);
     }
 
+    [Fact]
+    public async Task Login_is_rate_limited_after_five_requests()
+    {
+        await using var factory = new QuizzyWebApplicationFactory();
+        using var client = factory.CreateClient();
+        var responses = new List<HttpResponseMessage>();
+
+        try
+        {
+            for (var index = 0; index < 6; index++)
+            {
+                responses.Add(await client.PostAsJsonWithCsrfAsync(
+                    "/Account/Login",
+                    new
+                    {
+                        email = "missing-login@quizzy.test",
+                        password = "WrongPassword@123"
+                    }));
+            }
+
+            Assert.All(
+                responses.Take(5),
+                response => Assert.Equal(HttpStatusCode.OK, response.StatusCode));
+            Assert.Equal(HttpStatusCode.TooManyRequests, responses[5].StatusCode);
+            Assert.Equal(
+                "600",
+                responses[5].Headers.RetryAfter?.Delta?.TotalSeconds.ToString("0") ??
+                responses[5].Headers.GetValues("Retry-After").Single());
+            Assert.Equal(
+                "application/problem+json",
+                responses[5].Content.Headers.ContentType?.MediaType);
+        }
+        finally
+        {
+            foreach (var response in responses)
+            {
+                response.Dispose();
+            }
+        }
+    }
+
     private static async Task<(bool Success, string Message)> ReadResetResponseAsync(
         HttpResponseMessage response)
     {

@@ -47,7 +47,7 @@ namespace ProjectBase.Controllers
         //Hàm đăng kí         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [EnableRateLimiting("EmailVerification")]
+        [EnableRateLimiting("AccountRegistration")]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
@@ -225,6 +225,7 @@ namespace ProjectBase.Controllers
         //hàm đăng nhập
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [EnableRateLimiting("Login")]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {

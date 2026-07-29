@@ -70,7 +70,30 @@ namespace ProjectBase
             services.AddRateLimiter(options =>
             {
                 options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-                options.AddPolicy("EmailVerification", httpContext =>
+                options.OnRejected = async (context, cancellationToken) =>
+                {
+                    context.HttpContext.Response.Headers.RetryAfter = "600";
+                    context.HttpContext.Response.ContentType = "application/problem+json";
+                    await System.Text.Json.JsonSerializer.SerializeAsync(
+                        context.HttpContext.Response.Body,
+                        new
+                        {
+                            status = StatusCodes.Status429TooManyRequests,
+                            title = "Too many requests.",
+                            detail = "Please wait before trying again."
+                        },
+                        cancellationToken: cancellationToken);
+                };
+                options.AddPolicy("AccountRegistration", httpContext =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromMinutes(10),
+                            QueueLimit = 0
+                        }));
+                options.AddPolicy("Login", httpContext =>
                     RateLimitPartition.GetFixedWindowLimiter(
                         httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                         _ => new FixedWindowRateLimiterOptions
