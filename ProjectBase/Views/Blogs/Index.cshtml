@@ -116,9 +116,16 @@
                         return;
                     }
                     var user = data[0];
-                    var userHtml = '<span><i class="bi bi-person"></i> By <a href="#">' + user.fullname + '</a></span>' +
-                        '<span><i class="bi bi-tag-fill"></i> Blogs</span>';
-                    $('.blog-user-' + userId).html(userHtml);
+                    var container = $('.blog-user-' + userId).empty();
+                    $('<span>').append(
+                        $('<i>', { class: 'bi bi-person' }),
+                        document.createTextNode(' By '),
+                        $('<a>', { href: '#', text: user.fullname || '' })
+                    ).appendTo(container);
+                    $('<span>').append(
+                        $('<i>', { class: 'bi bi-tag-fill' }),
+                        document.createTextNode(' Blogs')
+                    ).appendTo(container);
                 },
                 error: function () {
                     $('.blog-user-' + userId).html('<span><i class="bi bi-person"></i> By Quizly</span>');
@@ -135,7 +142,10 @@
                         return;
                     }
                     var user = data[0];
-                    $('.author-user-' + userId).html('<i class="bi bi-person"></i> ' + user.fullname);
+                    $('.author-user-' + userId)
+                        .empty()
+                        .append($('<i>', { class: 'bi bi-person' }))
+                        .append(document.createTextNode(' ' + (user.fullname || '')));
                 },
                 error: function () {
                     $('.author-user-' + userId).html('<i class="bi bi-person"></i> Quizly');

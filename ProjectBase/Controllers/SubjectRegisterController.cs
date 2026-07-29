@@ -19,6 +19,7 @@ public class SubjectRegister : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(int subjectId, int userId, int selectedPackage, int packageId)
     {
         if (!long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var currentUserId))

@@ -260,6 +260,9 @@
                             var validTo = item.pricePackage_Type !== undefined ? calculateValidTo(item.buyAt, item.pricePackage_Type) : 'N/A';
                             var subjectTitle = item.subjectTitle ? item.subjectTitle : 'N/A';
                             var totalCost = item.totalCost ? item.totalCost : 'N/A';
+                            var safeSubjectTitle = window.QuizlyUi.escapeHtml(subjectTitle);
+                            var safeStatus = window.QuizlyUi.escapeHtml(item.status);
+                            var safePackageType = window.QuizlyUi.escapeHtml(packageType);
                             var buttonsHtml = '';
                             var statusClass = item.status === 'Registrated' ? 'is-active' : 'is-pending';
 
@@ -278,13 +281,13 @@
                                 '<div class="registration-icon"><i class="bi bi-mortarboard"></i></div>' +
                                 '<div class="registration-title-block">' +
                                 '<span class="registration-id">Registration #' + item.id + '</span>' +
-                                '<h2>' + subjectTitle + '</h2>' +
+                                '<h2>' + safeSubjectTitle + '</h2>' +
                                 '</div>' +
-                                '<span class="registration-status ' + statusClass + '">' + item.status + '</span>' +
+                                '<span class="registration-status ' + statusClass + '">' + safeStatus + '</span>' +
                                 '</div>' +
                                 '<div class="registration-meta-grid">' +
                                 '<div><span>Register time</span><strong>' + registerDate + '</strong></div>' +
-                                '<div><span>Package</span><strong>' + packageType + '</strong></div>' +
+                                '<div><span>Package</span><strong>' + safePackageType + '</strong></div>' +
                                 '<div><span>Total Cost</span><strong>' + totalCost + ' USD</strong></div>' +
                                 '<div><span>Valid from</span><strong>' + validFrom + '</strong></div>' +
                                 '<div><span>Valid to</span><strong>' + validTo + '</strong></div>' +

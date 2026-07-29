@@ -22,6 +22,12 @@ function closeUserMenu() {
     }
 }
 
+function escapeHtml(value) {
+    const element = document.createElement("div");
+    element.textContent = value == null ? "" : String(value);
+    return element.innerHTML;
+}
+
 function userPrefersReducedMotion() {
     return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
@@ -228,7 +234,8 @@ window.QuizlyUi = {
     loadDeferredEffects: loadDeferredEffects,
     showModal: showModal,
     hideModal: hideModal,
-    ensureDatepicker: ensureDatepicker
+    ensureDatepicker: ensureDatepicker,
+    escapeHtml: escapeHtml
 };
 
 $(document).ready(function () {

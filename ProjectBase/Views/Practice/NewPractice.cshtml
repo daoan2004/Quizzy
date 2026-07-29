@@ -122,7 +122,15 @@
                                 }
                                 response.forEach(function (item) {
                                     if (!seenSubjects.has(item.subjects.title)) {
-                                        $('.scroll-list-wrapper').append('<div class="scroll-list-item glass-card" data-subject="' + item.subjects.id + '"><div class="practice-scroll-title"><h2>' + item.subjects.title + '</h2></div></div>');
+                                        $('.scroll-list-wrapper').append(
+                                            $('<div>', {
+                                                class: 'scroll-list-item glass-card',
+                                                'data-subject': item.subjects.id
+                                            }).append(
+                                                $('<div>', { class: 'practice-scroll-title' })
+                                                    .append($('<h2>').text(item.subjects.title || ''))
+                                            )
+                                        );
                                         seenSubjects.add(item.subjects.title);
                                     }
                                 });

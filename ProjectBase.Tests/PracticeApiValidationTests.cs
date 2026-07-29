@@ -16,7 +16,7 @@ public sealed class PracticeApiValidationTests
             ["levelID"] = "9"
         });
 
-        using var response = await session.Client.PostAsync("/api/PracticeApi/AddPractice", content);
+        using var response = await session.PostWithAntiForgeryAsync("/api/PracticeApi/AddPractice", content);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Contains(
@@ -29,7 +29,7 @@ public sealed class PracticeApiValidationTests
     public async Task Add_practice_requires_form_content_type()
     {
         await using var session = await AuthenticatedTestSession.CreateAsync();
-        using var response = await session.Client.PostAsync(
+        using var response = await session.PostWithAntiForgeryAsync(
             "/api/PracticeApi/AddPractice",
             new StringContent("{}"));
 

@@ -42,6 +42,7 @@ namespace ProjectBase.Controllers
 
         //Hàm đăng kí         
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
@@ -197,6 +198,7 @@ namespace ProjectBase.Controllers
         }
         //hàm đăng nhập
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
@@ -270,6 +272,7 @@ namespace ProjectBase.Controllers
         //hàm thay đổi mật khẩu
         [HttpPost]
         [Microsoft.AspNetCore.Authorization.Authorize]
+        [ValidateAntiForgeryToken]
         [Route("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
         {
@@ -336,6 +339,7 @@ namespace ProjectBase.Controllers
             return View("~/Views/User/ResetPasswordRequest.cshtml");
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("ResetPasswordRequest")]
         public async Task<IActionResult> ResetPasswordRequest([FromBody] ResetPasswordRequestModel model)
         {
@@ -369,6 +373,7 @@ namespace ProjectBase.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("ResetPasswordConfirm")]
         public async Task<IActionResult> ResetPasswordConfirm([FromBody] ResetPasswordConfirmModel model)
         {
@@ -476,6 +481,7 @@ namespace ProjectBase.Controllers
         }
         [HttpPost]
         [Microsoft.AspNetCore.Authorization.Authorize]
+        [ValidateAntiForgeryToken]
         [Route("UpdateUserProfile")]
         public async Task<IActionResult> UpdateUserProfile([FromForm] UpdateUserProfileModel model)
         {

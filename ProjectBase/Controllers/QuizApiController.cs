@@ -43,6 +43,7 @@ namespace ProjectBase.Controllers
             return question == null ? NotFound() : Ok(question);
         }
         [HttpPost("submitAnswer")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> submitAnswer([FromForm] long questionId, [FromForm] string answer, [FromForm] long PracticeID)
         {
             if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
@@ -87,6 +88,7 @@ namespace ProjectBase.Controllers
             return Ok();
         }
         [HttpPost("finishAttempt")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> finishAttempt(long UserID, long PracticeID)
         {
             if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();

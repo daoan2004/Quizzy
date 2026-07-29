@@ -85,6 +85,7 @@ namespace ProjectBase.Controllers
         }
 
         [HttpPost("AddPractice")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPractice()
         {
             if (!TryGetCurrentUserId(out var userID)) return Unauthorized();

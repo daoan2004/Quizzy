@@ -126,13 +126,21 @@
                                 var correctRate = item.number_quest > 0
                                     ? Math.round((item.number_correct / item.number_quest) * 100)
                                     : 0;
-                                $('#PracticeList').append('<tr><td>' + item.subject.title + '</td>' +
-                                    '<td>' + item.title + '</td>' +
-                                    '<td>' + item.number_quest + '</td>' +
-                                    '<td>' + correctRate + '%</td>' +
-                                    '<td>' + item.level.title + '</td>' +
-                                    '<td>' + takenDate + '</td>' +
-                                    '<td><button type="button" id="'+item.id+'" class="details-button"><i class="bi bi-eye"></i> View</button></td></tr>');
+                                var row = $('<tr>');
+                                $('<td>').text(item.subject.title || '').appendTo(row);
+                                $('<td>').text(item.title || '').appendTo(row);
+                                $('<td>').text(item.number_quest).appendTo(row);
+                                $('<td>').text(correctRate + '%').appendTo(row);
+                                $('<td>').text(item.level.title || '').appendTo(row);
+                                $('<td>').text(takenDate).appendTo(row);
+                                $('<td>').append(
+                                    $('<button>', {
+                                        type: 'button',
+                                        id: item.id,
+                                        class: 'details-button'
+                                    }).append($('<i>', { class: 'bi bi-eye' }), ' View')
+                                ).appendTo(row);
+                                $('#PracticeList').append(row);
                             });
 
                             $('#pagination').empty();
@@ -182,13 +190,17 @@
                                 const seenLevel = new Set();
                                 response.forEach(function (item) {
                                     if (!seenTitles.has(item.subject.title)) {
-                                        $('#subjectFilter').append('<option value="' + item.subject.id + '">' + item.subject.title + '</option>');
+                                        $('#subjectFilter').append(
+                                            $('<option>').val(item.subject.id).text(item.subject.title || '')
+                                        );
                                         seenTitles.add(item.subject.title);
                                     }
                                 });
                                 response.forEach(function (item) {
                                     if (!seenLevel.has(item.level.title)) {
-                                        $('#levelFilter').append('<option value="' + item.level.id + '">' + item.level.title + '</option>');
+                                        $('#levelFilter').append(
+                                            $('<option>').val(item.level.id).text(item.level.title || '')
+                                        );
                                         seenLevel.add(item.level.title);
                                     }
                                 });

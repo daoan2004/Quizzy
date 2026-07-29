@@ -41,6 +41,10 @@ namespace ProjectBase
 
             // Add services to the container 
             services.AddControllersWithViews();
+            services.AddAntiforgery(options =>
+            {
+                options.HeaderName = "X-CSRF-TOKEN";
+            });
             services.AddOptions<EmailOptions>()
                 .Bind(configuration.GetSection(EmailOptions.SectionName));
             services.AddSingleton<IAccountLinkBuilder, AccountLinkBuilder>();

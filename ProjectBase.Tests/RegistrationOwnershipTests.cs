@@ -31,7 +31,7 @@ public sealed class RegistrationOwnershipTests
         await using var session = await AuthenticatedTestSession.CreateAsync();
         await AddRegistrationOwnedByAnotherUserAsync(session.Factory);
 
-        using var response = await session.Client.PostAsync(route, content: null);
+        using var response = await session.PostWithAntiForgeryAsync(route, content: null);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         using var scope = session.Factory.Services.CreateScope();

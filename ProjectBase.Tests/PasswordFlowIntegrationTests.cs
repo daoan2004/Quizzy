@@ -23,7 +23,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
     {
         await _factory.ResetDatabaseAsync();
 
-        using var response = await _client.PostAsJsonAsync("/Account/Register", new
+        using var response = await _client.PostAsJsonWithCsrfAsync("/Account/Register", new
         {
             fullname = "Hash Test",
             password = "Customer@123",
@@ -53,7 +53,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
             "legacy-login@quizzy.test",
             PasswordServiceTests.LegacyMd5(password));
 
-        using var response = await _client.PostAsJsonAsync("/Account/Login", new
+        using var response = await _client.PostAsJsonWithCsrfAsync("/Account/Login", new
         {
             email = "legacy-login@quizzy.test",
             password
@@ -79,7 +79,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
             "wrong-password@quizzy.test",
             PasswordServiceTests.LegacyMd5("Correct@123"));
 
-        using var response = await _client.PostAsJsonAsync("/Account/Login", new
+        using var response = await _client.PostAsJsonWithCsrfAsync("/Account/Login", new
         {
             email = "wrong-password@quizzy.test",
             password = "Wrong@123"
@@ -109,7 +109,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
             await context.SaveChangesAsync();
         }
 
-        using var response = await _client.PostAsJsonAsync("/Account/Login", new
+        using var response = await _client.PostAsJsonWithCsrfAsync("/Account/Login", new
         {
             email = "missing-role@quizzy.test",
             password = "RoleTest@123"
@@ -143,7 +143,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
 
         await AddActiveUserAsync("modern-login@quizzy.test", passwordHash);
 
-        using var response = await _client.PostAsJsonAsync("/Account/Login", new
+        using var response = await _client.PostAsJsonWithCsrfAsync("/Account/Login", new
         {
             email = "modern-login@quizzy.test",
             password = "Modern@123"
@@ -162,7 +162,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
             PasswordServiceTests.LegacyMd5("OldPassword@123"),
             token);
 
-        using var response = await _client.PostAsJsonAsync("/Account/ResetPasswordConfirm", new
+        using var response = await _client.PostAsJsonWithCsrfAsync("/Account/ResetPasswordConfirm", new
         {
             newPassword = "NewPassword@123",
             reNewPassword = "NewPassword@123",
@@ -190,14 +190,14 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
             "change-password@quizzy.test",
             PasswordServiceTests.LegacyMd5("Current@123"));
 
-        using var loginResponse = await _client.PostAsJsonAsync("/Account/Login", new
+        using var loginResponse = await _client.PostAsJsonWithCsrfAsync("/Account/Login", new
         {
             email = "change-password@quizzy.test",
             password = "Current@123"
         });
         Assert.True(await ReadSuccessAsync(loginResponse));
 
-        using var changeResponse = await _client.PostAsJsonAsync("/Account/ChangePassword", new
+        using var changeResponse = await _client.PostAsJsonWithCsrfAsync("/Account/ChangePassword", new
         {
             currentPassword = "Current@123",
             newPassword = "Changed@123",

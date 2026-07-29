@@ -25,7 +25,7 @@ public sealed class QuizRouteNotFoundTests
             ["answer"] = "A",
             ["PracticeID"] = "999"
         });
-        using var response = await session.Client.PostAsync("/api/QuizApi/submitAnswer", content);
+        using var response = await session.PostWithAntiForgeryAsync("/api/QuizApi/submitAnswer", content);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

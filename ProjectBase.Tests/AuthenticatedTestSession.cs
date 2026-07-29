@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectBase.Helpers;
 using ProjectBase.Models.DAO;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace ProjectBase.Tests;
 
@@ -24,6 +26,19 @@ internal sealed class AuthenticatedTestSession : IAsyncDisposable
     public QuizzyWebApplicationFactory Factory { get; }
     public HttpClient Client { get; }
     public long UserId { get; }
+
+    public async Task<HttpResponseMessage> PostWithAntiForgeryAsync(
+        string requestUri,
+        HttpContent? content)
+    {
+        var token = await GetAntiForgeryTokenAsync();
+        using var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
+        {
+            Content = content
+        };
+        request.Headers.Add("X-CSRF-TOKEN", token);
+        return await Client.SendAsync(request);
+    }
 
     public static async Task<AuthenticatedTestSession> CreateAsync(string roleName = "Customer")
     {
@@ -55,7 +70,7 @@ internal sealed class AuthenticatedTestSession : IAsyncDisposable
             await context.SaveChangesAsync();
         }
 
-        using var response = await client.PostAsJsonAsync("/Account/Login", new
+        using var response = await client.PostAsJsonWithCsrfAsync("/Account/Login", new
         {
             email,
             password
@@ -74,5 +89,21 @@ internal sealed class AuthenticatedTestSession : IAsyncDisposable
     {
         Client.Dispose();
         await Factory.DisposeAsync();
+    }
+
+    private async Task<string> GetAntiForgeryTokenAsync()
+    {
+        using var response = await Client.GetAsync("/");
+        response.EnsureSuccessStatusCode();
+        var html = await response.Content.ReadAsStringAsync();
+        var match = Regex.Match(
+            html,
+            "<meta name=\"csrf-token\" content=\"([^\"]+)\"");
+        if (!match.Success)
+        {
+            throw new InvalidOperationException("The layout did not render a CSRF token.");
+        }
+
+        return WebUtility.HtmlDecode(match.Groups[1].Value);
     }
 }

@@ -324,7 +324,12 @@
             registrations.forEach(reg => {
                 const div = document.createElement('div');
                 div.className = 'registration-item';
-                div.innerHTML = `<span>${reg.subjectTitle}</span><span class="status">${reg.status}</span>`;
+                const subject = document.createElement('span');
+                subject.textContent = reg.subjectTitle ?? '';
+                const status = document.createElement('span');
+                status.className = 'status';
+                status.textContent = reg.status ?? '';
+                div.append(subject, status);
                 container.appendChild(div);
             });
         }

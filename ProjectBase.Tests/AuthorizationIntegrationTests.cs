@@ -155,7 +155,7 @@ public sealed class AuthorizationIntegrationTests : IClassFixture<QuizzyWebAppli
             await context.SaveChangesAsync();
         }
 
-        using var loginResponse = await client.PostAsJsonAsync("/Account/Login", new
+        using var loginResponse = await client.PostAsJsonWithCsrfAsync("/Account/Login", new
         {
             email,
             password

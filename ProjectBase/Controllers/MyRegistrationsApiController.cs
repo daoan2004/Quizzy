@@ -93,6 +93,7 @@ namespace ProjectBase.Controllers
         }
 
         [HttpPost("CancelRegistration/{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelRegistration(long id)
         {
             if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
@@ -150,6 +151,7 @@ namespace ProjectBase.Controllers
         }
 
         [HttpPost("PayPackage/{registrationId}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> PayPackage(long registrationId)
         {
             if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();

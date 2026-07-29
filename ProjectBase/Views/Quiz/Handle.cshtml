@@ -246,7 +246,7 @@ var timer = duration, hours, minutes, seconds;
                    } else {
                         $('.status').html('Status: Unknown');
                    }
-                    $('.quiz-title').html(response.quizBank.title);
+                    $('.quiz-title').text(response.quizBank.title || '');
                     $('.question-index').html('Question No.'+ currentQuestionIndex);
                         var mark = response.isMark == 1 ? '<button class="unmark-button"><i class="bi bi-bookmark-x"></i> Unmark</button>' : '<button class="mark-button"><i class="bi bi-bookmark"></i> Mark</button>';
                         $('.ismark').html(mark);

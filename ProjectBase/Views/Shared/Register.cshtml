@@ -116,7 +116,7 @@
                     // Hiển thị thông báo lỗi vào phần tử registerErrorMessage
                     $('#registerErrorMessage').html('<ul></ul>');
                     errors.forEach(function (error) {
-                        $('#registerErrorMessage ul').append('<li>' + error + '</li>');
+                        $('#registerErrorMessage ul').append($('<li>').text(error));
                     });
                     $('#registerErrorMessage').show();
                     return false;
@@ -164,7 +164,7 @@
                             $('#registerErrorMessage').html('Registration failed. Please try again.<ul></ul>');
                             if (response.errors) {
                                 response.errors.forEach(function (error) {
-                                    $('#registerErrorMessage ul').append('<li>' + error + '</li>');
+                                    $('#registerErrorMessage ul').append($('<li>').text(error));
                                 });
                             }
                             $('#registerErrorMessage').show();

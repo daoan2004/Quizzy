@@ -25,7 +25,7 @@ public sealed class EmailFlowIntegrationTests : IClassFixture<QuizzyWebApplicati
         var fakeSender = _factory.Services.GetRequiredService<FakeEmailSender>();
         fakeSender.Clear();
 
-        using var response = await _client.PostAsJsonAsync("/Account/Register", new
+        using var response = await _client.PostAsJsonWithCsrfAsync("/Account/Register", new
         {
             fullname = "Test Customer",
             password = "Customer@123",
@@ -71,7 +71,7 @@ public sealed class EmailFlowIntegrationTests : IClassFixture<QuizzyWebApplicati
             await context.SaveChangesAsync();
         }
 
-        using var response = await _client.PostAsJsonAsync(
+        using var response = await _client.PostAsJsonWithCsrfAsync(
             "/Account/ResetPasswordRequest",
             new { email = "reset-test@quizzy.test" });
 
