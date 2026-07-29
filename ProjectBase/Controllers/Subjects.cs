@@ -67,6 +67,10 @@ namespace ProjectBase.Controllers
                 .Include(s => s.Price_package)
                 .Where(s => s.ID.Equals(Detail_id) == true)
                 .ToListAsync();
+            if (subjects.Count == 0)
+            {
+                return NotFound();
+            }
             ViewData["MetaDescription"] = subjects.FirstOrDefault()?.brief_info ?? "View Quizly subject details, packages, and related learning categories.";
 
             // Get the first three subjects of the un-fitered list
@@ -188,7 +192,7 @@ namespace ProjectBase.Controllers
                 .Where(r => r.SubjectID == subjectId && r.UserID == userId)
                 .FirstOrDefaultAsync();
 
-            if (subjectRegister == null)
+            if (subjectRegister.Count == 0)
             {
                 return NotFound();
             }

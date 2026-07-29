@@ -21,14 +21,21 @@ namespace ProjectBase.Controllers
             ViewData["UserID"] = UserID;
             ViewData["PracticeID"] = PracticeID;
             ViewData["IsPractice"] = isPractice;
-            var quizhandle = await _dataContext.QuizHandle.Include(s => s.QuizBank).Where(s => s.UserID == UserID && s.PracticeID == PracticeID).ToListAsync();
-            var practice = await _dataContext.Practice.Where(p => p.ID == PracticeID).FirstOrDefaultAsync();
-            if (practice != null) { 
-            ViewData["Number_quiz"] = practice.number_quest;
-            ViewData["Level"] = _dataContext.PracticeLevel.Where(p=> p.ID == practice.levelID).FirstOrDefault().title;
-            ViewData["QuizTitle"] = practice.title;
-            ViewData["SubjectTitle"] = _dataContext.Subjects.Where(p => p.ID == practice.SubjectID).FirstOrDefault().title;
+            var practice = await _dataContext.Practice.FirstOrDefaultAsync(p => p.ID == PracticeID);
+            if (practice == null)
+            {
+                return NotFound();
             }
+            var level = await _dataContext.PracticeLevel.FirstOrDefaultAsync(p => p.ID == practice.levelID);
+            var subject = await _dataContext.Subjects.FirstOrDefaultAsync(p => p.ID == practice.SubjectID);
+            if (level == null || subject == null)
+            {
+                return NotFound();
+            }
+            ViewData["Number_quiz"] = practice.number_quest;
+            ViewData["Level"] = level.title;
+            ViewData["QuizTitle"] = practice.title;
+            ViewData["SubjectTitle"] = subject.title;
             if (isPractice)
             {
                 ViewData["Type"] = "Practice";

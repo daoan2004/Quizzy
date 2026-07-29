@@ -19,10 +19,12 @@ namespace ProjectBase.Controllers
         public async Task<IActionResult> Index()
         {
             ViewData["MetaDescription"] = "Read Quizly learning posts, study tips, and subject updates for better quiz preparation.";
-            var category = _dataContext.Category.ToList();
-            var bloglist = _dataContext.Blogs.OrderByDescending(b => b.updatedAt).ToList();
-            var lastestpost = _dataContext.Blogs.Where(blog => EF.Functions.DateDiffDay(blog.updatedAt, DateTime.Now) <= 25)
-   .ToList();
+            var latestCutoff = DateTime.Now.AddDays(-25);
+            var category = await _dataContext.Category.ToListAsync();
+            var bloglist = await _dataContext.Blogs.OrderByDescending(b => b.updatedAt).ToListAsync();
+            var lastestpost = await _dataContext.Blogs
+                .Where(blog => blog.updatedAt >= latestCutoff)
+                .ToListAsync();
             var viewModel = new BlogsViewModel
             {
                 Category = category,
@@ -35,21 +37,28 @@ namespace ProjectBase.Controllers
         public async Task<IActionResult> BlogsDetail(long blogid ,long userid)
         {
             ViewData["MetaDescription"] = "Read a Quizly blog article with study guidance and quiz learning insights.";
-            var category = _dataContext.Category.ToList();
-            var lastestpost = _dataContext.Blogs.Where(blog => EF.Functions.DateDiffDay(blog.updatedAt, DateTime.Now) <= 14)
-   .ToList();
-            var blogdetail = _dataContext.Blogs.Where(b => b.ID == blogid).FirstOrDefault();
+            var blogdetail = await _dataContext.Blogs.FirstOrDefaultAsync(b => b.ID == blogid);
             if (blogdetail == null)
             {
                 return NotFound();
             }
 
-            var bloguser = _dataContext.Users.Where(u => u.ID == blogdetail.userID).FirstOrDefault()
-                ?? _dataContext.Users.Where(u => u.ID == userid).FirstOrDefault();
-            var blogcategory = (from c in _dataContext.Category
+            var bloguser = await _dataContext.Users.FirstOrDefaultAsync(u => u.ID == blogdetail.userID)
+                ?? await _dataContext.Users.FirstOrDefaultAsync(u => u.ID == userid);
+            if (bloguser == null)
+            {
+                return NotFound();
+            }
+
+            var latestCutoff = DateTime.Now.AddDays(-14);
+            var category = await _dataContext.Category.ToListAsync();
+            var lastestpost = await _dataContext.Blogs
+                .Where(blog => blog.updatedAt >= latestCutoff)
+                .ToListAsync();
+            var blogcategory = await (from c in _dataContext.Category
                               join bc in _dataContext.Blogs_Category on c.ID equals bc.CategoryID
                               where bc.BlogID == blogid
-                              select c).ToList();
+                              select c).ToListAsync();
             var viewModel = new BlogsViewModel
             {
                 Category = category,
@@ -80,12 +89,14 @@ namespace ProjectBase.Controllers
             }
             else {
                 ViewData["MetaDescription"] = $"Search Quizly blog posts matching {searchPhrase}.";
-                var category = _dataContext.Category.ToList();
-                var bloglist = _dataContext.Blogs.Where(b => b.title.Contains(searchPhrase)).ToList();
-
-
-                var lastestpost = _dataContext.Blogs.Where(blog => EF.Functions.DateDiffDay(blog.updatedAt, DateTime.Now) <= 14)
-       .ToList();
+                var latestCutoff = DateTime.Now.AddDays(-14);
+                var category = await _dataContext.Category.ToListAsync();
+                var bloglist = await _dataContext.Blogs
+                    .Where(b => b.title.Contains(searchPhrase))
+                    .ToListAsync();
+                var lastestpost = await _dataContext.Blogs
+                    .Where(blog => blog.updatedAt >= latestCutoff)
+                    .ToListAsync();
                 var viewModel = new BlogsViewModel
                 {
                     Category = category,

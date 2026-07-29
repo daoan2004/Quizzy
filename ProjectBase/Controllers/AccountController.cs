@@ -222,6 +222,17 @@ namespace ProjectBase.Controllers
                     return Json(new { success = false, message = "Your account is not activated yet. You need check your gmail and verify account." });
                 }
 
+                if (!user.ID.HasValue ||
+                    user.Role is null ||
+                    string.IsNullOrWhiteSpace(user.Role.RoleName))
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Account role configuration is invalid."
+                    });
+                }
+
                 if (passwordCheck.NeedsRehash)
                 {
                     user.password = _passwordService.HashPassword(user, model.password);
@@ -232,7 +243,7 @@ namespace ProjectBase.Controllers
                         {
                             new Claim(ClaimTypes.Name, user.fullname),
                             new Claim(ClaimTypes.Name, user.email),
-                            new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
+                            new Claim(ClaimTypes.NameIdentifier, user.ID.Value.ToString()),
                             new Claim(ClaimTypes.Role, user.Role.RoleName) // Thêm claim vai trò
                         };
                 // Tạo một identity chứa các claims
@@ -427,6 +438,16 @@ namespace ProjectBase.Controllers
                 {
                     return Json(new { success = false, message = "User not found." });
                 }
+
+                if (user.Role is null || string.IsNullOrWhiteSpace(user.Role.RoleName))
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Account role configuration is invalid."
+                    });
+                }
+
                 var avatarUrl = user.profile_picture;
                 var userDetails = new
                 {
@@ -562,12 +583,10 @@ namespace ProjectBase.Controllers
         private string GetContentType(string filePath)
         {
             var provider = new FileExtensionContentTypeProvider();
-            string contentType;
-            if (!provider.TryGetContentType(filePath, out contentType))
-            {
-                contentType = "application/octet-stream"; // Default content type
-            }
-            return contentType;
+            return provider.TryGetContentType(filePath, out var contentType) &&
+                   !string.IsNullOrWhiteSpace(contentType)
+                ? contentType
+                : "application/octet-stream";
         }
     }
 }

@@ -83,13 +83,27 @@ namespace ProjectBase.Controllers
         {
             try
             {
-                var UserID = Request.Form["UserID"];
-                var SubjectID = Convert.ToInt32(Request.Form["SubjectID"]);
-                var title = Request.Form["title"];
-                var number_quest = Convert.ToInt32(Request.Form["number_quest"]);
-                string Quest_group = Request.Form["Quest_group"];
-                var duration = Request.Form["duration"];
-                var levelID = Convert.ToInt32(Request.Form["levelID"]);
+                if (!Request.HasFormContentType)
+                {
+                    return BadRequest("Form data is required.");
+                }
+
+                var form = await Request.ReadFormAsync(HttpContext.RequestAborted);
+                var title = form["title"].ToString().Trim();
+                var questGroup = form["Quest_group"].ToString().Trim();
+                var duration = form["duration"].ToString().Trim();
+
+                if (!long.TryParse(form["UserID"], out var userID) || userID <= 0 ||
+                    !int.TryParse(form["SubjectID"], out var subjectID) || subjectID <= 0 ||
+                    !int.TryParse(form["number_quest"], out var numberQuest) || numberQuest <= 0 ||
+                    !int.TryParse(form["levelID"], out var levelID) || levelID is < 1 or > 3 ||
+                    string.IsNullOrWhiteSpace(title) ||
+                    string.IsNullOrWhiteSpace(questGroup) ||
+                    !TimeOnly.TryParse(duration, out _))
+                {
+                    return BadRequest("Invalid practice data.");
+                }
+
                 var topicID = 1;
                 var isMark = false;
                 var status = false;
@@ -104,11 +118,11 @@ namespace ProjectBase.Controllers
                     await connection.OpenAsync();
                     PracticeID = await connection.ExecuteScalarAsync<int>(sql, new
                     {
-                        UserID,
-                        SubjectID,
+                        UserID = userID,
+                        SubjectID = subjectID,
                         title,
-                        number_quest,
-                        Quest_group,
+                        number_quest = numberQuest,
+                        Quest_group = questGroup,
                         duration,
                         levelID,
                         taken_date = DateTime.Now,
@@ -120,15 +134,15 @@ namespace ProjectBase.Controllers
                 
 
                     if (levelID == 1) {
-                        int numberQuestLevel1 = (int)(number_quest * 0.9);
-                        int numberQuestLevel2 = number_quest - numberQuestLevel1;
+                        int numberQuestLevel1 = (int)(numberQuest * 0.9);
+                        int numberQuestLevel2 = numberQuest - numberQuestLevel1;
                         var queryquizLevel1 = _dataContext.QuizBank
-                                        .Where(q => q.SubjectID == SubjectID && q.TopicID == topicID && q.LevelID == 1);
+                                        .Where(q => q.SubjectID == subjectID && q.TopicID == topicID && q.LevelID == 1);
                         var queryquizLevel2 = _dataContext.QuizBank
-                                        .Where(q => q.SubjectID == SubjectID && q.TopicID == topicID && q.LevelID == 2);
-                        if (!Quest_group.Equals("0")) {
-                            queryquizLevel1 = queryquizLevel1.Where(q => q.GroupID.Equals(Quest_group));
-                            queryquizLevel2 = queryquizLevel2.Where(q => q.GroupID.Equals(Quest_group));
+                                        .Where(q => q.SubjectID == subjectID && q.TopicID == topicID && q.LevelID == 2);
+                        if (questGroup != "0") {
+                            queryquizLevel1 = queryquizLevel1.Where(q => q.GroupID == questGroup);
+                            queryquizLevel2 = queryquizLevel2.Where(q => q.GroupID == questGroup);
                         }                
                         var quizLevel1 = queryquizLevel1
                                         .Take(numberQuestLevel1)
@@ -156,7 +170,7 @@ namespace ProjectBase.Controllers
                         
                                 await connection.ExecuteAsync(addHandle, new
                                 {
-                                    UserID,
+                                    UserID = userID,
                                     PracticeID,
                                     QuizID,
                                     QAnswer,
@@ -170,16 +184,16 @@ namespace ProjectBase.Controllers
                 
                 else if (levelID == 2)
                 {
-                    int numberQuestLevel1 = (int)(number_quest * 0.3);
-                    int numberQuestLevel2 = number_quest - numberQuestLevel1;
+                    int numberQuestLevel1 = (int)(numberQuest * 0.3);
+                    int numberQuestLevel2 = numberQuest - numberQuestLevel1;
                     var queryquizLevel1 = _dataContext.QuizBank
-                                    .Where(q => q.SubjectID == SubjectID && q.TopicID == topicID && q.LevelID == 1);
+                                    .Where(q => q.SubjectID == subjectID && q.TopicID == topicID && q.LevelID == 1);
                     var queryquizLevel2 = _dataContext.QuizBank
-                                    .Where(q => q.SubjectID == SubjectID && q.TopicID == topicID && q.LevelID == 2);
-                    if (!Quest_group.Equals("0"))
+                                    .Where(q => q.SubjectID == subjectID && q.TopicID == topicID && q.LevelID == 2);
+                    if (questGroup != "0")
                     {
-                        queryquizLevel1 = queryquizLevel1.Where(q => q.GroupID.Equals(Quest_group));
-                        queryquizLevel2 = queryquizLevel2.Where(q => q.GroupID.Equals(Quest_group));
+                        queryquizLevel1 = queryquizLevel1.Where(q => q.GroupID == questGroup);
+                        queryquizLevel2 = queryquizLevel2.Where(q => q.GroupID == questGroup);
                     }
                     var quizLevel1 = queryquizLevel1.OrderBy(r => Guid.NewGuid())
                                     .Take(numberQuestLevel1)
@@ -206,7 +220,7 @@ namespace ProjectBase.Controllers
 
                             await connection.ExecuteAsync(addHandle, new
                             {
-                                UserID,
+                                UserID = userID,
                                 PracticeID,
                                 QuizID,
                                 QAnswer,
@@ -219,16 +233,16 @@ namespace ProjectBase.Controllers
                     }
                 else if (levelID == 3)
                 {
-                    int numberQuestLevel2 = (int)(number_quest * 0.6);
-                    int numberQuestLevel3 = number_quest - numberQuestLevel2;
+                    int numberQuestLevel2 = (int)(numberQuest * 0.6);
+                    int numberQuestLevel3 = numberQuest - numberQuestLevel2;
                     var queryquizLevel2 = _dataContext.QuizBank
-                                    .Where(q => q.SubjectID == SubjectID && q.TopicID == topicID && q.LevelID == 2);
+                                    .Where(q => q.SubjectID == subjectID && q.TopicID == topicID && q.LevelID == 2);
                     var queryquizLevel3 = _dataContext.QuizBank
-                                    .Where(q => q.SubjectID == SubjectID && q.TopicID == topicID && q.LevelID == 3);
-                    if (!Quest_group.Equals("0"))
+                                    .Where(q => q.SubjectID == subjectID && q.TopicID == topicID && q.LevelID == 3);
+                    if (questGroup != "0")
                     {
-                        queryquizLevel2 = queryquizLevel2.Where(q => q.GroupID.Equals(Quest_group));
-                        queryquizLevel3 = queryquizLevel3.Where(q => q.GroupID.Equals(Quest_group));
+                        queryquizLevel2 = queryquizLevel2.Where(q => q.GroupID == questGroup);
+                        queryquizLevel3 = queryquizLevel3.Where(q => q.GroupID == questGroup);
                     }
                     var quizLevel2 = queryquizLevel2.OrderBy(r => Guid.NewGuid())
                                     .Take(numberQuestLevel2)
@@ -255,7 +269,7 @@ namespace ProjectBase.Controllers
 
                             await connection.ExecuteAsync(addHandle, new
                             {
-                                UserID,
+                                UserID = userID,
                                 PracticeID,
                                 QuizID,
                                 QAnswer,

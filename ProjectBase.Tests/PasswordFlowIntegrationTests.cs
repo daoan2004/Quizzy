@@ -89,6 +89,40 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
     }
 
     [Fact]
+    public async Task Login_rejects_account_without_role_configuration()
+    {
+        await _factory.ResetDatabaseAsync();
+
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<DataContext>();
+            context.Users.Add(new User
+            {
+                ID = 60002,
+                email = "missing-role@quizzy.test",
+                fullname = "Missing Role",
+                password = PasswordServiceTests.LegacyMd5("RoleTest@123"),
+                Phone = "0901234567",
+                RoleID = null,
+                status = 1
+            });
+            await context.SaveChangesAsync();
+        }
+
+        using var response = await _client.PostAsJsonAsync("/Account/Login", new
+        {
+            email = "missing-role@quizzy.test",
+            password = "RoleTest@123"
+        });
+
+        Assert.False(await ReadSuccessAsync(response));
+        Assert.Contains(
+            "role configuration",
+            await response.Content.ReadAsStringAsync(),
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task Modern_password_hash_can_log_in()
     {
         await _factory.ResetDatabaseAsync();

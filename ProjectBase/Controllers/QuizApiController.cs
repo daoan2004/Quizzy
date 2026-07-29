@@ -28,18 +28,31 @@ namespace ProjectBase.Controllers
         [HttpGet("loadQuestion/{questionId}")]
         public async Task<IActionResult> loadQuestion(long questionId)
         {
-            var QuestionList = _dataContext.QuizHandle.Include(p => p.QuizBank).Where(s => s.ID==questionId).FirstOrDefault();
-            return Ok(QuestionList);
+            var question = await _dataContext.QuizHandle
+                .Include(p => p.QuizBank)
+                .FirstOrDefaultAsync(s => s.ID == questionId);
+            return question == null ? NotFound() : Ok(question);
         }
         [HttpPost("submitAnswer")]
         public async Task<IActionResult> submitAnswer([FromForm] long questionId, [FromForm] string answer, [FromForm] long PracticeID)
         {
             var isCorrect = 0;
             
-            if (_dataContext.QuizHandle.Include(p => p.QuizBank).Where(s => s.ID == questionId).FirstOrDefault().QuizBank.Qcorrect.Equals(answer,StringComparison.OrdinalIgnoreCase)) {
+            var question = await _dataContext.QuizHandle
+                .Include(p => p.QuizBank)
+                .FirstOrDefaultAsync(s => s.ID == questionId);
+            if (question?.QuizBank == null)
+            {
+                return NotFound();
+            }
+            if (question.PracticeID != PracticeID)
+            {
+                return BadRequest("Question does not belong to the supplied practice.");
+            }
+            if (question.QuizBank.Qcorrect.Equals(answer,StringComparison.OrdinalIgnoreCase)) {
                 isCorrect = 1;
             }
-            var sql = "UPDATE QuizHandle SET QAnswer = @QAnswer, status = 1, isCorrect = @isCorrect WHERE ID = "+questionId+";";
+            var sql = "UPDATE QuizHandle SET QAnswer = @QAnswer, status = 1, isCorrect = @isCorrect WHERE ID = @QuestionID;";
             using (var connection = _dataContext.Database.GetDbConnection())
             {
                 await connection.OpenAsync();
@@ -47,6 +60,7 @@ namespace ProjectBase.Controllers
                 {
                     QAnswer=answer,
                     isCorrect,
+                    QuestionID = questionId
                 });
                 // Update Practice table if answer is correct
                 if (isCorrect == 1)

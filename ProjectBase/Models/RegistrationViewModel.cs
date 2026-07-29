@@ -2,8 +2,8 @@
 {
     public class RegistrationViewModel
     {
-        public String SubjectTitle { get; set; }
-        public string Status { get; set; }
+        public string SubjectTitle { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
         public long RecipeID { get; set; }
     }
 }

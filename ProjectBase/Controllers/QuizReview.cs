@@ -30,17 +30,19 @@ namespace ProjectBase.Controllers
                 .Include(p => p.Topic)
                 .FirstOrDefaultAsync(p => p.ID == PracticeId);
 
+            if (practice == null)
+            {
+                return NotFound();
+            }
+
             var model = new QuizReviewViewModel
             {
                 QuizReviews = quiz_review,
                 Practice = practice
             };
 
-            if (practice != null)
-            {
-                ViewBag.DurationFormatted = FormatTime(practice.duration);
-                ViewBag.TimeTakenFormatted = FormatTime(practice.time_taken);
-            }
+            ViewBag.DurationFormatted = FormatTime(practice.duration);
+            ViewBag.TimeTakenFormatted = FormatTime(practice.time_taken);
 
             return View("Detail", model);
         }
