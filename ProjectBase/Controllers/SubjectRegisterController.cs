@@ -5,7 +5,10 @@ using ProjectBase.Helpers;
 using ProjectBase.Models;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
+[Authorize]
 public class SubjectRegister : Controller
 {
     private readonly DataContext _context;
@@ -18,12 +21,15 @@ public class SubjectRegister : Controller
     [HttpPost]
     public async Task<IActionResult> Register(int subjectId, int userId, int selectedPackage, int packageId)
     {
+        if (!long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var currentUserId))
+        {
+            return Challenge();
+        }
+
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-
-        Console.WriteLine($"subjectId: {subjectId}, userId: {userId}, selectedPackage: {selectedPackage}");
 
         var buyAt = DateTime.Now;
         DateTime endAt;
@@ -44,7 +50,7 @@ public class SubjectRegister : Controller
         }
 
         var existingRecipe = await _context.Recipe
-            .FirstOrDefaultAsync(r => r.UserID == userId && r.SubjectID == subjectId);
+            .FirstOrDefaultAsync(r => r.UserID == currentUserId && r.SubjectID == subjectId);
 
         if (existingRecipe != null)
         {
@@ -60,7 +66,7 @@ public class SubjectRegister : Controller
             // Create new recipe
             var recipe = new RecipeModel
             {
-                UserID = userId,
+                UserID = currentUserId,
                 BuyAt = buyAt,
                 EndAt = endAt,
                 PricePackage_ID = packageId,

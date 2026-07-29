@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjectBase.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectBase.Controllers
 {
+    [Authorize]
     public class SimulationExamController : Controller
     {
         private readonly ILogger<SimulationExamController> _logger;

@@ -2,11 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectBase.Helpers;
 using ProjectBase.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ProjectBase.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SimulationExamApiController : ControllerBase
     {
         private readonly DataContext _dataContext;
@@ -18,12 +21,13 @@ namespace ProjectBase.Controllers
         [HttpGet("LoadExam/{UserID}")]
         public async Task<ActionResult<IEnumerable<PracticeModel>>> LoadExam(long UserID)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             try
             {
                 var exam = await _dataContext.Recipe
                 .Include(s => s.Subjects)
                 .ThenInclude(e=>e.Exams)
-                .Where(u => u.UserID == UserID).Where(r => r.Status == "Registrated")
+                .Where(u => u.UserID == currentUserId).Where(r => r.Status == "Registrated")
                 .ToListAsync();
                 return Ok(exam);
             }
@@ -35,13 +39,14 @@ namespace ProjectBase.Controllers
         [HttpGet("GetExamPagination/{UserID}")]
         public async Task<ActionResult<IEnumerable<PracticeModel>>> GetExamPagination(long UserID, [FromQuery] int page = 1, [FromQuery] int pageSize = 5, [FromQuery] long? levelId = null)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             try
             {
                 var query = _dataContext.Recipe
                 .Include(s => s.Subjects)
                 .ThenInclude(e=>e.Exams).ThenInclude(l=>l.Level)
                
-                .Where(u => u.UserID == UserID);
+                .Where(u => u.UserID == currentUserId);
 
                 if (levelId.HasValue)
                 {
@@ -62,12 +67,13 @@ namespace ProjectBase.Controllers
         [HttpGet("LoadFilter/{UserID}")]
         public async Task<ActionResult<IEnumerable<RecipeModel>>> LoadFilter(long UserID)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             try
             {
                 var practice = await _dataContext.Recipe
                 .Include(s => s.Subjects)
                 .ThenInclude(e => e.Exams).ThenInclude(l => l.Level)
-                .Where(u => u.UserID == UserID)
+                .Where(u => u.UserID == currentUserId)
                 .ToListAsync();
                 return Ok(practice);
             }
@@ -76,5 +82,8 @@ namespace ProjectBase.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        private bool TryGetCurrentUserId(out long userId) =>
+            long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
     }
 }

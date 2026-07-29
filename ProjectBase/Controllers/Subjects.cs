@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjectBase.Helpers;
 using ProjectBase.Models;
+using System.Security.Claims;
 
 namespace ProjectBase.Controllers
 {
@@ -181,6 +182,10 @@ namespace ProjectBase.Controllers
         [HttpPost]
         public async Task<IActionResult> GetSubjectData(int subjectId, long userId)
         {
+            var hasCurrentUser = long.TryParse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out var currentUserId);
+
             var subjectRegister = await _context.Subjects
                 .Include(s => s.Subject_Category)
                 .ThenInclude(sc => sc.Category)
@@ -189,7 +194,9 @@ namespace ProjectBase.Controllers
                 .ToListAsync();
 
             var userRegistration = await _context.Recipe
-                .Where(r => r.SubjectID == subjectId && r.UserID == userId)
+                .Where(r => hasCurrentUser &&
+                            r.SubjectID == subjectId &&
+                            r.UserID == currentUserId)
                 .FirstOrDefaultAsync();
 
             if (subjectRegister.Count == 0)
@@ -201,7 +208,7 @@ namespace ProjectBase.Controllers
             {
                 Subjects = subjectRegister,
                 UserRegistration = userRegistration,
-                UserID = userId
+                UserID = hasCurrentUser ? currentUserId : 0
             };
 
             return PartialView("_SubjectPopupPartial", viewModel);

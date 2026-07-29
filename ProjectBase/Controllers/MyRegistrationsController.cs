@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectBase.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectBase.Controllers
 {
+    [Authorize]
     public class MyRegistrationsController : Controller
     {
         private readonly ILogger<MyRegistrationsController> _logger;

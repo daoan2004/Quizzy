@@ -6,11 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ProjectBase.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MyRegistrationsApiController : ControllerBase
     {
         private readonly DataContext _dataContext;
@@ -22,13 +25,14 @@ namespace ProjectBase.Controllers
         [HttpGet("GetAllRegistrations/{userId}")]
         public async Task<IActionResult> GetAllRegistrations(long userId, [FromQuery] long? subjectId = null, [FromQuery] string? statusId = null)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             try
             {
                 // Truy vấn cơ sở dữ liệu với các khóa ngoại được bao gồm
                 var query = _dataContext.Recipe
                     .Include(r => r.Subjects)
                     .Include(r => r.PricePackage)
-                    .Where(r => r.UserID == userId && r.Status != "Cancelled");
+                    .Where(r => r.UserID == currentUserId && r.Status != "Cancelled");
 
                 // Áp dụng bộ lọc nếu có
                 if (subjectId.HasValue)
@@ -91,9 +95,11 @@ namespace ProjectBase.Controllers
         [HttpPost("CancelRegistration/{id}")]
         public async Task<IActionResult> CancelRegistration(long id)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             try
             {
-                var registration = await _dataContext.Recipe.FindAsync(id);
+                var registration = await _dataContext.Recipe
+                    .FirstOrDefaultAsync(r => r.ID == id && r.UserID == currentUserId);
                 if (registration == null)
                 {
                     return NotFound(new { success = false, message = "Registration not found." });
@@ -146,9 +152,11 @@ namespace ProjectBase.Controllers
         [HttpPost("PayPackage/{registrationId}")]
         public async Task<IActionResult> PayPackage(long registrationId)
         {
+            if (!TryGetCurrentUserId(out var currentUserId)) return Unauthorized();
             try
             {
-                var registration = await _dataContext.Recipe.FindAsync(registrationId);
+                var registration = await _dataContext.Recipe
+                    .FirstOrDefaultAsync(r => r.ID == registrationId && r.UserID == currentUserId);
                 if (registration == null)
                 {
                     return NotFound(new { success = false, message = "Registration not found." });
@@ -167,6 +175,8 @@ namespace ProjectBase.Controllers
             }
         }
 
+        private bool TryGetCurrentUserId(out long userId) =>
+            long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
 
     }
 }
