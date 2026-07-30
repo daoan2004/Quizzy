@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.AspNetCore.Identity;
 using ProjectBase.Models.DAO;
 using ProjectBase.Services;
@@ -20,7 +18,7 @@ public sealed class PasswordServiceTests
 
         Assert.True(result.Succeeded);
         Assert.False(result.NeedsRehash);
-        Assert.NotEqual(LegacyMd5("Customer@123"), user.password);
+        Assert.DoesNotMatch("^[0-9a-fA-F]{32}$", user.password);
     }
 
     [Fact]
@@ -36,15 +34,15 @@ public sealed class PasswordServiceTests
     }
 
     [Fact]
-    public void Valid_legacy_md5_requests_rehash()
+    public void Legacy_32_character_hash_is_rejected()
     {
         var user = CreateUser();
-        user.password = LegacyMd5("Legacy@123");
+        user.password = "0123456789abcdef0123456789abcdef";
 
         var result = _service.VerifyPassword(user, "Legacy@123");
 
-        Assert.True(result.Succeeded);
-        Assert.True(result.NeedsRehash);
+        Assert.False(result.Succeeded);
+        Assert.False(result.NeedsRehash);
     }
 
     [Fact]
@@ -64,6 +62,10 @@ public sealed class PasswordServiceTests
         Phone = "0901234567"
     };
 
-    internal static string LegacyMd5(string password) =>
-        Convert.ToHexString(MD5.HashData(Encoding.UTF8.GetBytes(password))).ToLowerInvariant();
+    internal static string ModernHash(string password)
+    {
+        var user = CreateUser();
+        return new PasswordService(new PasswordHasher<User>())
+            .HashPassword(user, password);
+    }
 }

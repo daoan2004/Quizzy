@@ -21,7 +21,7 @@ public sealed class AccountEnumerationAndRateLimitTests
                 ID = 96001,
                 email = "known@quizzy.test",
                 fullname = "Known User",
-                password = PasswordServiceTests.LegacyMd5("Password@123"),
+                password = PasswordServiceTests.ModernHash("Password@123"),
                 Phone = "0901234567",
                 gender = true,
                 RoleID = 2,

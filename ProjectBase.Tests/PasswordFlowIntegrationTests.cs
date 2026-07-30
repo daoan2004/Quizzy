@@ -45,13 +45,13 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
     }
 
     [Fact]
-    public async Task Legacy_md5_login_migrates_hash()
+    public async Task Legacy_32_character_hash_cannot_log_in()
     {
         await _factory.ResetDatabaseAsync();
         const string password = "Legacy@123";
         var userId = await AddActiveUserAsync(
             "legacy-login@quizzy.test",
-            PasswordServiceTests.LegacyMd5(password));
+            "0123456789abcdef0123456789abcdef");
 
         using var response = await _client.PostAsJsonWithCsrfAsync("/Account/Login", new
         {
@@ -59,16 +59,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
             password
         });
 
-        Assert.True(await ReadSuccessAsync(response));
-
-        using var scope = _factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<DataContext>();
-        var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
-        var migratedUser = await context.Users.FindAsync(userId);
-
-        Assert.NotNull(migratedUser);
-        Assert.DoesNotMatch("^[0-9a-fA-F]{32}$", migratedUser.password);
-        Assert.True(passwordService.VerifyPassword(migratedUser, password).Succeeded);
+        Assert.False(await ReadSuccessAsync(response));
     }
 
     [Fact]
@@ -77,7 +68,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
         await _factory.ResetDatabaseAsync();
         await AddActiveUserAsync(
             "wrong-password@quizzy.test",
-            PasswordServiceTests.LegacyMd5("Correct@123"));
+            PasswordServiceTests.ModernHash("Correct@123"));
 
         using var response = await _client.PostAsJsonWithCsrfAsync("/Account/Login", new
         {
@@ -101,7 +92,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
                 ID = 60002,
                 email = "missing-role@quizzy.test",
                 fullname = "Missing Role",
-                password = PasswordServiceTests.LegacyMd5("RoleTest@123"),
+                password = PasswordServiceTests.ModernHash("RoleTest@123"),
                 Phone = "0901234567",
                 RoleID = null,
                 status = 1
@@ -159,7 +150,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
         const string token = "valid-reset-token";
         var userId = await AddActiveUserAsync(
             "reset-hash@quizzy.test",
-            PasswordServiceTests.LegacyMd5("OldPassword@123"),
+            PasswordServiceTests.ModernHash("OldPassword@123"),
             token);
 
         using var response = await _client.PostAsJsonWithCsrfAsync("/Account/ResetPasswordConfirm", new
@@ -188,7 +179,7 @@ public sealed class PasswordFlowIntegrationTests : IClassFixture<QuizzyWebApplic
         await _factory.ResetDatabaseAsync();
         var userId = await AddActiveUserAsync(
             "change-password@quizzy.test",
-            PasswordServiceTests.LegacyMd5("Current@123"));
+            PasswordServiceTests.ModernHash("Current@123"));
 
         using var loginResponse = await _client.PostAsJsonWithCsrfAsync("/Account/Login", new
         {

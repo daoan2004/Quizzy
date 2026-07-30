@@ -20,7 +20,7 @@ public sealed class AccountRegistrationValidationIntegrationTests
                 ID = 97001,
                 email = "duplicate@quizzy.test",
                 fullname = "Existing User",
-                password = PasswordServiceTests.LegacyMd5("Password@123"),
+                password = PasswordServiceTests.ModernHash("Password@123"),
                 Phone = "0901234567",
                 gender = true,
                 RoleID = 2,

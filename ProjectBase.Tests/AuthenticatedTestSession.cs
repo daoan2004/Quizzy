@@ -61,7 +61,7 @@ internal sealed class AuthenticatedTestSession : IAsyncDisposable
                 ID = userId,
                 email = email,
                 fullname = "Security Test",
-                password = PasswordServiceTests.LegacyMd5(password),
+                password = PasswordServiceTests.ModernHash(password),
                 Phone = "0901234567",
                 gender = true,
                 RoleID = roleId,

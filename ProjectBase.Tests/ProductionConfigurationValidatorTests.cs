@@ -1,9 +1,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using ProjectBase.Configuration;
 using ProjectBase.Helpers;
 
@@ -79,6 +82,13 @@ public sealed class ProductionConfigurationValidatorTests
             Assert.Contains(
                 "\"status\":\"Healthy\"",
                 await response.Content.ReadAsStringAsync());
+
+            var cookieOptions = factory.Services
+                .GetRequiredService<IOptionsMonitor<CookieAuthenticationOptions>>()
+                .Get(CookieAuthenticationDefaults.AuthenticationScheme);
+            Assert.Equal(
+                CookieSecurePolicy.Always,
+                cookieOptions.Cookie.SecurePolicy);
         }
         finally
         {

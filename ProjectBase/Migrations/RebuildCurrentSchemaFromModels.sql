@@ -848,9 +848,9 @@ IF NOT EXISTS (
 BEGIN
     SET IDENTITY_INSERT [Users] ON;
     INSERT INTO [Users] ([ID], [email], [fullname], [password], [address], [Phone], [gender], [Dob], [RoleID], [profile_picture], [register_date], [description], [status], [verificationToken], [PasswordResetToken], [PasswordResetTokenExpires]) VALUES
-    (10001, N'admin@quizzy.local', N'Admin Quizzy', N'0e7517141fb53f21ee439b355b5a1d0a', N'Ho Chi Minh City', N'0900000001', 1, '1995-01-01', 1, NULL, '2026-06-01T08:00:00', N'Sample admin account', 1, NULL, NULL, NULL),
-    (10002, N'marketing@quizzy.local', N'Marketing Quizzy', N'fec598679576abc64f49c35b72a0368f', N'Ho Chi Minh City', N'0900000002', 0, '1996-02-02', 3, NULL, '2026-06-02T08:00:00', N'Sample marketing account', 1, NULL, NULL, NULL),
-    (10003, N'customer@quizzy.local', N'Customer Quizzy', N'681ae46305e29b966801a96331ae607d', N'Ha Noi', N'0900000003', 1, '2000-03-03', 2, NULL, '2026-06-03T08:00:00', N'Sample customer account', 1, NULL, NULL, NULL);
+    (10001, N'admin@quizzy.local', N'Admin Quizzy', N'AQAAAAIAAYagAAAAEG6IpzLmHwxkU27MH5fOF0fu9Ua7apZ1JkqbJR+BKy/wK3hybXoMJoCxtt0WnwB+Xw==', N'Ho Chi Minh City', N'0900000001', 1, '1995-01-01', 1, NULL, '2026-06-01T08:00:00', N'Sample admin account', 1, NULL, NULL, NULL),
+    (10002, N'marketing@quizzy.local', N'Marketing Quizzy', N'AQAAAAIAAYagAAAAEA3OsRb27GV+Nf9OHyvQ1K5z9kRkVz2XP2kplqxSd//rS33/JRBbhdFTSj+4G5Jp1w==', N'Ho Chi Minh City', N'0900000002', 0, '1996-02-02', 3, NULL, '2026-06-02T08:00:00', N'Sample marketing account', 1, NULL, NULL, NULL),
+    (10003, N'customer@quizzy.local', N'Customer Quizzy', N'AQAAAAIAAYagAAAAEOt3jQSy8WjVvNR9q7rBR6we/jO7o4/KHfZ+tNoytfXvmWG1WZfcm741619vf5E11A==', N'Ha Noi', N'0900000003', 1, '2000-03-03', 2, NULL, '2026-06-03T08:00:00', N'Sample customer account', 1, NULL, NULL, NULL);
     SET IDENTITY_INSERT [Users] OFF;
 
     SET IDENTITY_INSERT [Category] ON;

@@ -42,7 +42,10 @@ namespace ProjectBase
             }
 
             // Configure services
-            ConfigureServices(builder.Services, builder.Configuration);
+            ConfigureServices(
+                builder.Services,
+                builder.Configuration,
+                builder.Environment);
 
             var app = builder.Build();
 
@@ -52,7 +55,10 @@ namespace ProjectBase
             app.Run();
         }
 
-        private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+        private static void ConfigureServices(
+            IServiceCollection services,
+            IConfiguration configuration,
+            IWebHostEnvironment environment)
         {
             int passwordResetLinkExpirationHours = configuration.GetValue<int>("PasswordResetLinkExpirationHours");
             // Connection to the database
@@ -133,7 +139,9 @@ namespace ProjectBase
                 .AddCookie(options =>
                 {
                     options.Cookie.HttpOnly = true;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                    options.Cookie.SecurePolicy = environment.IsProduction()
+                        ? CookieSecurePolicy.Always
+                        : CookieSecurePolicy.SameAsRequest;
                     options.Cookie.SameSite = SameSiteMode.Lax;
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
                     options.SlidingExpiration = true;
@@ -193,6 +201,7 @@ namespace ProjectBase
             }
 
             app.UseMiddleware<ApiExceptionHandlingMiddleware>();
+            app.UseMiddleware<SecurityHeadersMiddleware>();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

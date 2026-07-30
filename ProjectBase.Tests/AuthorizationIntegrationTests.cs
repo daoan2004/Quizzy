@@ -146,7 +146,7 @@ public sealed class AuthorizationIntegrationTests : IClassFixture<QuizzyWebAppli
                 ID = 70001,
                 email = email,
                 fullname = $"{roleName} Test",
-                password = PasswordServiceTests.LegacyMd5(password),
+                password = PasswordServiceTests.ModernHash(password),
                 Phone = "0901234567",
                 gender = true,
                 RoleID = role.RoleID,

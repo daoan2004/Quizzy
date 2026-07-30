@@ -120,11 +120,26 @@ namespace ProjectBase.Controllers
 
                     _context.Users.Add(newUser);
                     await _context.SaveChangesAsync();
-                    // Gửi email xác minhz`
-                    await _emailSender.SendVerificationLinkAsync(
-                        newUser.email,
-                        token,
-                        HttpContext.RequestAborted);
+                    try
+                    {
+                        await _emailSender.SendVerificationLinkAsync(
+                            newUser.email,
+                            token,
+                            HttpContext.RequestAborted);
+                    }
+                    catch (Exception emailException)
+                    {
+                        _context.Users.Remove(newUser);
+                        await _context.SaveChangesAsync(CancellationToken.None);
+                        _logger.LogError(
+                            emailException,
+                            "Verification email delivery failed; pending user {UserId} was removed. TraceId: {TraceId}",
+                            newUser.ID,
+                            HttpContext.TraceIdentifier);
+                        return Problem(
+                            statusCode: StatusCodes.Status500InternalServerError,
+                            title: "Unable to send verification email.");
+                    }
                     _logger.LogInformation(
                         "Account registration created user {UserId}; verification delivery completed. TraceId: {TraceId}",
                         newUser.ID,
@@ -395,10 +410,27 @@ namespace ProjectBase.Controllers
 
                     await _context.SaveChangesAsync();
 
-                    await _emailSender.SendPasswordResetLinkAsync(
-                        model.email,
-                        token,
-                        HttpContext.RequestAborted);
+                    try
+                    {
+                        await _emailSender.SendPasswordResetLinkAsync(
+                            model.email,
+                            token,
+                            HttpContext.RequestAborted);
+                    }
+                    catch (Exception emailException)
+                    {
+                        user.PasswordResetToken = null;
+                        user.PasswordResetTokenExpires = null;
+                        await _context.SaveChangesAsync(CancellationToken.None);
+                        _logger.LogError(
+                            emailException,
+                            "Password reset email delivery failed for user {UserId}; reset token was cleared. TraceId: {TraceId}",
+                            user.ID,
+                            HttpContext.TraceIdentifier);
+                        return Problem(
+                            statusCode: StatusCodes.Status500InternalServerError,
+                            title: "Unable to send password reset email.");
+                    }
                 }
 
                 return Json(new

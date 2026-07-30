@@ -124,7 +124,7 @@ public sealed class AccountTokenSecurityTests
             ID = 95001,
             email = "token-security@quizzy.test",
             fullname = "Token Security",
-            password = PasswordServiceTests.LegacyMd5("OldPassword@123"),
+            password = PasswordServiceTests.ModernHash("OldPassword@123"),
             Phone = "0901234567",
             gender = true,
             RoleID = 2,

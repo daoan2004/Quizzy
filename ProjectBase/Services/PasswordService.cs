@@ -1,12 +1,9 @@
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
 using ProjectBase.Models.DAO;
 
 namespace ProjectBase.Services;
 
-public sealed partial class PasswordService : IPasswordService
+public sealed class PasswordService : IPasswordService
 {
     private readonly IPasswordHasher<User> _passwordHasher;
 
@@ -32,15 +29,6 @@ public sealed partial class PasswordService : IPasswordService
             return new PasswordCheckResult(false, false);
         }
 
-        if (LegacyMd5Pattern().IsMatch(user.password))
-        {
-            var suppliedHash = MD5.HashData(Encoding.UTF8.GetBytes(password));
-            var storedHash = Convert.FromHexString(user.password);
-            var succeeded = CryptographicOperations.FixedTimeEquals(suppliedHash, storedHash);
-
-            return new PasswordCheckResult(succeeded, succeeded);
-        }
-
         var result = _passwordHasher.VerifyHashedPassword(user, user.password, password);
         return result switch
         {
@@ -52,6 +40,4 @@ public sealed partial class PasswordService : IPasswordService
         };
     }
 
-    [GeneratedRegex(@"\A[0-9a-fA-F]{32}\z", RegexOptions.CultureInvariant)]
-    private static partial Regex LegacyMd5Pattern();
 }
