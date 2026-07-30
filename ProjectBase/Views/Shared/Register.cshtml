@@ -1,74 +1,111 @@
  @* Register.cshtml *@
 @model ProjectBase.Models.RegisterModel
-    <div class="container">
-        <div class="modal fade" tabindex="-1" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle" data-keyboard="false" data-backdrop="static">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content auth-modal">
+<div class="container">
+    <div class="modal fade" tabindex="-1" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-xl account-modal-dialog register-modal-dialog">
+            <div class="modal-content auth-modal account-modal-content register-modal-content">
                     <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close registration dialog">
                         <i class="bi bi-x-lg" aria-hidden="true"></i>
                     </button>
-                    <div id="registerSuccessMessage" class="alert alert-success" role="status" aria-live="polite" style="display:none;">
-                        Registration successful. Please check email to verify your account!
-                    </div>
-                    <div id="registerErrorMessage" class="alert alert-danger" role="alert" aria-live="assertive" style="display:none;">
-                        Registration failed. Please try again.
-                    </div>
-                    <div class="modal-body">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <form id="registerForm" asp-action="Register" asp-controller="Account">
-                            <div class="row">
-                                
-                                <div class="col-md-8">
-                                    <div id="registerModalTitle" class="modal-titleLeft"><i class="bi bi-person-plus"></i> Register</div>
-                                    <div class="formRegister-groupContent">
-                                        <input asp-for="fullname" type="text" placeholder="Enter fullname" id="inputFullName" aria-label="Full name" />
-                                    </div>
-                                    <div class="formRegister-groupContent">
-                                        <input asp-for="Phone" type="text" placeholder="Phone number" id="inputPhoneNumber" aria-label="Phone number" />
-                                    </div>
-                                    <div class="formRegister-groupContent">
-                                        <input asp-for="email" type="email" placeholder="Email" id="inputEmail" aria-label="Email address" />
-                                    </div>
-                                    <div class="formRegister-groupContent">
-                                        <input asp-for="password" type="password" placeholder="Password" id="inputPasswordRegister" aria-label="Password" />
-                                    </div>
-                                    <div class="formRegister-groupContent">
-                                        <input asp-for="ConfirmPassword" type="password" placeholder="Confirm Password" id="inputConfirmPassword" aria-label="Confirm password" />
-                                    </div>
-                                    <div class="formRegister-group" id="genderContainer">
-                                        <div class="title">
-                                            <label>Gender?</label>
-                                        </div>
-                                        <br>
-                                        <div class="genderOptions">
-                                            <div class="genderOption">
-                                                <input asp-for="gender" type="radio" id="male" name="gender" value="true">
-                                                <label for="male">Male</label>
-                                            </div>
-                                            <div class="genderOption">
-                                                <input asp-for="gender" type="radio" id="female" name="gender" value="false">
-                                                <label for="female">Female</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 right">
-                                        <div class="modal-titleRight"><i class="bi bi-stars"></i> Quizly</div>
-                                        <div class="form-group">
-                                        <button type="submit" class="btn btn-secondary btn-register" id="registerModelBtn"><i class="bi bi-check2-circle"></i> Register</button>
-                                        <div class="modal-titleRightOr">Already have an account?</div>
-                                        <button type="button" class="btn btn-secondary btn-login" id="loginBtnRegister"><i class="bi bi-box-arrow-in-right"></i> Login</button>
-                                        </div>
-                                </div>
+
+                    <div class="account-modal-layout register-modal-layout">
+                        <aside class="account-modal-aside register-modal-aside">
+                            <div class="account-brand">
+                                <span class="account-brand-mark"><i class="bi bi-stars"></i></span>
+                                <span>Quizly</span>
                             </div>
+                            <div class="account-aside-copy">
+                                <span class="account-eyebrow">Start learning</span>
+                                <h3>Build knowledge with purpose.</h3>
+                                <p>Create one account to practice, track results and improve with every quiz.</p>
+                            </div>
+                            <div class="account-step-list" aria-hidden="true">
+                                <span><b>01</b> Choose a subject</span>
+                                <span><b>02</b> Practice with focus</span>
+                                <span><b>03</b> Review your progress</span>
+                            </div>
+                        </aside>
+
+                        <div class="modal-body account-modal-main">
+                            <header class="account-modal-header">
+                                <span class="account-eyebrow">Create account</span>
+                                <h2 id="registerModalTitle">Join Quizly</h2>
+                                <p>Fill in your details to create your learning profile.</p>
+                            </header>
+
+                            <div id="registerSuccessMessage" class="alert alert-success account-alert" role="status" aria-live="polite" style="display:none;">
+                                Registration successful. Please check email to verify your account!
+                            </div>
+                            <div id="registerErrorMessage" class="alert alert-danger account-alert" role="alert" aria-live="assertive" style="display:none;">
+                                Registration failed. Please try again.
+                            </div>
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <form id="registerForm" class="account-form" asp-action="Register" asp-controller="Account">
+                            <div class="register-fields-grid">
+                                <div class="account-field">
+                                    <label for="inputFullName">Full name</label>
+                                    <div class="account-input">
+                                        <i class="bi bi-person" aria-hidden="true"></i>
+                                        <input asp-for="fullname" type="text" placeholder="Enter your full name" id="inputFullName" />
+                                    </div>
+                                </div>
+                                <div class="account-field">
+                                    <label for="inputPhoneNumber">Phone number</label>
+                                    <div class="account-input">
+                                        <i class="bi bi-telephone" aria-hidden="true"></i>
+                                        <input asp-for="Phone" type="tel" placeholder="Enter your phone number" id="inputPhoneNumber" autocomplete="tel" />
+                                    </div>
+                                </div>
+                                <div class="account-field register-field-wide">
+                                    <label for="inputEmail">Email address</label>
+                                    <div class="account-input">
+                                        <i class="bi bi-envelope" aria-hidden="true"></i>
+                                        <input asp-for="email" type="email" placeholder="you@example.com" id="inputEmail" autocomplete="email" />
+                                    </div>
+                                </div>
+                                <div class="account-field">
+                                    <label for="inputPasswordRegister">Password</label>
+                                    <div class="account-input">
+                                        <i class="bi bi-lock" aria-hidden="true"></i>
+                                        <input asp-for="password" type="password" placeholder="Create a password" id="inputPasswordRegister" autocomplete="new-password" />
+                                    </div>
+                                </div>
+                                <div class="account-field">
+                                    <label for="inputConfirmPassword">Confirm password</label>
+                                    <div class="account-input">
+                                        <i class="bi bi-shield-check" aria-hidden="true"></i>
+                                        <input asp-for="ConfirmPassword" type="password" placeholder="Repeat your password" id="inputConfirmPassword" autocomplete="new-password" />
+                                    </div>
+                                </div>
+                                <fieldset class="account-field account-gender register-field-wide" id="genderContainer">
+                                    <legend>Gender</legend>
+                                    <div class="genderOptions">
+                                        <label class="genderOption" for="male">
+                                            <input asp-for="gender" type="radio" id="male" name="gender" value="true">
+                                            <span><i class="bi bi-person" aria-hidden="true"></i> Male</span>
+                                        </label>
+                                        <label class="genderOption" for="female">
+                                            <input asp-for="gender" type="radio" id="female" name="gender" value="false">
+                                            <span><i class="bi bi-person" aria-hidden="true"></i> Female</span>
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <button type="submit" class="btn account-primary-button btn-register" id="registerModelBtn">
+                                Create account <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            </button>
+                            <p class="account-switch">
+                                Already have an account?
+                                <button type="button" id="loginBtnRegister">Sign in</button>
+                            </p>
                         </form>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
-    <script src="~/js/AccountRegister.js" asp-append-version="true"></script>
-
-
+</div>
+<script src="~/js/AccountRegister.js" asp-append-version="true"></script>
 

@@ -3,33 +3,66 @@
 
 <div class="container">
     <div class="modal fade" tabindex="-1" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content auth-modal">
+        <div class="modal-dialog modal-dialog-centered modal-lg account-modal-dialog">
+            <div class="modal-content auth-modal account-modal-content login-modal-content">
                 <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close login dialog">
                     <i class="bi bi-x-lg" aria-hidden="true"></i>
                 </button>
-                <div id="loginErrorMessage" class="alert alert-danger" role="alert" aria-live="assertive" style="display:none;">
-                    Invalid email or password. Please try again.
-                </div>
-                <div id="loginModalTitle" class="modal-title text-center w-100"><i class="bi bi-stars"></i> Quizly</div>
-                <div class="modal-body">
-                    <form id="loginForm" asp-action="Login" asp-controller="Account">
-                        <div class="form-group d-flex justify-content-center">
-                            <input class="form-control" type="email" placeholder="Email address" id="inputUserNameLogin" autocomplete="email" aria-label="Email address" />
+                <div class="account-modal-layout">
+                    <aside class="account-modal-aside" aria-hidden="true">
+                        <div class="account-brand">
+                            <span class="account-brand-mark"><i class="bi bi-stars"></i></span>
+                            <span>Quizly</span>
                         </div>
-                        <div class="form-group d-flex justify-content-center">
-                            <input class="form-control" type="password" placeholder="Password" id="inputPasswordLogin" autocomplete="current-password" aria-label="Password" />
+                        <div class="account-aside-copy">
+                            <span class="account-eyebrow">Welcome back</span>
+                            <h3>Continue where you left off.</h3>
+                            <p>Return to your subjects, quizzes and learning progress in one place.</p>
                         </div>
-                        <div class="form-group text-center">
-                            <button type="submit" class="btn btn-primary btn-login mb-2" id="loginModelBtn"><i class="bi bi-box-arrow-in-right"></i> Login</button>
+                        <div class="account-benefits">
+                            <span><i class="bi bi-check2"></i> Focused practice</span>
+                            <span><i class="bi bi-check2"></i> Clear progress</span>
                         </div>
-                        <div class="form-group text-center">
-                            <a href="/Account/ResetPasswordRequest" class="btn btn-link">Reset Password</a>
+                    </aside>
+
+                    <div class="modal-body account-modal-main">
+                        <header class="account-modal-header">
+                            <span class="account-eyebrow">Member access</span>
+                            <h2 id="loginModalTitle">Sign in to Quizly</h2>
+                            <p>Enter your account details to continue learning.</p>
+                        </header>
+
+                        <div id="loginErrorMessage" class="alert alert-danger account-alert" role="alert" aria-live="assertive" style="display:none;">
+                            Invalid email or password. Please try again.
                         </div>
-                        <div class="form-group text-center">
-                            <button type="button" class="btn btn-secondary" id="registerBtnLogin"><i class="bi bi-person-plus"></i> Register</button>
-                        </div>
-                    </form>
+
+                        <form id="loginForm" class="account-form" asp-action="Login" asp-controller="Account">
+                            <div class="account-field">
+                                <label for="inputUserNameLogin">Email address</label>
+                                <div class="account-input">
+                                    <i class="bi bi-envelope" aria-hidden="true"></i>
+                                    <input class="form-control" type="email" placeholder="you@example.com" id="inputUserNameLogin" autocomplete="email" />
+                                </div>
+                            </div>
+                            <div class="account-field">
+                                <div class="account-label-row">
+                                    <label for="inputPasswordLogin">Password</label>
+                                    <a href="/Account/ResetPasswordRequest">Forgot password?</a>
+                                </div>
+                                <div class="account-input">
+                                    <i class="bi bi-lock" aria-hidden="true"></i>
+                                    <input class="form-control" type="password" placeholder="Enter your password" id="inputPasswordLogin" autocomplete="current-password" />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn account-primary-button btn-login" id="loginModelBtn">
+                                Login <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            </button>
+                            <div class="account-divider"><span>New to Quizly?</span></div>
+                            <button type="button" class="btn account-secondary-button" id="registerBtnLogin">
+                                Create an account
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -37,4 +70,3 @@
 </div>
 
 <script src="~/js/AccountLogin.js" asp-append-version="true"></script>
-</script>
