@@ -22,7 +22,10 @@ namespace ProjectBase.Controllers
         {
             ViewData["MetaDescription"] = "Quizly home page with featured subjects, latest learning posts, and quiz practice recommendations.";
             var slider = _dataContext.Slider.Include(s => s.User).ToList();
-            var lastestpost = _dataContext.Blogs.Where(blog => EF.Functions.DateDiffDay(blog.updatedAt, DateTime.Now) <= 14).ToList();
+            var latestPosts = _dataContext.Blogs
+                .OrderByDescending(blog => blog.updatedAt)
+                .Take(5)
+                .ToList();
             var hotsubject = _dataContext.Subjects.Where(subject => subject.isHot == true).ToList();
             var blogview = _dataContext.Blogs.ToList();
             var subject = _dataContext.Subjects.Include(s => s.Subject_Category).ThenInclude(sc => sc.Category)
@@ -32,7 +35,7 @@ namespace ProjectBase.Controllers
             var viewModel = new HomeViewModel
             {
                 Sliders = slider,
-                LatestPosts = lastestpost,
+                LatestPosts = latestPosts,
                 HotSubjects = hotsubject,
                 BlogView = blogview,
                 Subjects = subject,
