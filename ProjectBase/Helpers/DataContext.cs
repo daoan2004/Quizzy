@@ -26,6 +26,7 @@ namespace ProjectBase.Helpers
         public DbSet<SubjectTopicModel> SubjectTopic {  get; set; }
         public DbSet<PracticeLevel> PracticeLevel { get; set; }
         public DbSet<QuizBankModel> QuizBank { get; set; }
+        public DbSet<SimulationExam> SimulationExam { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -92,6 +93,11 @@ namespace ProjectBase.Helpers
                 .HasOne(s => s.Level)
                 .WithMany(e => e.Exams)
                 .HasForeignKey(l => l.LevelID);
+            modelBuilder.Entity<PracticeModel>()
+                .HasOne(practice => practice.SimulationExam)
+                .WithMany()
+                .HasForeignKey(practice => practice.SimulationExamID)
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<SliderModel>()
                 .HasOne(u => u.User)
                 .WithMany(s => s.Sliders)

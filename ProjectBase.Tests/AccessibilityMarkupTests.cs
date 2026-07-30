@@ -79,7 +79,8 @@ public class AccessibilityMarkupTests
         Assert.Contains("src=\"~/js/ChangePassword.js\"", password);
         Assert.Contains("aria-label=\"Change password\"", password);
         Assert.Contains("src=\"~/js/Profile.js\"", profile);
-        Assert.Contains("aria-label=\"User profile\"", profile);
+        Assert.Contains("aria-labelledby=\"profileModalTitle\"", profile);
+        Assert.Contains("id=\"profileModalTitle\"", profile);
     }
 
     [Fact]

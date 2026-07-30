@@ -40,36 +40,31 @@ GetUserDetails();
                 data: { page: page, pageSize: 5, levelId: levelId},
                 success: function (response) {
                     $('#simulationExamList').empty();
-                    if (!response.practice || response.practice.length === 0) {
+                    if (!response.exams || response.exams.length === 0) {
                         showExamMessage('No simulation exams found.');
                         return;
                     }
-                    var renderedExamCount = 0;
-                    response.practice.forEach(function (item) {
-                        item.subjects.exams.forEach(function (exam) {
-                            var row = $('<tr>');
-                            $('<td>').text(exam.id).appendTo(row);
-                            $('<td>').text(item.subjects.title || '').appendTo(row);
-                            $('<td>').text(exam.examName || '').appendTo(row);
-                            $('<td>').text(exam.level.title || '').appendTo(row);
-                            $('<td>').text(exam.number_Question).appendTo(row);
-                            $('<td>').text(exam.duration || '').appendTo(row);
-                            $('<td>').text(exam.passrate + '%').appendTo(row);
-                            $('<td>').append(
-                                $('<button>', {
-                                    type: 'button',
-                                    id: exam.id,
-                                    class: 'details-button'
-                                }).append($('<i>', { class: 'bi bi-play-circle' }), ' Do Exam')
-                            ).appendTo(row);
-                            $('#simulationExamList').append(row);
-                            renderedExamCount++;
-                        });
+                    response.exams.forEach(function (exam) {
+                        var row = $('<tr>');
+                        $('<td>').text(exam.id).appendTo(row);
+                        $('<td>').text(exam.subjectTitle || '').appendTo(row);
+                        $('<td>').text(exam.examName || '').appendTo(row);
+                        $('<td>').text(exam.levelTitle || '').appendTo(row);
+                        $('<td>').text(exam.number_Question).appendTo(row);
+                        $('<td>').text(exam.duration + ' min').appendTo(row);
+                        $('<td>').text(exam.passrate + '%').appendTo(row);
+                        $('<td>').append(
+                            $('<button>', {
+                                type: 'button',
+                                'data-exam-id': exam.id,
+                                class: 'details-button'
+                            }).append(
+                                $('<i>', { class: 'bi bi-play-circle' }),
+                                ' Do Exam'
+                            )
+                        ).appendTo(row);
+                        $('#simulationExamList').append(row);
                     });
-                    if (renderedExamCount === 0) {
-                        showExamMessage('No simulation exams found.');
-                        return;
-                    }
 
                     $('#pagination').empty();
                     for (var i = 1; i <= response.totalPages; i++) {
@@ -101,18 +96,16 @@ GetUserDetails();
                 success: function (response) {
                     const seenTitles = new Set();
                    
-                    response.forEach(function (item) {
-                        item.subjects.exams.forEach(function (exam) {
-                            if (!seenTitles.has(exam.level.title)) {
-                                $('#subjectFilter').append(
-                                    $('<option>', {
-                                        value: exam.level.id,
-                                        text: exam.level.title || ''
-                                    })
-                                );
-                                seenTitles.add(exam.level.title);
-                            }
-                        });
+                    response.forEach(function (level) {
+                        if (!seenTitles.has(level.title)) {
+                            $('#subjectFilter').append(
+                                $('<option>', {
+                                    value: level.levelID,
+                                    text: level.title || ''
+                                })
+                            );
+                            seenTitles.add(level.title);
+                        }
                     });
                     
                 },
@@ -126,8 +119,29 @@ GetUserDetails();
         });
         $('#simulationExamList').on('click', '.details-button', function (e) {
             e.preventDefault();
-            var examId = $(this).attr('id');
-            window.location.href = '/Quiz/Handle?UserID=' + userId + '&PracticeID=' + examId + '&IsPractice=false';
+            var button = $(this);
+            var examId = button.data('exam-id');
+            button.prop('disabled', true).text('Starting…');
+            $.ajax({
+                url: '/api/SimulationExamApi/Start/' + examId,
+                type: 'POST',
+                success: function (response) {
+                    window.location.href =
+                        '/Quiz/Handle?PracticeID=' + response.practiceId;
+                },
+                error: function (xhr) {
+                    showExamMessage(
+                        xhr.responseJSON?.message ||
+                        xhr.responseJSON?.detail ||
+                        'Could not start this simulation exam.'
+                    );
+                },
+                complete: function () {
+                    button.prop('disabled', false).html(
+                        '<i class="bi bi-play-circle"></i> Do Exam'
+                    );
+                }
+            });
         });
 });
 

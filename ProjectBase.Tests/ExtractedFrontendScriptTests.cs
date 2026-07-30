@@ -21,6 +21,27 @@ public class ExtractedFrontendScriptTests
         Assert.Contains(expectedPattern, script);
     }
 
+    [Fact]
+    public void SimulationExam_StartsAttemptBeforeNavigatingToQuiz()
+    {
+        var script = File.ReadAllText(Path.Combine(
+            FindProjectRoot(),
+            "ProjectBase",
+            "wwwroot",
+            "js",
+            "SimulationExam.js"));
+
+        Assert.Contains(
+            "url: '/api/SimulationExamApi/Start/' + examId",
+            script);
+        Assert.Contains(
+            "'/Quiz/Handle?PracticeID=' + response.practiceId",
+            script);
+        Assert.DoesNotContain(
+            "'&PracticeID=' + examId",
+            script);
+    }
+
     private static string FindProjectRoot()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

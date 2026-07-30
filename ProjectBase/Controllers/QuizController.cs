@@ -19,7 +19,7 @@ namespace ProjectBase.Controllers
             _dataContext = context;
 
         }
-        public async Task<IActionResult> HandleAsync(long UserID, long PracticeID, bool isPractice)
+        public async Task<IActionResult> HandleAsync(long PracticeID)
         {
             if (!long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var currentUserId))
             {
@@ -28,7 +28,6 @@ namespace ProjectBase.Controllers
 
             ViewData["UserID"] = currentUserId;
             ViewData["PracticeID"] = PracticeID;
-            ViewData["IsPractice"] = isPractice;
             var practice = await _dataContext.Practice
                 .FirstOrDefaultAsync(p => p.ID == PracticeID && p.UserID == currentUserId);
             if (practice == null)
@@ -49,6 +48,8 @@ namespace ProjectBase.Controllers
             ViewData["AttemptEndsAtUtc"] = startedAtUtc
                 .Add(practice.duration.ToTimeSpan())
                 .ToString("O");
+            var isPractice = !practice.SimulationExamID.HasValue;
+            ViewData["IsPractice"] = isPractice;
             if (isPractice)
             {
                 ViewData["Type"] = "Practice";

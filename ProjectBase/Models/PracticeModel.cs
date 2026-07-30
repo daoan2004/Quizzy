@@ -18,6 +18,7 @@ namespace ProjectBase.Models
         public int number_quest { get; set; }
         public int number_correct { get; set; }
         public int levelID { get; set; }
+        public long? SimulationExamID { get; set; }
 
         public int topicID { get; set; }
         public TimeOnly time_taken { get; set; }
@@ -36,6 +37,7 @@ namespace ProjectBase.Models
         [NotMapped]
         [ForeignKey("topicID")]
         public SubjectTopicModel Topic { get; set; } = null!;
+        public SimulationExam? SimulationExam { get; set; }
 
 
     }
