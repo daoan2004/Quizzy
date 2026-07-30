@@ -1,91 +1,120 @@
-# Quizzy
+# Quizly
 
-Quizzy is a personal ASP.NET Core MVC project for online quiz practice, subject registration, learning packages, quiz attempts, review history, and basic business dashboards.
+Quizly is a modern quiz-learning platform built with ASP.NET Core MVC. It brings subject discovery, learning-package registration, focused practice, simulation exams, result review, account management, and administrative reporting into one application.
 
-The project was originally built from an academic learning context and has been reorganized as a personal portfolio project to continue improving the product, backend design, UI, and deployment readiness.
+The interface uses a responsive black-and-white design focused on clarity and distraction-free learning.
 
-## Features
+## Demo
 
-- User registration, email verification, login, logout, password change, and password reset.
-- User profile management with avatar upload.
-- Subject browsing, searching, category/tag filtering, and subject detail pages.
-- Learning package registration by subject.
-- Registration management with submitted, paid/registered, and cancelled states.
-- Practice creation based on subject, level, question group, and number of questions.
-- Quiz attempt flow with question loading, answer submission, scoring, and finish state.
-- Quiz review page with submitted answers and correct answers.
-- Blog listing, blog detail pages, categories, and latest posts.
-- Simulation exam data model and basic exam listing flow.
-- Dashboard APIs for registrations, revenue, customer stats, order counts, and subject revenue.
+### Home
+
+![Quizly home page](docs/screenshots/home.png)
+
+### Subject discovery
+
+![Quizly subjects page](docs/screenshots/subjects.png)
+
+### Password recovery
+
+![Quizly password recovery page](docs/screenshots/reset-password.png)
+
+## Highlights
+
+- Account registration with SMTP email verification
+- Login, logout, profile editing, avatar upload, password change, and password reset
+- Subject browsing, searching, filtering, and detailed learning-package information
+- Subject registration lifecycle with submitted, active, and cancelled states
+- Configurable practice sessions by subject, level, question group, and question count
+- Simulation exams with attempt tracking and controlled question generation
+- Quiz answering, scoring, completion, and answer review
+- Blog listing, article details, categories, and latest-post discovery
+- Role-based administration and business dashboards
+- Responsive, accessible Razor UI with a modern monochrome design
+
+## Core Flows
+
+```text
+Register -> verify email -> log in -> update profile
+
+Browse subjects -> choose package -> register -> activate -> practice
+
+Create practice/exam -> answer questions -> submit -> view score -> review answers
+
+Admin login -> dashboard -> manage learning data and review statistics
+```
 
 ## Tech Stack
 
-- ASP.NET Core MVC (.NET 8)
-- Entity Framework Core 8
-- SQL Server
-- Dapper
-- Razor Views
-- Bootstrap
-- jQuery
-- Chart.js
-- Swiper
-- Selenium/WebDriver packages for browser-based verification
+| Area | Technology |
+| --- | --- |
+| Backend | ASP.NET Core MVC, .NET 8 |
+| Data | Entity Framework Core 8, Dapper, SQL Server |
+| Frontend | Razor Views, Bootstrap, JavaScript, jQuery |
+| UI components | Swiper, Chart.js, Bootstrap Icons |
+| Email | SMTP with strongly typed configuration |
+| Testing | xUnit and ASP.NET Core integration tests |
 
 ## Project Structure
 
 ```text
 Quizzy/
-+-- ProjectBase/
-|   +-- Controllers/        # MVC controllers and JSON API controllers
-|   +-- Helpers/            # EF Core DbContext and helper classes
-|   +-- Migrations/         # Entity Framework migrations and seed data
-|   +-- Models/             # Entity models and view models
-|   +-- Views/              # Razor views
-|   +-- wwwroot/            # Static assets: CSS, JS, images, libraries
-|   +-- Program.cs          # Application startup and middleware
-|   +-- ProjectBase.csproj  # ASP.NET Core project file
-+-- SWP391.sln              # Visual Studio solution
-+-- README.md
+├── ProjectBase/
+│   ├── Controllers/       MVC and API controllers
+│   ├── Helpers/           DbContext and application helpers
+│   ├── Migrations/        EF Core migrations and sample data
+│   ├── Models/            Entities, request models, and view models
+│   ├── Services/          Email and application services
+│   ├── Views/             Razor pages and shared partials
+│   ├── wwwroot/           CSS, JavaScript, images, and libraries
+│   └── Program.cs         Services and middleware configuration
+├── ProjectBase.Tests/     Automated tests
+├── docs/screenshots/      README demo images
+├── SWP391.sln
+└── README.md
 ```
 
 ## Requirements
 
 - .NET SDK 8.0 or later
-- SQL Server / SQL Server Express / Local SQL Server instance
-- Visual Studio 2022 or another editor that supports .NET projects
+- SQL Server, SQL Server Express, or LocalDB
+- Optional: a Gmail account and App Password for verification/reset emails
 
-## Configuration
+## Local Setup
 
-The default connection string is defined in `ProjectBase/appsettings.json`:
-
-```json
-{
-  "ConnectionStrings": {
-    "ConnectedDb": "Server=localhost;Database=SWP391;Trusted_Connection=True;TrustServerCertificate=True;"
-  }
-}
-```
-
-Update the connection string if your SQL Server instance uses another server name, SQL login, or database name.
-
-For local-only secrets such as SMTP credentials, prefer environment variables, user secrets, or an untracked local configuration file instead of committing credentials to source control.
-
-## Database Setup
-
-From the repository root:
+Clone the repository and restore dependencies:
 
 ```powershell
-dotnet restore .\ProjectBase\ProjectBase.csproj
-dotnet ef database update --project .\ProjectBase\ProjectBase.csproj
+dotnet restore .\SWP391.sln
 ```
 
-If `dotnet ef` is not installed:
+Configure the database connection in `ProjectBase/appsettings.json` or through User Secrets:
+
+```powershell
+dotnet user-secrets init --project .\ProjectBase\ProjectBase.csproj
+dotnet user-secrets set "ConnectionStrings:ConnectedDb" "Server=localhost;Database=SWP391;Trusted_Connection=True;TrustServerCertificate=True;" --project .\ProjectBase\ProjectBase.csproj
+```
+
+Apply the migrations:
 
 ```powershell
 dotnet tool install --global dotnet-ef
+dotnet ef database update --project .\ProjectBase\ProjectBase.csproj
 ```
 
-## Run Locally
+## SMTP Configuration
+
+Keep SMTP credentials outside source control. For Gmail, enable two-step verification and create an App Password, then configure:
+
+```powershell
+dotnet user-secrets set "Email:FromAddress" "your-address@gmail.com" --project .\ProjectBase\ProjectBase.csproj
+dotnet user-secrets set "Email:Username" "your-address@gmail.com" --project .\ProjectBase\ProjectBase.csproj
+dotnet user-secrets set "Email:Password" "your-app-password" --project .\ProjectBase\ProjectBase.csproj
+dotnet user-secrets set "Email:BaseUrl" "http://localhost:5152" --project .\ProjectBase\ProjectBase.csproj
+```
+
+The non-secret SMTP defaults are already configured for Gmail on port `587` with TLS enabled.
+
+## Run
 
 From the repository root:
 
@@ -93,54 +122,22 @@ From the repository root:
 dotnet run --project .\ProjectBase\ProjectBase.csproj --launch-profile http
 ```
 
-The default local URL is:
+Open [http://localhost:5152](http://localhost:5152).
 
-```text
-http://localhost:5152
-```
-
-You can also run the solution from Visual Studio by selecting the `ProjectBase` startup project.
-
-## Main Backend Flows
-
-### Account Flow
-
-```text
-Register -> email verification -> login -> authenticated session -> profile/password actions
-```
-
-The account module is handled mainly by `AccountController`.
-
-### Subject Registration Flow
-
-```text
-Browse subject -> select package -> submit registration -> pay/activate registration -> access practice
-```
-
-Subject and package registration are handled mainly by `Subjects`, `SubjectRegister`, and `MyRegistrationsApiController`.
-
-### Practice And Quiz Flow
-
-```text
-Create practice -> generate QuizHandle rows from QuizBank -> answer questions -> finish attempt -> review result
-```
-
-Practice and quiz attempts are handled mainly by `PracticeApiController`, `QuizController`, `QuizApiController`, and `QuizReview`.
-
-### Dashboard Flow
-
-```text
-Registrations + packages + users -> revenue/customer/order statistics
-```
-
-Dashboard data is served by `DashboardApiController`.
-
-## Build
+## Build and Test
 
 ```powershell
-dotnet build .\ProjectBase\ProjectBase.csproj
+dotnet build .\SWP391.sln
+dotnet test .\ProjectBase.Tests\ProjectBase.Tests.csproj
 ```
 
-## Status
+## Security Notes
 
-This is a personal learning and portfolio project. It is functional locally and is being refined toward cleaner architecture, safer backend logic, and better deployment readiness.
+- Never commit SMTP passwords, database passwords, or production secrets.
+- Verification and password-reset links expire according to the configured lifetime.
+- Set `Email:BaseUrl` to the real HTTPS origin when running outside localhost.
+- Replace development connection strings and sample accounts before production use.
+
+## Project Status
+
+Quizly is functional locally and is currently focused on completing and hardening application logic before deployment.
